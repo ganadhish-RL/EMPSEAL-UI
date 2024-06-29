@@ -1,5 +1,13 @@
 [
     {
+        "name": "PULSECHAIN",
+        "ticker": "PLS",
+        "address": "0x0000000000000000000000000000000000000000",
+        "image": "https://dd.dexscreener.com/ds-data/chains/pulsechain.png",
+        "decimal": "18",
+        "featured": true
+    },
+    {
         "name": "PULSEX",
         "ticker": "PLSX",
         "address": "0x95B303987A60C71504D99Aa1b13B4DA07b0790ab",

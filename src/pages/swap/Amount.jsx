@@ -4,7 +4,7 @@ import Three from "../../assets/images/324.svg";
 import Refresh from "../../assets/images/refresh.svg";
 import Info from "../../assets/images/info.svg";
 import Transcation from "./Transcation";
-const Amount = ({ onClose }) => {
+const Amount = ({ onClose, amountIn, amountOut, tokenA, tokenB, refresh, confirm }) => {
   const [isConfirm, setConfirm] = useState(false);
 
   return (
@@ -67,8 +67,8 @@ const Amount = ({ onClose }) => {
                 You Pay
               </div>
               <div className="text-white text-2xl font-bold roboto leading-9 flex gap-3 items-center">
-                320
-                <img src={Three} alt="Three" />
+                {amountIn}
+                <img src={tokenA.image} alt="Three" className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-6">
@@ -76,12 +76,12 @@ const Amount = ({ onClose }) => {
                 You Receive
               </div>
               <div className="text-white text-2xl font-bold roboto leading-9 flex gap-3 items-center">
-                320.16
-                <img src={S} alt="S" />
+                {amountOut}
+                <img src={tokenB.image} alt="S" className="w-4 h-4" />
               </div>
             </div>
-            <div className="mt-6 text-gray-400 text-sm font-normal robotoleading-normal">
-              Output is estimated. You will receive at least 317.90 USDC or the
+            <div className="mt-6 text-gray-40 text-white text-sm font-normal robotoleading-normal">
+              Output is estimated. You will receive at least {amountOut} {tokenB.ticker} or the
               transaction will revert
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-6">
@@ -92,7 +92,9 @@ const Amount = ({ onClose }) => {
                 <div className="text-right text-white text-sm font-normal roboto leading-normal">
                   1.000 BUSD per 1USDC
                 </div>
-                <img src={Refresh} alt="Refresh" />
+                <div className="cursor-pointer" onClick={() => refresh()}>
+                  <img src={Refresh} alt="Refresh" />
+                </div>
               </div>
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-2">
@@ -103,7 +105,7 @@ const Amount = ({ onClose }) => {
                 <img src={Info} alt="Info" />
               </div>
               <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                317.90 USDC
+                {amountOut} {tokenB.ticker}
               </div>
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-2">
@@ -125,11 +127,11 @@ const Amount = ({ onClose }) => {
                 <img src={Info} alt="Info" />
               </div>
               <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                3.2 BUSD
+                0.28 PLS
               </div>
             </div>
             <button
-              onClick={() => setConfirm(true)}
+              onClick={() => confirm()}
               className="w-full rounded-xl px-4 py-4 bg-[#FF9900] flex gap-4 items-center mt-6 justify-center hover:bg-transparent border border-[#FF9900] hover:text-[#FF9900]"
             >
               <div className="text-white text-base font-bold roboto text-center leading-normal">
