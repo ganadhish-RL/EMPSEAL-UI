@@ -50,6 +50,8 @@ const callApprove = async (tokenInAddress: string, amountIn: bigint) => {
 };
 
 const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
+  console.log(tradeInfo)
+  console.log(userAddress)
   try {
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
@@ -59,11 +61,11 @@ const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
         {
           adapters: tradeInfo.adapters,
           amountIn: tradeInfo.amountIn,
-          amountOut: (tradeInfo.amountOut * BigInt(3) / BigInt(100000)),
+          amountOut: (tradeInfo.amountOut),
           path: tradeInfo.path,
         },
         userAddress,
-        convertToBigInt(0.28, 18),
+        BigInt("0"),
       ],
       value: tradeInfo.amountIn,
     });
@@ -73,6 +75,7 @@ const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
       data: result,
     };
   } catch (e: any) {
+    console.log('error', e)
     throw e;
   }
 };
