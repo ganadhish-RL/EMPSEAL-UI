@@ -13,6 +13,8 @@ import { RouterABI } from "./routerAbi";
 import { formatUnits } from "viem";
 import Tokens from "../tokenList.json";
 import { swapTokens } from '../../utils/contractCalls'
+import { useStore } from '../../redux/store/routeStore';
+
 
 const Emp = ({ setPadding }) => {
   const [isAmountVisible, setAmountVisible] = useState(false);
@@ -27,6 +29,11 @@ const Emp = ({ setPadding }) => {
   const [swapHash, setSwapHash] = useState("");
   const [tradeInfo, setTradeInfo] = useState(undefined);
   const { address, isConnected, chain } = useAccount();
+
+
+  function setPath(path) {
+    useStore.setState({ route: path })
+  }
 
   const WETH_ADDRESS = "0xa1077a294dde1b09bb078844df40758a5d0f9a27";
   const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -55,10 +62,28 @@ const Emp = ({ setPadding }) => {
     ],
   });
 
+  const { data: singleToken, isLoading: singleTokenLoading, refetch: singleTokenRefresh, error: singleTokenError } = useReadContract({
+    abi: RouterABI,
+    address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
+    functionName: "findBestPath",
+    args: [
+      BigInt(1),
+      selectedTokenA?.address === EMPTY_ADDRESS ? WETH_ADDRESS : selectedTokenA?.address,
+      selectedTokenB?.address === EMPTY_ADDRESS ? WETH_ADDRESS : selectedTokenB?.address,
+      BigInt("3")
+    ],
+  });
+
+  useEffect(() => {
+    console.log(singleToken)
+  }, [singleToken])
+
   useEffect(() => {
     if (data && data.amounts && data.amounts.length > 0) {
       if (data) {
         if (data?.amounts.length > 0 && selectedTokenB) {
+          console.log(data)
+          setPath(data.path)
           if (
             (selectedTokenA?.address === EMPTY_ADDRESS &&
               selectedTokenB?.address === WETH_ADDRESS) ||
@@ -290,10 +315,10 @@ const Emp = ({ setPadding }) => {
           />
         </div>
         <div className="flex justify-center items-center gap-2 my-4">
-          <div className="text-gray-400 text-base font-normal roboto leading-normal">
-            1 {selectedTokenA.name} = 1.0000 USDC
+          <div className="text-white text-base font-normal roboto leading-normal">
+            1 {selectedTokenA.name} = {singleToken && singleToken.amounts && singleToken.amounts[singleToken.amounts.length - 1] ? parseFloat(singleToken.amounts[singleToken.amounts.length - 1].toString()).toFixed(6) : "0"} {selectedTokenB.ticker}
           </div>
-          <div className="cursor-pointer" onClick={() => quoteRefresh()}>
+          <div className="cursor-pointer" onClick={() => singleTokenRefresh()}>
             <img src={Refresh} alt="Refresh" />
           </div>
         </div>

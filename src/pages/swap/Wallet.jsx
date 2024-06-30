@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../assets/images/emp-logo.png";
 import Line from "../../assets/images/Frame 25.png";
 import Fra from "../../assets/images/Frame 86.png";
@@ -6,9 +6,24 @@ import { Link } from "react-router-dom";
 // import LineChart from "./LinesGraphs";
 import ConnectWallet from "./ConnectWallet";
 import WalletConnect from "./WalletConnect/WalletConnect";
+import { useBalance } from 'wagmi'
+import { formatEther } from "viem";
+
+
+
 
 const Wallet = () => {
   const [isConnectWalletVisible, setConnectWalletVisible] = useState(false);
+  const [balance, setBalance] = useState(0)
+  const result = useBalance({
+    address: '0x4557B18E779944BFE9d78A672452331C186a9f48',
+  })
+  useEffect(() => {
+    if (result.data) {
+      setBalance(formatEther(result.data.value))
+    }
+  }, [result])
+
 
   return (
     <>
@@ -44,7 +59,7 @@ const Wallet = () => {
           <div className="flex gap-3 items-center">
             <img src={Fra} alt="Fra" />
             <div className="text-white text-[14.29px] font-bold roboto">
-              $21.533.10
+              ${parseFloat(balance).toFixed(6)}
             </div>
           </div>
         </div>

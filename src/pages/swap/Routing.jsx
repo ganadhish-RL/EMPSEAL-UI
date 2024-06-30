@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Eth from "../../assets/images/eth.png";
 import Bi from "../../assets/images/bi.png";
 import Arrow from "../../assets/images/icon-wrapper.png";
 import Line from "../../assets/images/Line 106.png";
+import tokens from "../tokenList.json";
+import { useStore } from '../../redux/store/routeStore';
 
-const Routing = ({ padding }) => {
+const Routing = ({ routing }) => {
+
+
+  const route = useStore((state) => state.route)
+
+  useEffect(() => {
+    console.log(route)
+  }, [route])
+
+  const getImage = (item) => {
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i].address === item) {
+        return tokens[i].image
+      }
+    }
+  };
+
+
   return (
     <>
       {/* ${padding} */}
@@ -18,26 +37,28 @@ const Routing = ({ padding }) => {
           </button>
         </div>
         <div className="flex justify-between gap-2 items-center mt-6">
+          {route && route.map((item, index) => (
+            index === route.length - 1 ?
+              <img className="w-6 h-6" src={getImage(item)} alt="Eth" />
+              :
+              <>
+                <img className="w-6 h-6" src={getImage(item)} alt="Eth" />
+                <img src={Arrow} alt="Arrow" />
+              </>
+          ))}
+          {/* <img src={Arrow} alt="Arrow" />
+
           <img src={Eth} alt="Eth" />
-          <img src={Line} alt="Line" />
           <img src={Arrow} alt="Arrow" />
-          <div className="w-[180px] border border-white border-opacity-50 px-2 py-3 rounded-xl">
-            <div className="flex gap-3 items-center">
-              <img src={Bi} alt="Bi" />
-              <div className="text-white text-sm font-bold roboto leading-[20.93px]">
-                BUSD
-              </div>
-            </div>
-            <div className="mt-3 w-full h-[25px] flex justify-center items-center rounded-md border border-[#FF9900] text-white text-[12px] font-normal roboto">
-              Sushiswap 2%
-            </div>
-            <div className="mt-2 w-full h-[25px] flex justify-center items-center rounded-md border border-[#FF9900] text-white text-[12px] font-normal roboto">
-              Uniswap 2%
-            </div>
-          </div>
+
+
+          <img src={Eth} alt="Eth" />
           <img src={Arrow} alt="Arrow" />
-          <img src={Line} alt="Line" />
-          <img src={Bi} alt="Bi" />
+
+          <img src={Eth} alt="Eth" />
+          <img src={Arrow} alt="Arrow" />
+
+          <img src={Bi} alt="Bi" /> */}
         </div>
       </div>
     </>
