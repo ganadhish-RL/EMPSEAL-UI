@@ -59,7 +59,7 @@ const Wallet = () => {
           <div className="flex gap-3 items-center">
             <img src={Fra} alt="Fra" />
             <div className="text-white text-[14.29px] font-bold roboto">
-              ${parseFloat(balance).toFixed(6)}
+              {parseFloat(balance).toFixed(6)}
             </div>
           </div>
         </div>

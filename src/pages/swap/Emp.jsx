@@ -188,11 +188,11 @@ const Emp = ({ setPadding }) => {
               setIsSelectingTokenA(true);
               setTokenVisible(true);
             }}
-            className="flex justify-between gap-1 items-center cursor-pointer"
+            className="flex justify-between gap-4 items-center cursor-pointer"
           >
             <div className="flex gap-2 items-center">
               <img className="w-4 h-4" src={selectedTokenA.image} alt={selectedTokenA.name} />
-              <div className="text-white text-base font-bold roboto leading-normal bg-black appearance-none outline-none w-[100px]">
+              <div className="text-white text-base font-bold roboto leading-normal bg-black appearance-none outline-none">
                 {selectedTokenA.ticker}
               </div>
             </div>
@@ -282,11 +282,11 @@ const Emp = ({ setPadding }) => {
               setIsSelectingTokenA(false);
               setTokenVisible(true);
             }}
-            className="flex justify-between gap-1 items-center cursor-pointer"
+            className="flex justify-between gap-4 items-center cursor-pointer"
           >
             <div className="flex gap-2 items-center">
               <img className="w-4 h-4" src={selectedTokenB.image} alt={selectedTokenB.name} />
-              <div className="text-white text-base font-bold roboto leading-normal bg-black appearance-none outline-none w-[100px]">
+              <div className="text-white text-base font-bold roboto leading-normal bg-black appearance-none outline-none">
                 {selectedTokenB.ticker}
               </div>
             </div>
