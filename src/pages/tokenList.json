@@ -401,7 +401,7 @@
         "name": "The Rise of Cock",
         "ticker": "COCK",
         "address": "0x40b49a9e5B8E3CC137E9CA57A5F4382D1B3dF6FE",
-        "image": "",
+        "image": "https://ipfs.io/ipfs/QmPwb3N33j6zYevEAi2z18DFEjfJ8pjFaZTP3A4dz3raHn/30px%20logo.png",
         "decimal": "18",
         "featured": true
     },
