@@ -8,35 +8,35 @@ import Info from "../../assets/images/info.svg";
 import { Link } from "react-router-dom";
 import Amount from "./Amount";
 import Token from "./Token";
-import { useAccount, useBalance, useReadContract, useReadContracts } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { RouterABI } from "./routerAbi";
 import { formatUnits } from "viem";
 import Tokens from "../tokenList.json";
-import { swapTokens } from '../../utils/contractCalls'
+import { swapTokens } from '../../utils/contractCalls';
 import { useStore } from '../../redux/store/routeStore';
-
 
 const Emp = ({ setPadding }) => {
   const [isAmountVisible, setAmountVisible] = useState(false);
   const [isTokenVisible, setTokenVisible] = useState(false);
   const [order, setOrder] = useState(false);
-  const [selectedTokenA, setSelectedTokenA] = useState(Tokens[0]); // Add address
-  const [selectedTokenB, setSelectedTokenB] = useState(Tokens[1]); // Add address
+  const [selectedTokenA, setSelectedTokenA] = useState(Tokens[0]);
+  const [selectedTokenB, setSelectedTokenB] = useState(Tokens[1]);
   const [isSelectingTokenA, setIsSelectingTokenA] = useState(true);
   const [amountOut, setAmountOut] = useState("0");
   const [amountIn, setAmountIn] = useState("0");
   const [swapStatus, setSwapStatus] = useState("IDLE");
   const [swapHash, setSwapHash] = useState("");
   const [tradeInfo, setTradeInfo] = useState(undefined);
-  const { address, isConnected, chain } = useAccount();
-
+  const { address } = useAccount();
+  const [fees, setFees] = useState(0);
 
   function setPath(path) {
-    useStore.setState({ route: path })
+    useStore.setState({ route: path });
   }
 
   const WETH_ADDRESS = "0xa1077a294dde1b09bb078844df40758a5d0f9a27";
   const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
+
   const handleTokenSelect = (token) => {
     if (isSelectingTokenA) {
       setSelectedTokenA(token);
@@ -62,7 +62,7 @@ const Emp = ({ setPadding }) => {
     ],
   });
 
-  const { data: singleToken, isLoading: singleTokenLoading, refetch: singleTokenRefresh, error: singleTokenError } = useReadContract({
+  const { data: singleToken, refetch: singleTokenRefresh } = useReadContract({
     abi: RouterABI,
     address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
     functionName: "findBestPath",
@@ -74,59 +74,64 @@ const Emp = ({ setPadding }) => {
     ],
   });
 
-  useEffect(() => {
-    console.log(singleToken)
-  }, [singleToken])
+  const { data: feeData } = useReadContract({
+    abi: RouterABI,
+    address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
+    functionName: "findBestPath",
+    args: [
+      amountIn && selectedTokenA && parseFloat(amountIn) ? convertToBigInt(parseFloat(amountIn) * 0.0028, 18) : BigInt(0),
+      selectedTokenA?.address,
+      WETH_ADDRESS,
+      BigInt("3")
+    ],
+  });
 
   useEffect(() => {
     if (data && data.amounts && data.amounts.length > 0) {
-      if (data) {
-        if (data?.amounts.length > 0 && selectedTokenB) {
-          console.log(data)
-          setPath(data.path)
-          if (
-            (selectedTokenA?.address === EMPTY_ADDRESS &&
-              selectedTokenB?.address === WETH_ADDRESS) ||
-            (selectedTokenA?.address === WETH_ADDRESS &&
-              selectedTokenB?.address === EMPTY_ADDRESS)
-          ) {
-            setAmountOut(amountIn);
-          } else {
-            setAmountOut(
-              formatUnits(
-                data?.amounts[data.amounts.length - 1],
-                parseInt(selectedTokenB.decimal)
-              )
-            );
-          }
-          const trade = {
-            amountIn: data.amounts[0],
-            amountOut: data.amounts[data.amounts.length - 1],
-            amounts: data.amounts,
-            path: data.path,
-            pathTokens: data.path.map((pathAddress, index) => {
-              return (
-                Tokens.find((token) => token.address == pathAddress) ||
-                Tokens[0]
-              );
-            }),
-            adapters: data.adapters,
-          };
-          setTradeInfo(trade);
+      if (selectedTokenB) {
+        setPath(data.path);
+        if (
+          (selectedTokenA?.address === EMPTY_ADDRESS && selectedTokenB?.address === WETH_ADDRESS) ||
+          (selectedTokenA?.address === WETH_ADDRESS && selectedTokenB?.address === EMPTY_ADDRESS)
+        ) {
+          setPath([selectedTokenA.address, selectedTokenB.address]);
+          setAmountOut(amountIn);
         } else {
-          setAmountOut("0");
-          setTradeInfo(undefined);
+          setAmountOut(
+            formatUnits(
+              data?.amounts[data.amounts.length - 1],
+              parseInt(selectedTokenB.decimal)
+            )
+          );
         }
+        const trade = {
+          amountIn: data.amounts[0],
+          amountOut: data.amounts[data.amounts.length - 1],
+          amounts: data.amounts,
+          path: data.path,
+          pathTokens: data.path.map((pathAddress) => {
+            return (
+              Tokens.find((token) => token.address === pathAddress) ||
+              Tokens[0]
+            );
+          }),
+          adapters: data.adapters,
+        };
+        setTradeInfo(trade);
       } else {
         setAmountOut("0");
         setTradeInfo(undefined);
       }
+    } else {
+      setAmountOut("0");
+      setTradeInfo(undefined);
+      setPath([selectedTokenA.address, selectedTokenB.address])
     }
-  }, [data, error])
+  }, [data, error]);
 
   useEffect(() => {
-    quoteRefresh()
-  }, [amountIn, selectedTokenA, selectedTokenB])
+    quoteRefresh();
+  }, [amountIn, selectedTokenA, selectedTokenB]);
 
   const confirmSwap = async () => {
     await swapTokens(
@@ -141,7 +146,7 @@ const Emp = ({ setPadding }) => {
       address,
       tradeInfo
     );
-  }
+  };
 
   return (
     <>
@@ -264,7 +269,14 @@ const Emp = ({ setPadding }) => {
             </div>
           </div>
         </div>
-        <img src={Ar} alt="Ar" className="mx-auto mt-6" />
+        <div className="cursor-pointer" onClick={() => {
+          const _tokenA = selectedTokenA;
+          const _tokenB = selectedTokenB;
+          setSelectedTokenA(_tokenB);
+          setSelectedTokenB(_tokenA);
+        }}>
+          <img src={Ar} alt="Ar" className="mx-auto mt-6" />
+        </div>
         <div className="flex justify-between gap-3 items-center">
           <div className="text-zinc-200 text-base font-normal roboto leading-normal">Receive</div>
           <div className="text-center">
@@ -354,7 +366,7 @@ const Emp = ({ setPadding }) => {
               <img src={Info} alt="Info" />
             </div>
             <div className="text-right text-white text-[12px] font-normal roboto leading-none">
-              0.28 PLS
+              {feeData && feeData.data && feeData.data.amounts && feeData.data.amounts.length > 0 ? feeData.data.amounts[feeData.data.amounts.length - 1] : 0} PLS
             </div>
           </div>
           <div className="flex justify-between gap-2 items-center mt-2">

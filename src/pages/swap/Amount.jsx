@@ -127,7 +127,7 @@ const Amount = ({ onClose, amountIn, amountOut, tokenA, tokenB, refresh, confirm
                 <img src={Info} alt="Info" />
               </div>
               <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                0.28 PLS
+                {(amountIn * 0.0028).toFixed(6)} {tokenA.ticker}
               </div>
             </div>
             <button
