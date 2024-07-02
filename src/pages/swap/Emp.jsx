@@ -168,11 +168,11 @@ const Emp = ({ setPadding }) => {
           </div>
           <div
             onClick={() => {
-              setOrder(true);
-              setPadding("md:pb-[160px] pb-10");
+              // setOrder(true);
+              // setPadding("md:pb-[160px] pb-10");
             }}
-            className={`${order ? "border-[#FF9900]" : "border-[#3b3c4e]"
-              } cursor-pointer md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
+            className={`${order ? "border-[#FF9900]" : "border-[#3b3c4e] opacity-50 cursor-not-allowed"
+              }  md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
           >
             LIMIT ORDER
           </div>
