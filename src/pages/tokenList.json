@@ -28,7 +28,7 @@
         "ticker": "DAI",
         "address": "0xefD766cCb38EaF1dfd701853BFCe31359239F305",
         "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
-        "decimal": "18",
+        "decimal": "6",
         "featured": true
     },
     {
@@ -52,7 +52,7 @@
         "ticker": "pDAI",
         "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
         "image": "https://tokens.app.pulsex.com/images/tokens/0x6B175474E89094C44Da98b954EedeAC495271d0F.png",
-        "decimal": "18",
+        "decimal": "6",
         "featured": true
     },
     {
@@ -76,7 +76,7 @@
         "ticker": "eUSDC",
         "address": "0x15D38573d2feeb82e7ad5187aB8c1D52810B1f07",
         "image": "https://tokens.app.pulsex.com/images/tokens/0x15D38573d2feeb82e7ad5187aB8c1D52810B1f07.png",
-        "decimal": "18",
+        "decimal": "6",
         "featured": true
     },
     {
@@ -84,7 +84,7 @@
         "ticker": "eUSDT",
         "address": "0x0Cb6F5a34ad42ec934882A05265A7d5F59b51A2f",
         "image": "https://tokens.app.pulsex.com/images/tokens/0x0Cb6F5a34ad42ec934882A05265A7d5F59b51A2f.png",
-        "decimal": "18",
+        "decimal": "6",
         "featured": true
     },
     {
@@ -92,7 +92,7 @@
         "ticker": "pUSDC",
         "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         "image": "https://tokens.app.pulsex.com/images/tokens/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48.png",
-        "decimal": "18",
+        "decimal": "6",
         "featured": true
     },
     {
@@ -188,7 +188,7 @@
         "ticker": "sDAI",
         "address": "0x30FCB23A906493371b1721C8feb8815804808D74",
         "image": "https://fleek.ipfs.io/ipfs/bafybeieu36uvp3wgss2fbkwsbqwrpa24i3fzyocueax4yjrvkh2cegzmji",
-        "decimal": "18",
+        "decimal": "6",
         "featured": true
     },
     {
@@ -322,6 +322,7 @@
     {
         "name": "Tether USD - pulsechain",
         "ticker": "pUSDT",
+        "decimal": "6",
         "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
         "image": "https://tokens.app.pulsex.com/images/tokens/0xdAC17F958D2ee523a2206206994597C13D831ec7.png",
         "featured": true
