@@ -338,7 +338,7 @@ const Emp = ({ setPadding }) => {
           onClick={() => setAmountVisible(true)}
           className="w-full h-14 flex justify-center items-center rounded-xl bg-[#FF9900] roboto text-black text-base font-bold border hover:text-[#FF9900] border-[#FF9900] hover:bg-transparent"
         >
-          {quoteLoading ? "Loading..." : "Confirm Order"}
+          {quoteLoading ? "Loading..." : selectedTokenA.address === EMPTY_ADDRESS && selectedTokenB.address === WETH_ADDRESS ? "Wrap PLS" : selectedTokenA.address === WETH_ADDRESS && selectedTokenB.address === EMPTY_ADDRESS ? "Unwrap WPLS" : "Swap"}
         </button>
         <div className="md:max-w-[403px] w-full mx-auto my-5 h-px relative bg-gray-700" />
         <div className="px-1 w-full mx-auto">
@@ -369,7 +369,7 @@ const Emp = ({ setPadding }) => {
               {feeData && feeData.data && feeData.data.amounts && feeData.data.amounts.length > 0 ? feeData.data.amounts[feeData.data.amounts.length - 1] : 0} PLS
             </div>
           </div>
-          <div className="flex justify-between gap-2 items-center mt-2">
+          {/* <div className="flex justify-between gap-2 items-center mt-2">
             <div className="text-gray-400 text-[12px] font-normal roboto leading-none flex gap-1 items-center">
               Contract Spender
               <img src={Info} alt="Info" />
@@ -379,7 +379,7 @@ const Emp = ({ setPadding }) => {
                 0xC472...488c
               </div>
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
       <div aria-label="Modal">

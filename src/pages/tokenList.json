@@ -48,14 +48,6 @@
         "featured": true
     },
     {
-        "name": "DAI pulsechain",
-        "ticker": "pDAI",
-        "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-        "image": "https://tokens.app.pulsex.com/images/tokens/0x6B175474E89094C44Da98b954EedeAC495271d0F.png",
-        "decimal": "6",
-        "featured": true
-    },
-    {
         "name": "HEX pulsechain",
         "ticker": "pHEX",
         "address": "0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39",
@@ -88,14 +80,6 @@
         "featured": true
     },
     {
-        "name": "USDC - pulsechain",
-        "ticker": "pUSDC",
-        "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-        "image": "https://tokens.app.pulsex.com/images/tokens/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48.png",
-        "decimal": "6",
-        "featured": true
-    },
-    {
         "name": "PermaGIFF",
         "ticker": "pGIFF",
         "address": "0x8fC70fd5F10Cd5494EB369b0737CefD22eB33F17",
@@ -124,14 +108,6 @@
         "ticker": "9INCH",
         "address": "0x3ca80d83277e721171284667829c686527B8b3c5",
         "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x3ca80d83277e721171284667829c686527b8b3c5.png?size=lg&key=c35f65",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Wrapped BTC - pulsechain",
-        "ticker": "pWBTC",
-        "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-        "image": "https://tokens.app.pulsex.com/images/tokens/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599.png",
         "decimal": "18",
         "featured": true
     },
@@ -176,22 +152,6 @@
         "featured": true
     },
     {
-        "name": "Wrapped ETH - pulsechain",
-        "ticker": "pWETH",
-        "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-        "image": "https://tokens.app.pulsex.com/images/tokens/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2.png",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "sDAI",
-        "ticker": "sDAI",
-        "address": "0x30FCB23A906493371b1721C8feb8815804808D74",
-        "image": "https://fleek.ipfs.io/ipfs/bafybeieu36uvp3wgss2fbkwsbqwrpa24i3fzyocueax4yjrvkh2cegzmji",
-        "decimal": "6",
-        "featured": true
-    },
-    {
         "name": "Wrapped BTC - ethereum",
         "ticker": "eWBTC",
         "address": "0xb17D901469B9208B17d916112988A3FeD19b5cA1",
@@ -204,14 +164,6 @@
         "ticker": "DWB",
         "address": "0xAEbcD0F8f69ECF9587e292bdfc4d731c1abedB68",
         "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0xaebcd0f8f69ecf9587e292bdfc4d731c1abedb68.png?size=lg&key=7d8d24",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "NOPE",
-        "ticker": "NOPE",
-        "address": "0x8D36123903f504eB81eEB832727af517c0db26bD",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x8d36123903f504eb81eeb832727af517c0db26bd.png?size=lg&key=708bfa",
         "decimal": "18",
         "featured": true
     },
@@ -264,30 +216,6 @@
         "featured": true
     },
     {
-        "name": "The Grays Currency",
-        "ticker": "pTGC",
-        "address": "0x94534EeEe131840b1c0F61847c572228bdfDDE93",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x94534eeee131840b1c0f61847c572228bdfdde93.png?size=lg&key=faa5fe",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "DaiHard",
-        "ticker": "HARD",
-        "address": "0xB6Bad00525221EB28Eb911a0B1162a0709b4CE57",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0xb6bad00525221eb28eb911a0b1162a0709b4ce57.png?size=lg&key=55a2fc",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "USDEX+",
-        "ticker": "USDEX+",
-        "address": "0xaA2C47a35C1298795B5271490971Ec4874C8e53d",
-        "image": "https://fleek.ipfs.io/ipfs/bafybeid3jvkv6c3jgokdk6uncst3ru23tzq73yyloei5vbduj46ecwbrwq",
-        "decimal": "18",
-        "featured": true
-    },
-    {
         "name": "SCUBA STEVE",
         "ticker": "TEVE",
         "address": "0x5FE90464eD06B809D3f8888aD12e98346E409d4D",
@@ -304,27 +232,11 @@
         "featured": true
     },
     {
-        "name": "HEXDC Stablecoin",
-        "ticker": "HEXDC",
-        "address": "0x1FE0319440A672526916C232EAEe4808254Bdb00",
-        "image": "https://cdn.dexscreener.com/fetch?src=https%3A%2F%2Fassets.coingecko.com%2Fcoins%2Fimages%2F37817%2Flarge%2FHEXDC_200x200.png%3F1715660215",
-        "decimal": "18",
-        "featured": true
-    },
-    {
         "name": "DickWifPump",
         "ticker": "DWP",
         "address": "0x424E38032E9D3BfD0A72f837B4d930A6831D11c6",
         "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x424e38032e9d3bfd0a72f837b4d930a6831d11c6.png?size=lg&key=e09b43",
         "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Tether USD - pulsechain",
-        "ticker": "pUSDT",
-        "decimal": "6",
-        "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-        "image": "https://tokens.app.pulsex.com/images/tokens/0xdAC17F958D2ee523a2206206994597C13D831ec7.png",
         "featured": true
     },
     {
@@ -348,14 +260,6 @@
         "ticker": "PXDC",
         "address": "0xeB6b7932Da20c6D7B3a899D5887d86dfB09A6408",
         "image": "https://tokens.app.pulsex.com/images/tokens/0xeB6b7932Da20c6D7B3a899D5887d86dfB09A6408.png",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "HEXFIREIO",
-        "ticker": "FIRE",
-        "address": "0xf330cb1d41052dbC74D3325376Cb82E99454e501",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0xf330cb1d41052dbc74d3325376cb82e99454e501.png?size=lg&key=eecb92",
         "decimal": "18",
         "featured": true
     },
