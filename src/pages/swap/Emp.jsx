@@ -8,13 +8,12 @@ import Info from "../../assets/images/info.svg";
 import { Link } from "react-router-dom";
 import Amount from "./Amount";
 import Token from "./Token";
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount, useReadContract, useWatchBlocks } from "wagmi";
 import { RouterABI } from "./routerAbi";
 import { formatUnits } from "viem";
 import Tokens from "../tokenList.json";
 import { swapTokens } from '../../utils/contractCalls';
 import { useStore } from '../../redux/store/routeStore';
-import Chart from 'chart.js/auto';
 
 const Emp = ({ setPadding }) => {
   const [isAmountVisible, setAmountVisible] = useState(false);
@@ -51,8 +50,10 @@ const Emp = ({ setPadding }) => {
     setTokenVisible(false);
   };
 
-  const convertToBigInt = (amount, decimal) => {
-    return BigInt(amount * 10 ** decimal);
+  const convertToBigInt = (amount, decimals) => {
+    const parsedAmountIn = BigInt(Math.floor(amount * Math.pow(10, 6)));
+    if (decimals >= 6) return parsedAmountIn * BigInt(10) ** BigInt(decimals - 6);
+    else return parsedAmountIn / BigInt(10) ** BigInt(6 - decimals);
   };
 
   const { data, isLoading: quoteLoading, refetch: quoteRefresh, error } = useReadContract({
@@ -60,7 +61,7 @@ const Emp = ({ setPadding }) => {
     address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
     functionName: "findBestPath",
     args: [
-      amountIn && selectedTokenA && parseFloat(amountIn) ? convertToBigInt(parseFloat(amountIn), 18) : BigInt(0),
+      amountIn && selectedTokenA && parseFloat(amountIn) ? convertToBigInt(parseFloat(amountIn), parseInt(selectedTokenA.decimal)) : BigInt(0),
       selectedTokenA?.address === EMPTY_ADDRESS ? WETH_ADDRESS : selectedTokenA?.address,
       selectedTokenB?.address === EMPTY_ADDRESS ? WETH_ADDRESS : selectedTokenB?.address,
       BigInt("3")
@@ -72,12 +73,19 @@ const Emp = ({ setPadding }) => {
     address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
     functionName: "findBestPath",
     args: [
-      BigInt(1),
+      convertToBigInt(1, parseInt(selectedTokenA.decimal)),
       selectedTokenA?.address === EMPTY_ADDRESS ? WETH_ADDRESS : selectedTokenA?.address,
       selectedTokenB?.address === EMPTY_ADDRESS ? WETH_ADDRESS : selectedTokenB?.address,
       BigInt("3")
     ],
   });
+
+  useWatchBlocks({
+    onBlock(block) {
+      singleTokenRefresh()
+      quoteRefresh()
+    },
+  })
 
   const { data: feeData } = useReadContract({
     abi: RouterABI,
@@ -93,6 +101,7 @@ const Emp = ({ setPadding }) => {
 
   useEffect(() => {
     if (data && data.amounts && data.amounts.length > 0) {
+      console.log(data);
       if (selectedTokenB) {
         setRoute(data.path);
         if (
@@ -334,9 +343,13 @@ const Emp = ({ setPadding }) => {
         </div>
         <div className="flex justify-center items-center gap-2 my-4">
           <div className="text-white text-base font-normal roboto leading-normal">
-            1 {selectedTokenA.name} = {singleToken && singleToken.amounts && singleToken.amounts[singleToken.amounts.length - 1] ? parseFloat(singleToken.amounts[singleToken.amounts.length - 1].toString()).toFixed(6) : "0"} {selectedTokenB.ticker}
+            1 {selectedTokenA.ticker} = {singleToken && singleToken.amounts && singleToken.amounts[singleToken.amounts.length - 1] ? parseFloat(formatUnits(singleToken.amounts[singleToken.amounts.length - 1], parseInt(selectedTokenB.decimal))).toFixed(6) : "0"} {selectedTokenB.ticker}
           </div>
-          <div className="cursor-pointer" onClick={() => singleTokenRefresh()}>
+          <div className="cursor-pointer" onClick={() => {
+            singleTokenRefresh()
+            quoteRefresh()
+          }}
+          >
             <img src={Refresh} alt="Refresh" />
           </div>
         </div>
