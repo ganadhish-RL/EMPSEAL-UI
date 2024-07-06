@@ -14,6 +14,7 @@ import { formatUnits } from "viem";
 import Tokens from "../tokenList.json";
 import { swapTokens } from '../../utils/contractCalls';
 import { useStore } from '../../redux/store/routeStore';
+import Chart from 'chart.js/auto';
 
 const Emp = ({ setPadding }) => {
   const [isAmountVisible, setAmountVisible] = useState(false);
@@ -30,8 +31,12 @@ const Emp = ({ setPadding }) => {
   const { address } = useAccount();
   const [fees, setFees] = useState(0);
 
-  function setPath(path) {
+  function setRoute(path) {
     useStore.setState({ route: path });
+  }
+
+  function setPath(path) {
+    useStore.setState({ path: path });
   }
 
   const WETH_ADDRESS = "0xa1077a294dde1b09bb078844df40758a5d0f9a27";
@@ -89,12 +94,12 @@ const Emp = ({ setPadding }) => {
   useEffect(() => {
     if (data && data.amounts && data.amounts.length > 0) {
       if (selectedTokenB) {
-        setPath(data.path);
+        setRoute(data.path);
         if (
           (selectedTokenA?.address === EMPTY_ADDRESS && selectedTokenB?.address === WETH_ADDRESS) ||
           (selectedTokenA?.address === WETH_ADDRESS && selectedTokenB?.address === EMPTY_ADDRESS)
         ) {
-          setPath([selectedTokenA.address, selectedTokenB.address]);
+          setRoute([selectedTokenA.address, selectedTokenB.address]);
           setAmountOut(amountIn);
         } else {
           setAmountOut(
@@ -125,12 +130,13 @@ const Emp = ({ setPadding }) => {
     } else {
       setAmountOut("0");
       setTradeInfo(undefined);
-      setPath([selectedTokenA.address, selectedTokenB.address])
+      setRoute([selectedTokenA.address, selectedTokenB.address])
     }
   }, [data, error]);
 
   useEffect(() => {
     quoteRefresh();
+    setPath([selectedTokenA.address, selectedTokenB.address])
   }, [amountIn, selectedTokenA, selectedTokenB]);
 
   const confirmSwap = async () => {

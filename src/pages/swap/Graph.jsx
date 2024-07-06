@@ -1,8 +1,55 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Refresh from "../../assets/images/refresh.svg";
 import Highlight from "../../assets/images/highlight.png";
+import { useStore } from '../../redux/store/routeStore';
+import axios from 'axios';
+import { Chart } from "chart.js";
+
 // import Busd from "./BusdGraph";
 const Graph = ({ padding }) => {
+
+  const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
+  const path = useStore((state) => state.path)
+
+  useEffect(() => {
+    console.log(path)
+    getGraph()
+  }, [path])
+
+  const getGraph = async () => {
+
+
+
+    if (path[0] === EMPTY_ADDRESS) {
+      const pairInfo = await axios.get('https://api.dexscreener.com/latest/dex/tokens/' + path[1]);
+      console.log(pairInfo)
+      let pairAddress = pairInfo.data.pairs[0].pairAddress;
+      for (let i = 0; i < pairInfo.data.pairs.length; i++) {
+        if (pairInfo.data.pairs[i].quoteToken.symbol === "PLSX") {
+          pairAddress = pairInfo.data.pairs[i].pairAddress;
+          break;
+        }
+      }
+      const response = await axios.get(`https://api.dexscreener.com/latest/pair/${pairAddress}`);
+      console.log(response.data)
+    } else {
+      const pairInfo = await axios.get('https://api.dexscreener.com/latest/dex/tokens/' + path[0]);
+      console.log(pairInfo)
+      let pairAddress = pairInfo.data.pairs[0].pairAddress;
+      for (let i = 0; i < pairInfo.data.pairs.length; i++) {
+        if (pairInfo.data.pairs[i].quoteToken.symbol === "PLSX") {
+          pairAddress = pairInfo.data.pairs[i].pairAddress;
+          break;
+        }
+      }
+      const response = await axios.get(`https://api.dexscreener.com/latest/pair/${pairAddress}`);
+      console.log(response.data)
+    }
+
+    console.log(response.data)
+  }
+
+
   return (
     <>
       <div
@@ -57,7 +104,6 @@ const Graph = ({ padding }) => {
         {/* <div>
           <Busd />
         </div> */}
-        <img src={Highlight} alt="Highlight" className="w-full mt-8" />
       </div>
     </>
   );
