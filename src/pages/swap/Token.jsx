@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import Arrow from "../../assets/icons/downarrow.svg";
 import Tokens from "../tokenList.json";
 
 const Token = ({ onClose, onSelect }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredTokens = Tokens.filter((token) =>
+    token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    token.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    token.address.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <div className="bg-black bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full my-auto fixed top-0 px-4 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
@@ -35,6 +43,8 @@ const Token = ({ onClose, onSelect }) => {
                 type="text"
                 placeholder="Search token name or paste address"
                 className="bg-neutral-950 rounded-[4.83px] h-[43px] text-white md:max-w-[490px] w-full px-5 outline-none border-none text-white/opacity-70 text-sm font-normal roboto leading-tight tracking-wide"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <svg
                 className="flex flex-shrink-0 cursor-pointer"
@@ -57,7 +67,7 @@ const Token = ({ onClose, onSelect }) => {
                 </p>
                 <img src={Arrow} alt="Arrow" />
               </div>
-              {Tokens.map((item, index) => {
+              {filteredTokens.map((item, index) => {
                 return (
                   <div
                     key={index}

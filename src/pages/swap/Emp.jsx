@@ -104,8 +104,9 @@ const Emp = ({ setPadding }) => {
   });
 
   useEffect(() => {
+    console.log('quote data', data)
     if (data && data.amounts && data.amounts.length > 0) {
-      console.log(data);
+      console.log("quote data", data);
       if (selectedTokenB) {
         setRoute(data.path);
         setAdapter(data.adapters);
