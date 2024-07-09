@@ -4,16 +4,19 @@ import Bi from "../../assets/images/bi.png";
 import Arrow from "../../assets/images/icon-wrapper.png";
 import Line from "../../assets/images/Line 106.png";
 import tokens from "../tokenList.json";
+import adapters from "../adapters.json";
 import { useStore } from '../../redux/store/routeStore';
 
 const Routing = ({ routing }) => {
 
 
   const route = useStore((state) => state.route)
+  const adapter = useStore((state) => state.adapter)
 
   useEffect(() => {
     console.log(route)
-  }, [route])
+    console.log(adapter)
+  }, [route, adapter])
 
   const getImage = (item) => {
     for (let i = 0; i < tokens.length; i++) {
@@ -22,6 +25,14 @@ const Routing = ({ routing }) => {
       }
     }
   };
+
+  const getAdapter = (item) => {
+    for (let i = 0; i < adapters.length; i++) {
+      if (adapters[i].address === item) {
+        return adapters[i].name
+      }
+    }
+  }
 
 
   return (
@@ -43,7 +54,13 @@ const Routing = ({ routing }) => {
               :
               <>
                 <img className="w-6 h-6" src={getImage(item)} alt="Eth" />
-                <img src={Arrow} alt="Arrow" />
+                <div className="flex flex-col gap-2">
+
+                  <div className="flex flex-col gap-4">
+                    <img src={Arrow} alt="Arrow" />
+                    <p className="text-white text-[10px] font-bold roboto">{getAdapter(adapter[index])}</p>
+                  </div>
+                </div>
               </>
           ))}
           {/* <img src={Arrow} alt="Arrow" />

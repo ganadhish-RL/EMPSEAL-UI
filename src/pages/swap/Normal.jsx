@@ -29,14 +29,11 @@ const Normal = () => {
             </div>
           </div>
         </div>
-        <div className="md:max-w-[1030px] mx-auto w-full px-4 flex justify-center xl:gap-9 gap-4 items-start mt-1 md:flex-nowrap flex-wrap h-full">
-          {/* <div className="md:max-w-[470px] w-full h-full">
-            <Graph />
-          </div> */}
+        {/* <div className="md:max-w-[1030px] mx-auto w-full px-4 flex justify-center xl:gap-9 gap-4 items-start mt-1 md:flex-nowrap flex-wrap h-full">
           <div className="w-full h-full">
             <Table />
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

@@ -38,6 +38,10 @@ const Emp = ({ setPadding }) => {
     useStore.setState({ path: path });
   }
 
+  function setAdapter(adapter) {
+    useStore.setState({ adapter: adapter });
+  }
+
   const WETH_ADDRESS = "0xa1077a294dde1b09bb078844df40758a5d0f9a27";
   const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -104,11 +108,13 @@ const Emp = ({ setPadding }) => {
       console.log(data);
       if (selectedTokenB) {
         setRoute(data.path);
+        setAdapter(data.adapters);
         if (
           (selectedTokenA?.address === EMPTY_ADDRESS && selectedTokenB?.address === WETH_ADDRESS) ||
           (selectedTokenA?.address === WETH_ADDRESS && selectedTokenB?.address === EMPTY_ADDRESS)
         ) {
           setRoute([selectedTokenA.address, selectedTokenB.address]);
+          setAdapter([]);
           setAmountOut(amountIn);
         } else {
           setAmountOut(

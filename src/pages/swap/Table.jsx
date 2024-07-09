@@ -20,7 +20,7 @@ const Table = () => {
           </div>
         </div>
         {/* <div className="md:pr-3 pr-2"> */}
-        <div className="mt-6 px-4 overflow-x-auto whitespace-nowrap w-full">
+        <div className="mt-6 px-4 overflow-x-auto whitespace-nowrap w-full ">
           <div className="flex justify-between items-center">
             <p className="w-[142px] text-white text-center md:text-base text-xs font-bold roboto leading-normal">
               Paid

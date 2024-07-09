@@ -1,0 +1,38 @@
+[
+    {
+        "name": "pulsex",
+        "address": "0x842e05D2cAF940B25d7B7Db291ABDc88748d7F90"
+    },
+    {
+        "name": "9MM",
+        "address": "0xb6a9140DaeBE265708785B093C0Ef561eEf26159"
+    },
+    {
+        "name": "9Inch",
+        "address": "0x9e4c7d76b1b16C146C0206C86DB665c216C2d6f9"
+    },
+    {
+        "name": "dextop",
+        "address": "0x34FD3c37c2A40e925744e102d2Cae83635CC64C3"
+    },
+    {
+        "name": "sparkswap",
+        "address": "0x750C4d709262727Ba56c5A6A99D4DCE32967F0c4"
+    },
+    {
+        "name": "eazyswap",
+        "address": "0x9C8667cFd275D8Ad7D25108d810e166586c7FABC"
+    },
+    {
+        "name": "9MMV3",
+        "address": "0x4c2191cd497B0e15AA331B38A57F4329A8E018C3"
+    },
+    {
+        "name": "uniswapV3",
+        "address": "0xcfE09D7f35131DAfebD12356C4f52b17f65Da2E5"
+    },
+    {
+        "name": "phuxV2",
+        "address": "0x75c2ECD91Ace705CdC4f6863c40C5E87b048c759"
+    }
+]
