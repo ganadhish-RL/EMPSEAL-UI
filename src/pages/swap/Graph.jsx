@@ -59,7 +59,7 @@ const Graph = ({ padding }) => {
       <div
         className={`w-full border-[2px] border-[#FF9900] rounded-xl py-4 bg-black ${padding}`}
       >
-        <div className="px-4 mt-2">
+        {/* <div className="px-4 mt-2">
           <div className="w-[142px] h-[24px] border border-[#FF9900] rounded-[8px] flex">
             <div className="w-[32px] h-[22px] italic roboto rounded-l-md bg-[#FF9900] text-black text-[7.32px] font-bold flex justify-center items-center">
               3 M
@@ -83,8 +83,8 @@ const Graph = ({ padding }) => {
         </div>
         <div className="px-4 text-[#FF9900] text-xs font-medium roboto tracking-tight mt-1">
           $ 9784.79
-        </div>
-        <div className="flex gap-2 items-center mt-1 px-4">
+        </div> */}
+        {/* <div className="flex gap-2 items-center mt-1 px-4">
           <svg
             width={15}
             height={10}
@@ -103,11 +103,11 @@ const Graph = ({ padding }) => {
           <span className="text-[#00DEA3] text-[10px] font-medium roboto">
             7.2%
           </span>
-        </div>
+        </div> */}
 
         <Chart
           width={'100%'}
-          height={'150px'}
+          height={'100%'}
           chartType="LineChart"
           loader={<div>Loading Chart...</div>}
           data={ovhList}
