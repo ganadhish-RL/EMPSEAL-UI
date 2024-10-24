@@ -73,6 +73,9 @@ body {
     rgba(144, 104, 148, 0.2) 150%
   );
 }
+.h_grid_metallic {
+  background: linear-gradient(125.68deg, #080407 -26.24%, #442735 99.67%);
+}
 .h_grid1 {
   background: linear-gradient(180deg, #2f2f36 0%, #29292d 100%);
 }
@@ -92,6 +95,9 @@ body {
 }
 .h_grid5 {
   background: linear-gradient(180deg, #000002 0%, #09070f 53%, #7a537f 100%);
+}
+.h_grid6 {
+  background: linear-gradient(90deg, rgba(121, 140, 243, 0.02) 0%, #331b3a80 100%)
 }
 .wmo {
   writing-mode: vertical-rl;
@@ -149,6 +155,12 @@ body {
 }
 @media (max-width:1024px) and (min-width:768px) {
   .h_grid{
+    height: 390px!important;
+  }
+  .h_grid_metallic{
+    height: 800px!important;
+  }
+  .h_grid6 {
     height: 800px!important;
   }
   .mt260{

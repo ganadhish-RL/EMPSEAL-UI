@@ -1,19 +1,20 @@
-import React from "react";
-import Logo from "../../assets/images/emp-large-logo.png";
-import Logo1 from "../../assets/images/emp-main-logo.png";
-import Fire from "../../assets/images/fire.png";
-import Bracket from "../../assets/images/bracket.png";
-import Market from "../../assets/images/market.png";
-import Git from "../../assets/images/github.png";
-import Tx from "../../assets/images/tele.png";
-import X from "../../assets/images/x.png";
-import Master from "../../assets/images/master.png";
-import Star from "../../assets/images/star.png";
-import Cell from "../../assets/images/cell.gif";
-import Dia from "../../assets/images/diamond.png";
-import Stone from "../../assets/images/bridge.png";
-import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import React from 'react';
+import Logo from '../../assets/images/emp-large-logo.png';
+import Logo1 from '../../assets/images/emp-main-logo.png';
+import Fire from '../../assets/images/fire.png';
+import Metallic from '../../assets/images/metallic.png';
+import Bracket from '../../assets/images/bracket.png';
+import Market from '../../assets/images/market.png';
+import Git from '../../assets/images/github.png';
+import GB from '../../assets/images/gitbook.svg';
+import X from '../../assets/images/x.png';
+import Master from '../../assets/images/master.png';
+import Star from '../../assets/images/star.png';
+import Cell from '../../assets/images/cell.gif';
+import Dia from '../../assets/images/diamond.png';
+import Stone from '../../assets/images/bridge.png';
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const Home = () => {
   return (
@@ -35,35 +36,67 @@ const Home = () => {
       {/*  */}
       <div className="bg-[#121214] py-3 relative">
         <div className="2xl:max-w-[1536px] md:max-w-[1036px] mx-auto w-full px-4 flex justify-center xl:gap-9 gap-4 items-start 2xl:py-10 py-2 md:flex-nowrap flex-wrap">
-          <div className="xl:max-w-[370px] lg:max-w-[300px] md:max-w-[220px] w-full py-10 px-3 flex flex-col justify-between items-center border-[#C71328] border h_grid rounded-3xl 2xl:h-[780px] md:h-[570px] relative">
-            <div>
-              <img
-                src={Logo}
-                alt="Logo"
-                className="mt-10 relative lg:top-10 lg:w-[235px] w-[150px] mb-4"
-              />
-              {/* <div className="text-center text-white text-xs font-light">
+          <div className="xl:max-w-[370px] lg:max-w-[300px] md:max-w-[220px] w-full md:mt-0 mt-10">
+            <div className=" w-full py-10 px-3 flex flex-col items-center border-[#C71328] border h_grid rounded-3xl 2xl:h-[474px] md:h-[570px] relative">
+              <div>
+                <img
+                  src={Logo}
+                  alt="Logo"
+                  className="mt-0 relative lg:top-0 lg:w-[235px] w-[150px] mb-4"
+                />
+                {/* <div className="text-center text-white text-xs font-light">
                 MINT | STAKE
               </div> */}
-            </div>
-            <div>
-              <div className="text-center text-white md:text-[25px] text-xl font-bold">
-                Mint | Yield | Daas{" "}
               </div>
-              <div className="text-center text-white text-lg font-light mt-5">
-                An art and innovation intersect.{" "}
+              <div>
+                <div className="text-center text-white md:text-[25px] text-xl font-bold">
+                  Mint | Yield | Daas{' '}
+                </div>
+                <div className="text-center text-white text-lg font-light mt-3">
+                  An art and innovation intersect.{' '}
+                </div>
               </div>
-            </div>
-            {/* <div className="text-center text-white 2xl:text-[29.14px] text-lg font-bold wmo 2xl:h-[400px] md:h-[250px] h-[250px]">
+              {/* <div className="text-center text-white 2xl:text-[29.14px] text-lg font-bold wmo 2xl:h-[400px] md:h-[250px] h-[250px]">
               Innovating On-Chain Liquidity and Yield
             </div> */}
-            <div className="h-[150px]"></div>
-            <img
-              src={Fire}
-              alt="Fire"
-              className="absolute left-0 right-0 2xl:bottom-[-100px] bottom-[-85px] mx-auto 2xl:w-[369px] w-[300px]"
-            />
+              <div className="h-[150px]"></div>
+              <img
+                src={Fire}
+                alt="Fire"
+                className="absolute left-0 right-0 2xl:bottom-[-100px] bottom-[-85px] mx-auto 2xl:w-[369px] w-[300px]"
+              />
+            </div>
+            <div className="mt-14 w-full py-2 px-3 flex flex-col justify-between items-center border-[#895E8C] border h_grid_metallic rounded-3xl 2xl:h-[250px] md:h-[570px] relative bg-[#1B1B1F]">
+              <div className="absolute top-[-50px] 2xl:left-[-60px] left-[-10px]">
+                <img
+                  src={Metallic}
+                  alt="Metallic"
+                  className="w-[150px] md:w-[250px] 2xl:w-[200px]"
+                />
+              </div>
+              <div className="text-right w-full pr-1">
+                <img
+                  src={Logo}
+                  alt="Logo"
+                  className="mt-2 ms-auto lg:top-10 lg:w-[75px] w-[50px] mb-4"
+                />
+              </div>
+              <div className="text-center z-50">
+                <div className="text-white md:text-[36px] text-2xl font-bold text-end">
+                  Yield Optimizer
+                </div>
+                <div className="text-white text-sm md:text-base font-light mt-3 text-end 2xl:w-[310px]">
+                  A vault auto-compounding liquidity positions. Burnt LP
+                  optimization. Single click zap in and out of LPs.
+                </div>
+                <div className="text-white text-sm md:text-base font-light mt-4 text-end">
+                  Optimize any LP. Even Burnt.
+                </div>
+              </div>
+              <div className="h-[50px]"></div>
+            </div>
           </div>
+
           <div className="md:max-w-[370px] w-full md:mt-0 mt-10">
             <div className="w-full rounded-3xl border border-[#90A321] h_grid1 px-4 py-3 relative">
               <div className="w-[74px] h-[74px] rounded-full flex justify-center items-center bg-[#FFE500] absolute right-8 bottom-[-20px]">
@@ -71,7 +104,7 @@ const Home = () => {
               </div>
               <div className="bg-[#dee870] rounded-[35px] px-5 py-3 text-neutral-900 2xl:text-xl text-base font-medium lexend leading-[25px]">
                 Add <span className="font-bold">EMP X</span> | SWAP to your
-                products and earn <br className="2xl:block hidden" />{" "}
+                products and earn <br className="2xl:block hidden" />{' '}
                 transaction fees
               </div>
             </div>
@@ -92,13 +125,13 @@ const Home = () => {
             </div>
             <div className="w-full rounded-2xl border border-white black px-4 py-5 relative mt-8 flex gap-8 justify-center items-center h_grid2">
               <img src={Git} alt="Git" />
-              <img src={Tx} alt="Tx" />
+              <img className="h-[28px]" src={GB} alt="Git Book" />
               <img src={X} alt="X" />
               <img src={Master} alt="Master" />
             </div>
-            <div className="w-full rounded-2xl border border-white black px-4 py-6 relative mt-8 flex gap-8 justify-center items-center h_grid2">
-              <div className="text-center text-white text-base font-normal leading-[14px]">
-                DOCUMENTATION
+            <div className="w-full rounded-2xl border border-white black px-4 py-6 relative mt-8 flex gap-8 justify-center items-center h_grid6">
+              <div className="text-center text-white text-base font-bold leading-[14px]">
+              MULTI SIGNATURE SAFE
               </div>
             </div>
           </div>
@@ -164,11 +197,7 @@ const Home = () => {
                   </span>
                   <span className="text-white text-sm font-light">| </span>
                   <span className="text-white text-xs font-light">SWAP</span> */}
-                  <img
-                    src={Logo1}
-                    alt="Logo1"
-                    className="w-[125px] h-12 object-contain"
-                  />
+                
                   {/* </Link> */}
                 </div>
                 {/* <Link to="/swap"> */}
@@ -192,6 +221,11 @@ const Home = () => {
                     Orders.
                   </div>
                 </div>
+                <img
+                    src={Logo1}
+                    alt="Logo1"
+                    className="w-[125px] h-12 object-contain mx-auto"
+                  />
                 {/* </Link> */}
               </div>
             </Link>
@@ -203,7 +237,7 @@ const Home = () => {
               />
               <div className="relative z-50">
                 <div className="text-white 2xl:text-[21.90px] lg:text-base text-[21.90px] font-extrabold">
-                  DASHBOARD{" "}
+                  DASHBOARD{' '}
                 </div>
                 <div className="text-white 2xl:text-sm lg:text-xs text-sm font-extralight mt-2">
                   Protocol & Market Analysis
@@ -212,7 +246,7 @@ const Home = () => {
                   All-Time Volume
                 </div>
                 <div className="text-white 2xl:text-3xl lg:text-xl text-3xl font-bold">
-                  $ 445 m{" "}
+                  $ 445 m{' '}
                 </div>
                 <div className="2xl:mt-4 lg:mt-1 mt-4 text-gray-300 text-xs font-normal">
                   Total Users
