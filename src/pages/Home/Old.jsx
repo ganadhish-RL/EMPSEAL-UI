@@ -12,7 +12,7 @@ import Cell from "../../assets/images/cell.gif";
 import Dia from "../../assets/images/diamond.png";
 import Stone from "../../assets/images/bridge.png";
 import { Link } from "react-router-dom";
-const Home = () => {
+const Old = () => {
   return (
     <>
       <div className="bg-[#121214] py-3 relative">
@@ -178,4 +178,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Old;
