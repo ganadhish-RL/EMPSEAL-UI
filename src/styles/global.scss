@@ -145,6 +145,17 @@ body {
   cursor: pointer;
 }
 
+.border_gradient {
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(to right, #FF9900, #FFFFFF) 0.5;
+  border-radius: 10px;
+}
+
+.top_seller {
+  background: linear-gradient(180deg, rgba(69, 64, 64, 0) 9.41%, #ff9900d1 194.53%);
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0%);

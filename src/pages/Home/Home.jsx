@@ -98,6 +98,7 @@ const Home = () => {
           </div>
 
           <div className="md:max-w-[370px] w-full md:mt-0 mt-10">
+            
             <div className="w-full rounded-3xl border border-[#90A321] h_grid1 px-4 py-3 relative">
               <div className="w-[74px] h-[74px] rounded-full flex justify-center items-center bg-[#FFE500] absolute right-8 bottom-[-20px]">
                 <img src={Bracket} alt="Bracket" />
@@ -108,6 +109,7 @@ const Home = () => {
                 transaction fees
               </div>
             </div>
+            <Link to="/nft-marketplace">
             <div className="w-full rounded-3xl border border-white black px-4 py-3 relative mt-10 flex flex-col justify-center items-center">
               <div className="absolute left-0 right-0 top-0 bottom-0 mx-auto my-auto px-5 py-5 h-full">
                 <img src={Market} alt="Market" className="w-full h-full" />
@@ -123,6 +125,7 @@ const Home = () => {
               </div>
               <div className="mt260 opacity-0 text-black 2xl:text-[26px] md:text-base text-lg font-normal leading-[30px] roboto relative z-50 2xl:left-[-30px] lg:left-[-40px] md:left-[-70px] left-[-50px] 2xl:mt-[220px] top-[-20px] lg:mt-[50px] mt-[160px]"></div>
             </div>
+            </Link>
             <div className="w-full rounded-2xl border border-white black px-4 py-5 relative mt-8 flex gap-8 justify-center items-center h_grid2">
               <img src={Git} alt="Git" />
               <img className="h-[28px]" src={GB} alt="Git Book" />

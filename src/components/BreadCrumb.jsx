@@ -5,6 +5,9 @@ const BreadCrumb = () => {
   const location = useLocation();
   const pathnames = location.pathname.split('/').filter((x) => x);
 
+  // Helper function to format the breadcrumb text
+  const formatBreadcrumb = (text) => text.replace(/-/g, '_').toUpperCase();
+
   return (
     <nav aria-label="breadcrumb">
       <ol className="breadcrumb">
@@ -20,11 +23,11 @@ const BreadCrumb = () => {
           const isLast = index === pathnames.length - 1;
           return isLast ? (
             <li className="breadcrumb-item active text-white" key={to} aria-current="page">
-              {value}
+              {formatBreadcrumb(value)}
             </li>
           ) : (
             <li className="breadcrumb-item" key={to}>
-              <Link to={to}>{value}</Link>
+              <Link to={to}>{formatBreadcrumb(value)}</Link>
               <span> &gt; </span> {/* Separator for intermediate segments */}
             </li>
           );
