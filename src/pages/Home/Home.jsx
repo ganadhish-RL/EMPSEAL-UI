@@ -204,31 +204,15 @@ const Home = () => {
                   {/* </Link> */}
                 </div>
                 {/* <Link to="/swap"> */}
-                <div className="px-10 pt-2 w-[200px]">
-                  <div className="text-white text-center 2xl:text-[17.42px] lg:text-sm text-lg font-extralight">
-                    The Most
-                  </div>
-                  <div className="text-white text-center 2xl:text-[17.42px] lg:text-sm text-lg font-extralight">
-                    Efficient
-                  </div>
-                  <div className="text-white text-center 2xl:text-[17.42px] lg:text-sm text-lg font-extralight">
-                    Aggregation
-                  </div>
-                  <div className="text-white text-center 2xl:text-[17.42px] lg:text-sm text-lg font-extralight">
-                    On-Chain
-                  </div>
-                  <div className="text-white text-center 2xl:text-[17.42px] lg:text-sm text-lg font-extralight">
-                    with Limit
-                  </div>
-                  <div className="text-white text-center 2xl:text-[17.42px] lg:text-sm text-lg font-extralight">
-                    Orders.
-                  </div>
-                </div>
+             
                 <img
                     src={Logo1}
                     alt="Logo1"
-                    className="w-[125px] h-12 object-contain mx-auto"
+                    className="w-[125px] h-16 object-contain mb-12"
                   />
+                  <div className="text-white  bg-[#3a383b] w-max px-4 py-2 rounded-full font-bold ms-5">
+                    <span>Swap</span><span className="px-4">Trade</span><span>Dca</span>
+                  </div>
                 {/* </Link> */}
               </div>
             </Link>

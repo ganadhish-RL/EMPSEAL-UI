@@ -17,6 +17,13 @@ html {
   width: 0px;
 }
 
+:root {
+  --table-bg: #222222;
+  --grey-text:#FFFFFF99;
+  --white: #ffff;
+
+}
+
 /* Track */
 ::-webkit-scrollbar-track {
   background: #000000;
@@ -33,6 +40,24 @@ html {
 }
 .tablescrool::-webkit-scrollbar {
   width: 4px;
+}
+
+.collection th{
+  background-color: var(--table-bg);
+  color: var(--grey-text);
+  font-weight: 400;
+  border: 0;
+  font-size: 12px;
+}
+
+.collection_row {
+  background-color: var(--table-bg);
+  color: var(--white);
+  font-size: 12px;
+}
+
+#table-search::placeholder {
+  font-size: 12px;
 }
 
 /* Track */
@@ -145,11 +170,32 @@ body {
   cursor: pointer;
 }
 
+
+
 .border_gradient {
-  border-width: 1px;
-  border-style: solid;
-  border-image: linear-gradient(to right, #FF9900, #FFFFFF) 0.5;
-  border-radius: 10px;
+  position: relative;
+  border-radius: 10px; /* Adjust radius as needed */
+  
+}
+.border_gradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 10px; /* Same as the main element’s border-radius */
+  padding: 0.5px; /* Adjust this to control border thickness */
+  background: linear-gradient(to right, #FF9900, #FFFFFF);
+  -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+  mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  z-index: 1;
 }
 
 .top_seller {
