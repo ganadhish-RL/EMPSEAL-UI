@@ -38,7 +38,7 @@ export default function WalletConnect() {
               if (!connected) {
                 return (
                   <button
-                    className="px-6 py-2 text-white rounded-md shadow-sm cursor-pointer bg-accent font-semibold"
+                    className="px-6 py-2 text-white rounded-md shadow-sm cursor-pointer bg-accent font-semibold roboto"
                     onClick={openConnectModal}
                     type="button"
                   >

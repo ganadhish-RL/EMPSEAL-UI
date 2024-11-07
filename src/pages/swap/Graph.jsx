@@ -108,7 +108,7 @@ const Graph = ({ padding }) => {
         <Chart
           width={'100%'}
           height={'100%'}
-          chartType="LineChart"
+          chartType="AreaChart"
           loader={<div>Loading Chart...</div>}
           data={ovhList}
           options={{

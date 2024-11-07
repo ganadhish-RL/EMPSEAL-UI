@@ -1,4 +1,5 @@
 import React from 'react';
+import Wallet from '../swap/Wallet';
 import Logo from '../../assets/images/logo_nft.png';
 import Fire from '../../assets/images/fire.png';
 import Bracket from '../../assets/images/bracket.png';
@@ -87,6 +88,9 @@ const NFTMarketplace = () => {
 
           <div className="md:max-w-[860px] w-full">
             <CollectionTable />
+            <div className="md:block hidden mt-8">
+              <Wallet />
+            </div>
           </div>
         </div>
       </div>

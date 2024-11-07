@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Icon from '../../src/assets/images/emp-icon.svg';
 import Chart from '../../src/assets/images/chart.svg';
 import Point from '../../src/assets/images/arrow-dot.svg';
+import CollectionImage from '../../src/assets/images/collection-img1.svg';
+import Price from '../../src/assets/images/price.svg';
 const CollectionTable = () => {
   const [data, setData] = useState([
     {
@@ -44,10 +46,171 @@ const CollectionTable = () => {
       volume: '149 (55%)',
       supply: 88,
     },
+    {
+      id: 5,
+      name: 'Kaus',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 6,
+      name: 'Sweatha',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 7,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 8,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 9,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 10,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 11,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 12,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 13,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 14,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 15,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 16,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 17,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 18,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 19,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
+    {
+      id: 20,
+      name: 'Shohini',
+      sales: 13.24,
+      floorPrice: 100,
+      topBid: 300,
+      change: 1,
+      volume: '149 (55%)',
+      supply: 88,
+    },
   ]);
 
   const [sortOrder, setSortOrder] = useState('asc');
   const [searchQuery, setSearchQuery] = useState('');
+  const [rowsToShow, setRowsToShow] = useState(10);
   const handleSort = () => {
     const sortedData = [...data].sort((a, b) => {
       return sortOrder === 'asc' ? a.sales - b.sales : b.sales - a.sales;
@@ -91,6 +254,10 @@ const CollectionTable = () => {
     });
     setData(sortedData);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+  };
+
+  const handleShowRows = (numRows) => {
+    setRowsToShow(numRows);
   };
 
   const filteredData = data.filter((item) =>
@@ -152,9 +319,11 @@ const CollectionTable = () => {
           />
         </div>
       </header>
-      <table className="w-full border-separate border-spacing-y-2">
+    
+      <table className="w-full border-separate border-spacing-y-2 relative z-10">
         <thead>
           <tr className="collection text-white roboto">
+        
             <th className="bg-[#222222] text-left py-2 px-4 border border-gray-700">
               Collection
             </th>
@@ -234,12 +403,12 @@ const CollectionTable = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((item) => (
+        {filteredData.slice(0, rowsToShow).map((item) => (
             <tr
               key={item.id}
-              className="border border-gray-700 collection_row roboto"
+              className="border border-gray-700 collection_row roboto "
             >
-              <td className="py-4 px-4">{item.name}</td>
+              <td className="py-4 px-4 flex items-center"><img className="pe-3" src={CollectionImage}/>{item.name}</td>
               <td className="text-center py-2 px-4">{item.floorPrice}K</td>
               <td className="text-center py-2 px-4">{item.topBid}K</td>
               <td className="text-center py-2 px-4 text-[#0CDD2E]">
@@ -260,6 +429,18 @@ const CollectionTable = () => {
           ))}
         </tbody>
       </table>
+      <div className="flex space-x-2 text-white mt-4 mb-4 relative z-10 roboto items-center">
+        <span className="text-xs opacity-60">Show Top</span>
+        {[10, 20, 30].map((num) => (
+          <button
+            key={num}
+            className={`px-3 py-1 text-xs  ${rowsToShow === num ? 'bg-[#3F3F3F] text-white' : 'bg-[#222222] text-gray-300'}`}
+            onClick={() => handleShowRows(num)}
+          >
+            {num}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
