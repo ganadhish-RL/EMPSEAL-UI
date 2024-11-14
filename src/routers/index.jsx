@@ -4,6 +4,7 @@ import Home from "../pages/Home/Main";
 import Swap from "../pages/swap/Main"
 import BreadCrumb from "../components/BreadCrumb";
 import NFTMarketplace from "../pages/Home/NFTMarketPlace";
+import CollectionDetail from "../components/CollectionDetail";
 function MyRoutes() {
   return (
     <>
@@ -14,6 +15,7 @@ function MyRoutes() {
           <Routes>
             <Route path="/" element={<Home></Home>}></Route>
             <Route path="/swap" element={<Swap></Swap>}></Route>
+            <Route path="/nft-marketplace/:name" element={<CollectionDetail />} />
             <Route path="/nft-marketplace" element={<NFTMarketplace></NFTMarketplace>}></Route>
           </Routes>
           </div>

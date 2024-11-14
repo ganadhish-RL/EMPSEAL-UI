@@ -4,6 +4,7 @@ import Chart from '../../src/assets/images/chart.svg';
 import Point from '../../src/assets/images/arrow-dot.svg';
 import CollectionImage from '../../src/assets/images/collection-img1.svg';
 import Price from '../../src/assets/images/price.svg';
+import { Link } from 'react-router-dom';
 const CollectionTable = () => {
   const [data, setData] = useState([
     {
@@ -264,6 +265,9 @@ const CollectionTable = () => {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const generateSlug = (name) => {
+    return name.toLowerCase().replace(/\s+/g, '-');
+  };
   return (
     <div className="collection-table-container border_gradient p-5 ">
       {/* Header Section */}
@@ -319,11 +323,10 @@ const CollectionTable = () => {
           />
         </div>
       </header>
-    
+
       <table className="w-full border-separate border-spacing-y-2 relative z-10">
         <thead>
           <tr className="collection text-white roboto">
-        
             <th className="bg-[#222222] text-left py-2 px-4 border border-gray-700">
               Collection
             </th>
@@ -403,12 +406,24 @@ const CollectionTable = () => {
           </tr>
         </thead>
         <tbody>
-        {filteredData.slice(0, rowsToShow).map((item) => (
+          {filteredData.slice(0, rowsToShow).map((item) => (
             <tr
               key={item.id}
               className="border border-gray-700 collection_row roboto "
             >
-              <td className="py-4 px-4 flex items-center"><img className="pe-3" src={CollectionImage}/>{item.name}</td>
+              <td className="py-4 px-4 flex items-center">
+                <img
+                  className="pe-3"
+                  src={CollectionImage}
+                  alt={`${item.name} logo`}
+                />
+                <Link
+                  to={`/nft-marketplace/${generateSlug(item.name)}`}
+                  className=""
+                >
+                  {item.name}
+                </Link>
+              </td>
               <td className="text-center py-2 px-4">{item.floorPrice}K</td>
               <td className="text-center py-2 px-4">{item.topBid}K</td>
               <td className="text-center py-2 px-4 text-[#0CDD2E]">
@@ -434,7 +449,11 @@ const CollectionTable = () => {
         {[10, 20, 30].map((num) => (
           <button
             key={num}
-            className={`px-3 py-1 text-xs  ${rowsToShow === num ? 'bg-[#3F3F3F] text-white' : 'bg-[#222222] text-gray-300'}`}
+            className={`px-3 py-1 text-xs  ${
+              rowsToShow === num
+                ? 'bg-[#3F3F3F] text-white'
+                : 'bg-[#222222] text-gray-300'
+            }`}
             onClick={() => handleShowRows(num)}
           >
             {num}

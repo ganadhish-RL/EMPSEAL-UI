@@ -28,8 +28,8 @@ const BreadCrumb = () => {
               {formatBreadcrumb(value)}
             </li>
           ) : (
-            <li className="breadcrumb-item" key={to}>
-              <Link to={to}>{formatBreadcrumb(value)}</Link>
+            <li className="breadcrumb-item text-[#FF9900] ps-2 pe-1" key={to}>
+              <Link className="pe-2" to={to}>{formatBreadcrumb(value)}</Link>
               <span> &gt; </span> {/* Separator for intermediate segments */}
             </li>
           );

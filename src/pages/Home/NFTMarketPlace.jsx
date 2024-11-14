@@ -15,6 +15,7 @@ import Stone from '../../assets/images/bridge.png';
 import User from '../../assets/images/user-nft.svg';
 import { Link } from 'react-router-dom';
 import UserCard from '../../components/UserCard';
+import Graph from '../swap/Graph';
 import CollectionTable from '../../components/CollectionTable';
 const NFTMarketplace = () => {
   const users = [
@@ -89,7 +90,12 @@ const NFTMarketplace = () => {
           <div className="md:max-w-[860px] w-full">
             <CollectionTable />
             <div className="md:block hidden mt-8">
-              <Wallet />
+              <div className="grid grid-cols-2 gap-6">
+                <div> <Wallet /></div>
+             <div><Graph /></div>
+
+              </div>
+              
             </div>
           </div>
         </div>
