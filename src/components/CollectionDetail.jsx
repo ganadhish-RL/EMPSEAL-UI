@@ -5,10 +5,24 @@ import Twitter from '../assets/images/profile_twitter.svg';
 import Discord from '../assets/images/profile_discord.svg';
 import Globe from '../assets/images/profile_globe.svg';
 import Link from '../assets/images/profile_link.svg';
+import Activity from '../assets/images/activity_img.svg';
+import ActivityTable from './ActivityTable';
+import ActivityChart from './ActivityChart';
+import CollectionDetailTable from './CollectionDetailTable';
 
 const CollectionDetail = () => {
   const { name } = useParams();
-
+  const activityData = [
+    { time: '16m', price: '02.3K', seller: 'a767F' },
+    { time: '18m', price: '1.2K', seller: 'b897T' },
+    { time: '19m', price: '03.3K', seller: 'a767F' },
+    { time: '20m', price: '1.3K', seller: 'b897T' },
+    { time: '18m', price: '1.2K', seller: 'b897T' },
+    { time: '19m', price: '03.3K', seller: 'a767F' },
+    { time: '11m', price: '02.3K', seller: 'a767F' },
+    { time: '14m', price: '1.2K', seller: 'b897T' },
+    // Add more activity items here
+  ];
   return (
     <div className="md:container mx-auto p-8">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
@@ -37,13 +51,13 @@ const CollectionDetail = () => {
                       <img src={Twitter} alt="twitter"></img>
                     </a>
                     <a href="#">
-                    <img src={Discord} alt="discord"></img>
+                      <img src={Discord} alt="discord"></img>
                     </a>
                     <a href="#">
-                    <img src={Globe} alt="globe"></img>
+                      <img src={Globe} alt="globe"></img>
                     </a>
                     <a href="#">
-                    <img src={Link} alt="link"></img>
+                      <img src={Link} alt="link"></img>
                     </a>
                   </div>
                 </div>
@@ -81,46 +95,12 @@ const CollectionDetail = () => {
               </div>
             </div>
           </div>
-          <div className="border border-gray-700 rounded-lg p-4 bg-gray-900 max-w-md mx-auto text-white">
-    <div className="flex justify-between items-center pb-2 border-b border-gray-700">
-        <h2 className="text-lg font-semibold">Activity</h2>
-        <select className="bg-gray-800 text-white text-sm rounded px-2 py-1">
-            <option value="all">All</option>
-            {/* Add more options as needed */}
-        </select>
-    </div>
-
-    <table className="mt-4 w-full text-sm">
-        <thead>
-            <tr className="text-gray-400">
-                <th className="py-2 text-left">Time</th>
-                <th className="py-2 text-left">Item</th>
-                <th className="py-2 text-left">Price</th>
-                <th className="py-2 text-left">Seller</th>
-                <th className="py-2 text-right">Action</th>
-            </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-700">
-            {[...Array(5)].map((_, index) => (
-                <tr key={index} className="hover:bg-gray-800 transition">
-                    <td className="py-2 text-gray-400">{index * 2 + 16}m</td>
-                    <td className="py-2">
-                        <div className="w-10 h-10 bg-cover rounded-md" style={{ backgroundImage: 'url("/path-to-your-image.jpg")' }}></div>
-                    </td>
-                    <td className="py-2">02.3K Ξ</td>
-                    <td className="py-2 text-yellow-500">a767F</td>
-                    <td className="py-2 text-right">
-                        <button className="bg-gray-700 px-3 py-1 rounded hover:bg-gray-600">BUY</button>
-                    </td>
-                </tr>
-            ))}
-        </tbody>
-    </table>
-</div>
-
+          <ActivityTable activities={activityData} />
+          <ActivityChart />
         </div>
-
-       
+        <div className="md:col-span-7 col-span-12">
+         <CollectionDetailTable />
+        </div>
       </div>
     </div>
   );
