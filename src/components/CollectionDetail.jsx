@@ -28,7 +28,7 @@ const CollectionDetail = () => {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         <div className="md:col-span-5 col-span-12">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 border_gradient p-4 ">
-            <div className="col-span-3 roboto relative z-10">
+            <div className="md:col-span-3 col-span-12  roboto relative z-10">
               <div className="text-white">
                 {/* Profile Image */}
                 <div className="w rounded-lg overflow-hidden">
@@ -64,7 +64,7 @@ const CollectionDetail = () => {
               </div>
             </div>
             {/* Stats Section */}
-            <div className="col-span-9 relative z-10">
+            <div className="md:col-span-9 col-span-12 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 roboto">
                 <div className="bg-[#222222] p-5 rounded-lg shadow-md text-xs text-center">
                   <h3 className="text-white">Floor Price</h3>

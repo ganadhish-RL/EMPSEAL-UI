@@ -35,21 +35,14 @@ const ActivityTable = ({ activities }) => {
       <div className="flex justify-between items-center pb-2 relative z-10 roboto">
         <h2 className="text-lg font-semibold">Activity</h2>
         <div className="flex space-x-4">
-          <select
-            className="bg-transparent text-white text-sm rounded px-2 py-1"
-            value={filter}
-            onChange={handleFilterChange}
-          >
-            <option value="all">All</option>
-            {/* Add more options if needed */}
-          </select>
+         
 
           <select
-            className="bg-transparent text-white text-sm rounded px-2 py-1"
+            className="bg-transparent text-whi text-sm rounded px-2 py-1 activity_select"
             value={sortOrder}
             onChange={handleSortChange}
           >
-            <option value="default">Sort by</option>
+            <option value="default">All</option>
             <option value="lowToHigh">Price: Low to High</option>
             <option value="highToLow">Price: High to Low</option>
           </select>

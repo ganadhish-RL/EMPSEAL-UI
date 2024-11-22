@@ -149,6 +149,17 @@ body {
 .Marquee {
   overflow: hidden;
 }
+
+.collection_img {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+}
+
+.activity_select option {
+  color: var(--black);
+}
+
 .marquee {
   position: relative;
   width: 100vw;
