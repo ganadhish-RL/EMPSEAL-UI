@@ -127,10 +127,15 @@ const Home = () => {
             </div>
             </Link>
             <div className="w-full rounded-2xl border border-white black px-4 py-5 relative mt-8 flex gap-8 justify-center items-center h_grid2">
+              <Link target="_blank" to="https://github.com/3mperorsSeal">
               <img src={Git} alt="Git" />
-              <img className="h-[28px]" src={GB} alt="Git Book" />
+              </Link>
+              <Link target="_blank" to="https://x.com/EmperorsSeal"> 
               <img src={X} alt="X" />
+              </Link>
+              <Link target="_blank" to="https://x.com/EmperorsSeal"> 
               <img src={Master} alt="Master" />
+              </Link>
             </div>
             <div className="w-full rounded-2xl border border-white black px-4 py-6 relative mt-8 flex gap-8 justify-center items-center h_grid6">
               <div className="text-center text-white text-base font-bold leading-[14px]">
@@ -211,7 +216,7 @@ const Home = () => {
                     className="w-[125px] h-16 object-contain mb-12"
                   />
                   <div className="text-white  bg-[#3a383b] w-max px-4 py-2 rounded-full font-bold ms-5">
-                    <span>Swap</span><span className="px-4">Trade</span><span>Dca</span>
+                    <span>Swap</span><span className="ps-4">Trade</span>
                   </div>
                 {/* </Link> */}
               </div>

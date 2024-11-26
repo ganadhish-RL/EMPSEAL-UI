@@ -4,11 +4,11 @@ import CollectionImage from '../../src/assets/images/nft_pic.svg';
 import Grid from '../assets/images/grid-view.svg';
 import List from '../assets/images/list-view.svg';
 import PriceIcon from '../assets/images/nft-ico.svg';
-import Item from '../assets/images/items1.svg';
+import Traits from '../assets/images/traits.svg';
 import Bid from '../assets/images/items3.svg';
 import Loans from '../assets/images/items2.svg';
 import { Link } from 'react-router-dom';
-const CollectionDetailTable = () => {
+const ItemDetails = () => {
   const [data, setData] = useState([
     {
       id: 1,
@@ -92,8 +92,8 @@ const CollectionDetailTable = () => {
             }`}
             onClick={() => setActiveTab('items')}
           >
-            <img src={Item} alt="Items" className="h-4 mr-2" />
-            Items
+            <img src={Traits} alt="Items" className="h-4 mr-2" />
+            Traits
           </button>
           <button
             className={`flex items-center px-4 py-2 text-sm font-semibold rounded ${
@@ -118,7 +118,7 @@ const CollectionDetailTable = () => {
             Loans
           </button>
         </div>
-      
+
         <div className="flex space-x-4 relative z-10">
           <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-6 pointer-events-none">
             <svg
@@ -168,69 +168,53 @@ const CollectionDetailTable = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       {activeTab === 'items' && (
         <div>
           {viewMode === 'list' ? (
-            <table className="w-full border-separate border-spacing-y-2 relative z-10">
-              <thead>
-                <tr className="collection text-white roboto">
-                  <th className="bg-[#222222] text-left py-2 px-4 border border-gray-700">
-                    Item
-                  </th>
-                  <th className="bg-[#222222] text-right py-3 px-4 border border-gray-700">
-                    Listing Price
-                  </th>
-                  <th className="bg-[#222222] text-right py-3 px-4 border border-gray-700">
-                    Floor Difference
-                  </th>
-                  <th className="bg-[#222222] text-right py-2 px-4 border border-gray-700">
-                    Owner
-                  </th>
-                  <th className="bg-[#222222] text-right py-3 px-4 border border-gray-700">
-                    Listed Time
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredData.slice(0, rowsToShow).map((item) => (
-                  <tr
-                    key={item.id}
-                    className="border border-gray-700 collection_row roboto"
-                  >
-                    <td className="py-4 px-4 flex items-center">
-                      <img
-                        className="collection_img"
-                        src={CollectionImage}
-                        alt={`${item.name} logo`}
-                      />
-                      <Link
-                        to={`/nft-marketplace/${generateSlug(item.name)}`}
-                        className="ps-3"
-                      >
-                        {item.name}
-                      </Link>
-                    </td>
-                    <td className="text-center py-2 px-4">
-                      {item.listingPrice}
-                    </td>
-                    <td className="text-center py-2 px-4">
-                      <span
-                        className={
-                          item.floorDifference < 0
-                            ? 'text-red-500'
-                            : 'text-[#0CDD2E]'
-                        }
-                      >
-                        {item.floorDifference}
-                      </span>
-                    </td>
-                    <td className="text-center py-2 px-4">{item.itemOwner}</td>
-                    <td className="text-center py-2 px-4">{item.listedTime}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+              <div className="bg-[#222222] p-4 rounded-lg shadow-md text-white w-72 relative z-10">
+                <h3 className="text-[#9F9F9F] text-sm">Plain Backgrounds</h3>
+
+                <h4 className="text-base font-bold mt-2">3</h4>
+
+                <hr className="my-4 border-white-600" />
+
+                <div className="flex justify-between items-center text-sm">
+                  <h5 className="px-2 py-1 border border-white-600 rounded text-[#9F9F9F] text-sm">
+                    1,239/9,012
+                  </h5>
+                  <h6 className="text-[#FF9900] font-bold text-sm">12%</h6>
+                </div>
+              </div>
+              <div className="bg-[#222222] p-4 rounded-lg shadow-md text-white w-72 relative z-10">
+                <div className="text-[#9F9F9F] text-sm">Skin</div>
+
+                <div className="text-base font-bold mt-2">Brown</div>
+
+                <hr className="my-4 border-white-600" />
+
+                <div className="flex justify-between items-center text-sm">
+                  <div className="px-2 py-1 border border-white-600 rounded text-[#9F9F9F] text-sm">
+                    1,239/9,012
+                  </div>
+                  <div className="text-[#FF9900] font-bold text-sm">12%</div>
+                </div>
+              </div>
+              <div className="bg-[#222222] p-4 rounded-lg shadow-md text-white w-72 relative z-10">
+                <div className="text-[#9F9F9F] text-sm">Accessories</div>
+
+                <div className="text-base font-bold mt-2">None</div>
+
+                <hr className="my-4 border-white-600" />
+
+                <div className="flex justify-between items-center text-sm">
+                  <div className="px-2 py-1 border border-white-600 rounded text-[#9F9F9F] text-sm">
+                  6,780/9012
+                  </div>
+                  <div className="text-[#FF9900] font-bold text-sm">54%</div>
+                </div>
+              </div>
+            </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
               {filteredData.slice(0, rowsToShow).map((item) => (
@@ -279,7 +263,7 @@ const CollectionDetailTable = () => {
         </div>
       )}
 
-{activeTab === 'bids' && (
+      {activeTab === 'bids' && (
         <div>
           {viewMode === 'list' ? (
             <table className="w-full border-separate border-spacing-y-2 relative z-10">
@@ -409,4 +393,4 @@ const CollectionDetailTable = () => {
   );
 };
 
-export default CollectionDetailTable;
+export default ItemDetails;
