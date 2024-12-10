@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 import Logo from "../../assets/images/emp-logo.png";
 import Line from "../../assets/images/Frame 25.png";
 import Fra from "../../assets/images/Frame 86.png";
-import Wallets from '../../assets/images/wallet.svg';
-import Home from '../../assets/images/house.svg';
-import Links from '../../assets/images/link.svg';
 import { Link } from "react-router-dom";
 // import LineChart from "./LinesGraphs";
 import ConnectWallet from "./ConnectWallet";
@@ -30,16 +27,26 @@ const Wallet = () => {
 
   return (
     <>
-      <div className="w-full max-w-md  border_gradient p-4 bg-transparent flex gap-4 ">
-        <div className="flex-1 bg-black rounded-lg p-4 relative z-10">
+      <div className="w-full border border-white rounded-xl py-2  2xl:px-7 lg:px-5 px-4 bg-black flex">
+        <div className="rounded-[32.83px] mt-4 px-4 py-4">
           <div className="flex gap-2 items-center">
             <img src={Logo} alt="Logo" />
-            <Link className="text-white underline text-sm"
+            <Link
               to="https://snowtrace.io/address/0xC4729E56b831d74bBc18797e0e17A295fA77488c"
               target="_blank"
             >
-              
-             0xC472...488c
+              {/* <div className="roboto">
+                <span className="text-white roboto text-xs font-normal underline">
+                  0xC472
+                </span>
+                <span className="text-white roboto text-xs font-normal underline">
+                  ...
+                </span>
+                <span className="text-white roboto text-xs font-normal underline">
+                  488c
+                </span>
+              </div> */}
+
             </Link>
           </div>
           {/* <div>
@@ -56,18 +63,9 @@ const Wallet = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-center gap-4 flex-col wallet_bg relative z-10">
+        <div className="flex justify-center gap-4 flex-col">
           <WalletConnect />
-          <button className="flex items-center justify-start gap-2 bg-[#FF9900] text-black text-sm py-2 px-4 rounded-md font-semibold roboto">
-          <img className="pe-2" src={Links} />
-          Select Chain
-        </button>
-        <button className="flex items-center justify-start gap-2 bg-[#FF9900] text-black text-sm py-2 px-4 rounded-md font-semibold roboto">
-        <img className="pe-2" src={Home} />
-          Home Page
-        </button>
         </div>
-        
       </div>
       <div aria-label="Modal">
         {isConnectWalletVisible && (
