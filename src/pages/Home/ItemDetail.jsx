@@ -2,6 +2,7 @@ import React from 'react';
 import ItemImage from '../../assets/images/item-detail.svg';
 import ActivityImage from '../../assets/images/activity_img.svg';
 import ItemDetails from '../../components/ItemDetails';
+import ItemDetailActivity from '../../components/ItemDetailActivity';
 const ItemDetail = () => {
   return (
     <div className="container p-10">
@@ -39,7 +40,7 @@ const ItemDetail = () => {
                 </div>
               </div>
 
-              <div className="text-sm text-gray-400 mb-4">
+              <div className="text-xs text-gray-400 mb-4 text-center">
                 Listing ends on:{' '}
                 <span className="text-white">
                   November 19th 2024, 1:58:22 PM
@@ -63,6 +64,7 @@ const ItemDetail = () => {
         </div>
         <div className="col-span-8">
           <ItemDetails />
+          <ItemDetailActivity />
         </div>
       </div>
     </div>

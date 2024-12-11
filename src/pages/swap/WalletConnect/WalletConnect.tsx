@@ -2,8 +2,10 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import React from "react";
 import { useAccount } from "wagmi";
-export default function WalletConnect() {
+
+export default function WalletConnect({ icon }: { icon?: React.ReactNode }) {
   const { address, isConnected, chainId } = useAccount();
+
   return (
     <ConnectButton.Custom>
       {({
@@ -15,14 +17,13 @@ export default function WalletConnect() {
         authenticationStatus,
         mounted,
       }) => {
-        // Note: If your app doesn't use authentication, you
-        // can remove all 'authenticationStatus' checks
         const ready = mounted && authenticationStatus !== "loading";
         const connected =
           ready &&
           account &&
           chain &&
           (!authenticationStatus || authenticationStatus === "authenticated");
+
         return (
           <div
             {...(!ready && {
@@ -38,10 +39,11 @@ export default function WalletConnect() {
               if (!connected) {
                 return (
                   <button
-                    className="px-6 py-2 text-white rounded-md shadow-sm cursor-pointer bg-accent font-semibold roboto"
+                    className="px-6 py-2 text-white rounded-md shadow-sm cursor-pointer bg-accent font-semibold roboto flex items-center gap-2"
                     onClick={openConnectModal}
                     type="button"
                   >
+                    {icon && <span>{icon}</span>}
                     Connect Wallet
                   </button>
                 );
@@ -49,41 +51,24 @@ export default function WalletConnect() {
               if (chain.unsupported) {
                 return (
                   <button
-                    className="bg-[#FF494A] px-4 py-2 rounded text-white"
+                    className="bg-[#FF494A] px-4 py-2 rounded text-white flex items-center gap-2"
                     onClick={openChainModal}
                     type="button"
                   >
+                    {icon && <span>{icon}</span>}
                     Wrong network
                   </button>
                 );
               }
               return (
                 <div className="flex flex-row justify-center items-center gap-4">
-                  {/* <button
-                    onClick={openChainModal}
-                    className="flex flex-row justify-center items-center gap-2 bg-[#DFFE00] text-primary font-semibold px-2 xl:px-4 py-1.5 rounded-full"
-                    type="button"
-                  >
-                    <img
-                      src={"/chains/mode.png"}
-                      width={"25"}
-                      height={"25"}
-                      alt="Mode Icon"
-                    />
-                  </button> */}
                   <button
-                    className="px-4 xl:px-6 py-2 text-white rounded-full shadow-sm cursor-pointer bg-secondary font-semibold flex flex-row justify-center items-center"
+                    className="px-4 xl:px-6 py-2 text-white rounded-full shadow-sm cursor-pointer bg-secondary font-semibold flex items-center gap-2"
                     onClick={openAccountModal}
                     type="button"
                   >
+                    {icon && <span>{icon}</span>}
                     {account.ensName ? account.ensName : account.displayName}
-                    {/* {account.displayBalance ? (
-                      <span className="hidden xl:block ml-1">
-                        ({account.displayBalance})
-                      </span>
-                    ) : (
-                      ""
-                    )} */}
                   </button>
                 </div>
               );

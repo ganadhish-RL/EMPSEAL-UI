@@ -13,55 +13,55 @@ const ItemDetails = () => {
     {
       id: 1,
       name: 'Milady #284',
-      sales: 9.24,
-      listingPrice: 0.032,
-      floorDifference: -6.03,
-      itemOwner: 14,
+      size: 3,
+      price: 11.27,
+      bidders: 3,
+      total: 33.81,
       listedTime: 8888,
     },
     {
       id: 2,
       name: 'Milady #837',
-      sales: 9.24,
-      listingPrice: 0.0262,
-      floorDifference: -6.03,
-      itemOwner: 14,
+      size: 9.24,
+      price: 0.0262,
+      bidders: -6.03,
+      total: 14,
       listedTime: 8888,
     },
     {
       id: 3,
       name: 'Ayush',
-      sales: 9.24,
-      listingPrice: 0.0262,
-      floorDifference: -6.03,
-      itemOwner: 14,
+      size: 9.24,
+      price: 0.0262,
+      bidders: -6.03,
+      total: 14,
       listedTime: 8888,
     },
     {
       id: 4,
       name: 'Kaus',
-      sales: 9.24,
-      listingPrice: 0.0262,
-      floorDifference: -6.03,
-      itemOwner: 14,
+      size: 9.24,
+      price: 0.0262,
+      bidders: -6.03,
+      total: 14,
       listedTime: 8888,
     },
     {
       id: 5,
       name: 'Kaus',
-      sales: 9.24,
-      listingPrice: 0.0262,
-      floorDifference: -6.03,
-      itemOwner: 14,
+      size: 9.24,
+      price: 0.0262,
+      bidders: -6.03,
+      total: 14,
       listedTime: 8888,
     },
     {
       id: 6,
       name: 'Kaus',
-      sales: 9.24,
-      listingPrice: 0.0262,
-      floorDifference: -6.03,
-      itemOwner: 14,
+      size: 9.24,
+      price: 0.0262,
+      bidders: -6.03,
+      total: 14,
       listedTime: 8888,
     },
     // Add more items as needed
@@ -108,70 +108,21 @@ const ItemDetails = () => {
           </button>
           <button
             className={`flex items-center px-4 py-2 text-sm font-semibold rounded ${
-              activeTab === 'loans'
+              activeTab === 'descriptions'
                 ? 'bg-[#FF9900] text-black'
                 : 'bg-[#222222] text-white'
             }`}
-            onClick={() => setActiveTab('loans')}
+            onClick={() => setActiveTab('descriptions')}
           >
             <img src={Loans} alt="Loans" className="h-4 mr-2" />
-            Loans
-          </button>
-        </div>
-
-        <div className="flex space-x-4 relative z-10">
-          <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-6 pointer-events-none">
-            <svg
-              class="w-4 h-4 text-white dark:text-gray-400"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 20"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-              />
-            </svg>
-          </div>
-          <input
-            type="text"
-            id="table-search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            class="block py-1.5 ps-10 text-sm text-white border border-gray-300 rounded-lg w-[100px] bg-transparent placeholder-white text-sm"
-            placeholder="Item ID"
-          />
-          <button
-            className={`text-sm py-1.5 px-3 rounded flex items-center roboto ${
-              viewMode === 'list'
-                ? 'border border-white text-black'
-                : 'text-white'
-            }`}
-            onClick={() => setViewMode('list')}
-          >
-            <img src={List} alt="List View" />
-          </button>
-          <button
-            className={`text-sm py-1.5 px-3 rounded flex items-center roboto ${
-              viewMode === 'grid'
-                ? 'border border-white text-black'
-                : 'text-white'
-            }`}
-            onClick={() => setViewMode('grid')}
-          >
-            <img src={Grid} alt="Grid View" />
+            Description
           </button>
         </div>
       </header>
 
       {activeTab === 'items' && (
         <div>
-          {viewMode === 'list' ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
               <div className="bg-[#222222] p-4 rounded-lg shadow-md text-white w-72 relative z-10">
                 <h3 className="text-[#9F9F9F] text-sm">Plain Backgrounds</h3>
 
@@ -215,74 +166,25 @@ const ItemDetails = () => {
                 </div>
               </div>
             </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {filteredData.slice(0, rowsToShow).map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-[#222222] rounded-lg overflow-hidden text-white shadow-md hover:shadow-lg transition-shadow relative z-10"
-                >
-                  <div className="relative">
-                    <img
-                      src={CollectionImage}
-                      alt={item.name}
-                      className="w-full h-48 object-cover p-2"
-                    />
-                    <div className="absolute top-3 right-3">
-                      <input type="checkbox" className="w-5 h-5 accent-white" />
-                    </div>
-                  </div>
-                  <div className="py-4 px-3">
-                    <h3 className="text-sm font-semibold mb-2 roboto text-[#FF9900]">
-                      {item.name}
-                    </h3>
-                    <div className="flex justify-between text-sm opacity-80 roboto">
-                      <div>
-                        <h4 className="text-sm text-white">Price</h4>
-                        <h5 className="text-xs text-white flex items-center mt-1">
-                          {' '}
-                          {item.listingPrice.toFixed(4)}
-                          <img className="ps-1" src={PriceIcon} />
-                        </h5>
-                      </div>
-
-                      <div>
-                        <h4 className="text-sm text-white">Last Sale</h4>
-                        <h5 className="text-xs text-white flex items-center mt-1">
-                          {' '}
-                          {item.listingPrice.toFixed(4)}
-                          <img className="ps-1" src={PriceIcon} />
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       )}
 
       {activeTab === 'bids' && (
-        <div>
-          {viewMode === 'list' ? (
-            <table className="w-full border-separate border-spacing-y-2 relative z-10">
+       <div>
+                    <table className="w-full border-separate border-spacing-y-2 relative z-10">
               <thead>
                 <tr className="collection text-white roboto">
-                  <th className="bg-[#222222] text-left py-2 px-4 border border-gray-700">
-                    Item
+                  <th className="bg-[#222222] text-center py-3 px-4 border border-gray-700">
+                     Price
                   </th>
-                  <th className="bg-[#222222] text-right py-3 px-4 border border-gray-700">
-                    Bids Price
+                  <th className="bg-[#222222] text-center py-3 px-4 border border-gray-700">
+                    Size
                   </th>
-                  <th className="bg-[#222222] text-right py-3 px-4 border border-gray-700">
-                    Floor Difference
+                  <th className="bg-[#222222] text-center py-2 px-4 border border-gray-700">
+                    Total
                   </th>
-                  <th className="bg-[#222222] text-right py-2 px-4 border border-gray-700">
-                    Owner
-                  </th>
-                  <th className="bg-[#222222] text-right py-3 px-4 border border-gray-700">
-                    Listed Time
+                  <th className="bg-[#222222] text-center py-3 px-4 border border-gray-700">
+                    Bidders
                   </th>
                 </tr>
               </thead>
@@ -292,84 +194,36 @@ const ItemDetails = () => {
                     key={item.id}
                     className="border border-gray-700 collection_row roboto"
                   >
-                    <td className="py-4 px-4 flex items-center">
-                      <img
-                        className="collection_img"
-                        src={CollectionImage}
-                        alt={`${item.name} logo`}
-                      />
-                      <Link
-                        to={`/nft-marketplace/${generateSlug(item.name)}`}
-                        className="ps-3"
-                      >
-                        {item.name}
-                      </Link>
-                    </td>
+                    
                     <td className="text-center py-2 px-4">
-                      {item.listingPrice}
+                      {item.price}
                     </td>
                     <td className="text-center py-2 px-4">
                       <span
                         className={
-                          item.floorDifference < 0
+                          item.size < 0
                             ? 'text-red-500'
                             : 'text-[#0CDD2E]'
                         }
                       >
-                        {item.floorDifference}
+                        {item.size}
                       </span>
                     </td>
-                    <td className="text-center py-2 px-4">{item.itemOwner}</td>
-                    <td className="text-center py-2 px-4">{item.listedTime}</td>
+                    <td className="text-center py-2 px-4">{item.total}</td>
+                    <td className="text-center py-2 px-4">{item.bidders}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {filteredData.slice(0, rowsToShow).map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-[#222222] rounded-lg overflow-hidden text-white shadow-md hover:shadow-lg transition-shadow relative z-10"
-                >
-                  <div className="relative">
-                    <img
-                      src={CollectionImage}
-                      alt={item.name}
-                      className="w-full h-48 object-cover p-2"
-                    />
-                    <div className="absolute top-3 right-3">
-                      <input type="checkbox" className="w-5 h-5 accent-white" />
-                    </div>
-                  </div>
-                  <div className="py-4 px-3">
-                    <h3 className="text-sm font-semibold mb-2 roboto text-[#FF9900]">
-                      {item.name}
-                    </h3>
-                    <div className="flex justify-between text-sm opacity-80 roboto">
-                      <div>
-                        <h4 className="text-sm text-white">Price</h4>
-                        <h5 className="text-xs text-white flex items-center mt-1">
-                          {' '}
-                          {item.listingPrice.toFixed(4)}
-                          <img className="ps-1" src={PriceIcon} />
-                        </h5>
-                      </div>
+       </div>
+      )}
 
-                      <div>
-                        <h4 className="text-sm text-white">Last Sale</h4>
-                        <h5 className="text-xs text-white flex items-center mt-1">
-                          {' '}
-                          {item.listingPrice.toFixed(4)}
-                          <img className="ps-1" src={PriceIcon} />
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+{activeTab === 'descriptions' && (
+        <div>
+          <div>
+                            <p className="text-white">lorem ipsum </p>
+                            <p className="text-white">lorem ipsum </p>
             </div>
-          )}
         </div>
       )}
 

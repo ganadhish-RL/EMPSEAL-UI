@@ -17,7 +17,7 @@ const Normal = () => {
             </div>
             <Emp setPadding={setPadding} />
           </div>
-          <div className="md:max-w-[360px] w-full">
+          <div className="md:max-w-[474px] w-full">
             <div className="md:block hidden">
               <Wallet />
             </div>

@@ -3,8 +3,9 @@ import S from "../../assets/images/s.svg";
 import Three from "../../assets/images/324.svg";
 import Refresh from "../../assets/images/refresh.svg";
 import Info from "../../assets/images/info.svg";
+import { formatUnits } from "viem";
 import Transcation from "./Transcation";
-const Amount = ({ onClose, amountIn, amountOut, tokenA, tokenB, refresh, confirm }) => {
+const Amount = ({ onClose, amountIn, amountOut, tokenA, singleToken, tokenB, refresh, confirm }) => {
   const [isConfirm, setConfirm] = useState(false);
 
   return (
@@ -89,13 +90,24 @@ const Amount = ({ onClose, amountIn, amountOut, tokenA, tokenB, refresh, confirm
                 Price
               </div>
               <div className="flex gap-2 items-center">
-                <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                  1.000 BUSD per 1USDC
-                </div>
-                <div className="cursor-pointer" onClick={() => refresh()}>
-                  <img src={Refresh} alt="Refresh" />
-                </div>
-              </div>
+        <div className="text-right text-white text-sm font-normal roboto leading-normal">
+          1 {tokenA.ticker} ={" "}
+          {singleToken && singleToken.amounts && singleToken.amounts[singleToken.amounts.length - 1]
+            ? parseFloat(
+                formatUnits(
+                  singleToken.amounts[singleToken.amounts.length - 1],
+                  parseInt(tokenB.decimal)
+                )
+              ).toFixed(6)
+            : "0"}{" "}
+          {tokenB.ticker}
+        </div>
+        <div className="cursor-pointer" onClick={() => refresh()}>
+          <img src={Refresh} alt="Refresh" />
+        </div>
+      </div>
+
+
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-2">
               <div className="flex gap-2 items-center">

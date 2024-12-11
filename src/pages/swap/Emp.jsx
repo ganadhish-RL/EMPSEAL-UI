@@ -395,21 +395,11 @@ const Emp = ({ setPadding }) => {
               {feeData && feeData.data && feeData.data.amounts && feeData.data.amounts.length > 0 ? feeData.data.amounts[feeData.data.amounts.length - 1] : 0} PLS
             </div>
           </div>
-          {/* <div className="flex justify-between gap-2 items-center mt-2">
-            <div className="text-gray-400 text-[12px] font-normal roboto leading-none flex gap-1 items-center">
-              Contract Spender
-              <img src={Info} alt="Info" />
-            </div>
-            <Link to="https://snowtrace.io/address/0xC4729E56b831d74bBc18797e0e17A295fA77488c" target="_blank">
-              <div className="text-right text-white text-[12px] font-normal roboto leading-none">
-                0xC472...488c
-              </div>
-            </Link>
-          </div> */}
         </div>
       </div>
+
       <div aria-label="Modal">
-        {isAmountVisible && <Amount onClose={() => setAmountVisible(false)} amountIn={amountIn} amountOut={parseFloat(amountOut).toFixed(6)} tokenA={selectedTokenA} tokenB={selectedTokenB} refresh={quoteRefresh} confirm={confirmSwap} />}
+        {isAmountVisible && <Amount onClose={() => setAmountVisible(false)} amountIn={amountIn} amountOut={parseFloat(amountOut).toFixed(6)} tokenA={selectedTokenA} tokenB={selectedTokenB} singleToken={singleToken} refresh={quoteRefresh} confirm={confirmSwap} />}
       </div>
       <div aria-label="Modal1">
         {isTokenVisible && <Token onClose={() => setTokenVisible(false)} onSelect={handleTokenSelect} />}
