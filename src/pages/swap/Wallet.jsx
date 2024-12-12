@@ -36,7 +36,7 @@ const Wallet = () => {
             target="_blank"
             className="text-white font-mono text-sm truncate"
           >
-            0xC472...488c
+            
           </Link>
         </div>
         <img src={Line} alt="Line" className="mb-4" />
