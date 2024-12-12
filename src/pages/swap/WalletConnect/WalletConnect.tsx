@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 
 export default function WalletConnect({ icon }: { icon?: React.ReactNode }) {
   const { address, isConnected, chainId } = useAccount();
+  console.log(address, 'address')
 
   return (
     <ConnectButton.Custom>
@@ -68,7 +69,7 @@ export default function WalletConnect({ icon }: { icon?: React.ReactNode }) {
                     type="button"
                   >
                     {icon && <span>{icon}</span>}
-                    {account.ensName ? account.ensName : account.displayName}
+                    Connected
                   </button>
                 </div>
               );

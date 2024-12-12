@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import UserCard from '../../components/UserCard';
 import Graph from '../swap/Graph';
 import CollectionTable from '../../components/CollectionTable';
+import MarketPlaceWallet from '../../components/MarketPlaceWallet';
 const NFTMarketplace = () => {
   const users = [
     { name: 'Sam Lee', username: 'samlee', imgSrc: User },
@@ -91,7 +92,7 @@ const NFTMarketplace = () => {
             <CollectionTable />
             <div className="md:block hidden mt-8">
               <div className="grid grid-cols-2 gap-6">
-                <div> <Wallet /></div>
+                <div><MarketPlaceWallet /></div>
              <div><Graph /></div>
 
               </div>

@@ -90,7 +90,7 @@ const Graph = ({ padding }) => {
 
       <div className="flex justify-start gap-2 px-4 mt-2">
         <div className="text-white text-[14px] font-bold roboto leading-normal">
-          {baseName} / {quoteName}
+          {baseName}
         </div>
       </div>
 
