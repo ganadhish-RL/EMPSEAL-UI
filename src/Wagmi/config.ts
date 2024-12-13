@@ -1,6 +1,6 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { http, createConfig } from "wagmi";
-import { pulsechain } from "wagmi/chains";
+import { pulsechain, arbitrum, avalanche } from "wagmi/chains";
 
 // export const config = createConfig({
 //   chains: [mode, hardhat],
@@ -14,6 +14,6 @@ import { pulsechain } from "wagmi/chains";
 export const config = getDefaultConfig({
   appName: "Emplseal",
   projectId: "YOUR_PROJECT_ID",
-  chains: [pulsechain],
+  chains: [pulsechain, arbitrum, avalanche],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });

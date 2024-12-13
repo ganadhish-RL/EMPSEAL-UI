@@ -16,8 +16,8 @@ const truncateAddress = (address) =>
 
 const Wallet = () => {
   const [balance, setBalance] = useState(null); // Ensure balance is initialized properly
-  const { address } = useAccount();
-
+  const { address, chain } = useAccount();
+    console.log(chain)
   const result = useBalance({
     address,
   });
@@ -28,10 +28,10 @@ const Wallet = () => {
     }
   }, [result]);
 
-  const formattedBalance = balance ? `${parseFloat(balance).toFixed(2)}` : "$0.00";
+  const formattedBalance = balance ? `${parseFloat(balance).toFixed(2)}` : "0.00";
 
   return (
-    <div className="w-full border border-white rounded-xl py-4 2xl:px-4 lg:px-5 px-4 bg-black md:flex gap-4">
+    <div className="w-full border border-white rounded-xl py-4 2xl:px-6 lg:px-5 px-4 bg-black md:flex gap-8">
       {/* Wallet Info Section */}
       <div className="flex flex-col bg-[#161616] p-5 rounded-lg w-full md:max-w-[216px]">
         <div className="flex items-center gap-2 mb-4">
@@ -45,9 +45,10 @@ const Wallet = () => {
           </Link>
         </div>
         <img src={Line} alt="Line divider" className="mb-4" />
-        <div className="text-white text-sm font-medium mb-2">Pulsechain</div>
+        {chain && (
+        <div className="text-white text-sm font-medium mb-2">{chain.name}</div>
+      )}
         <div className="flex items-center gap-2">
-          <img src={Fra} alt="Pulsechain icon" className="h-6" />
           <div className="text-white text-lg font-bold">{formattedBalance}</div>
         </div>
       </div>

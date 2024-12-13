@@ -58,10 +58,6 @@ const MarketPlaceWallet = () => {
         </div>
         <div className="flex justify-center gap-4 flex-col wallet_bg relative z-10">
           <WalletConnect />
-          <button className="flex items-center justify-start gap-2 bg-[#FF9900] text-black text-sm py-2 px-4 rounded-md font-semibold roboto">
-          <img className="pe-2" src={Links} />
-          Select Chain
-        </button>
         <button className="flex items-center justify-start gap-2 bg-[#FF9900] text-black text-sm py-2 px-4 rounded-md font-semibold roboto">
         <img className="pe-2" src={Home} />
           Home Page
