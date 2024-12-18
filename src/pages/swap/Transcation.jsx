@@ -30,9 +30,6 @@ const Transcation = ({ onClose }) => {
             <div className="text-white text-sm font-bold roboto text-center leading-normal mt-10">
               Transaction Submitted
             </div>
-            <div className="text-gray-400 text-sm font-normal roboto text-center mt-2 leading-normal">
-              Exchanging 320 BUSD for 320.16 USDC
-            </div>
             <div className="rounded-xl px-4 py-4 bg-[#2C2D3A] flex gap-4 items-center mt-6 justify-center">
               <div className="text-white text-base font-bold roboto text-center leading-normal">
                 View on Etherscan

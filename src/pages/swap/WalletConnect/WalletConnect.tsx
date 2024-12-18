@@ -1,10 +1,16 @@
 "use client";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import React from "react";
+import React, { useEffect } from "react";
 import ChainImg from "../../../assets/images/select_chain.svg";
 import { useAccount } from "wagmi";
 
-export default function WalletConnect({ icon }: { icon?: React.ReactNode }) {
+export default function WalletConnect({
+  icon,
+  onChainChange,
+}: {
+  icon?: React.ReactNode;
+  onChainChange?: (iconUrl: string | undefined, chainName: string | undefined) => void;
+}) {
   const { address, isConnected } = useAccount();
 
   return (
@@ -24,7 +30,14 @@ export default function WalletConnect({ icon }: { icon?: React.ReactNode }) {
           account &&
           chain &&
           (!authenticationStatus || authenticationStatus === "authenticated");
-          console.log('chain address', chain)
+
+        // Notify parent about chain changes
+        useEffect(() => {
+          if (onChainChange) {
+            onChainChange(chain?.iconUrl, chain?.name);
+          }
+        }, [chain, onChainChange]);
+
         if (!ready) {
           return (
             <div
@@ -58,7 +71,6 @@ export default function WalletConnect({ icon }: { icon?: React.ReactNode }) {
               onClick={openChainModal}
               type="button"
             >
-
               Wrong Network
             </button>
           );
@@ -79,8 +91,9 @@ export default function WalletConnect({ icon }: { icon?: React.ReactNode }) {
               onClick={openChainModal}
               type="button"
             >
-             <img src={ChainImg} />
-              Select Chain
+             
+             <img src={ChainImg} alt="chain" />
+             Select Chain
             </button>
           </div>
         );
