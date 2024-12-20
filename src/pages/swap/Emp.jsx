@@ -8,7 +8,8 @@ import Info from '../../assets/images/info.svg';
 import { Link } from 'react-router-dom';
 import Amount from './Amount';
 import Token from './Token';
-import { useAccount, useReadContract, useWatchBlocks } from 'wagmi';
+import { useAccount, useReadContract, useWatchBlocks, useBalance } from 'wagmi';
+import SlippageCalculator from './SlippageCalculator';
 import { RouterABI } from './routerAbi';
 import { formatUnits } from 'viem';
 import Tokens from '../tokenList.json';
@@ -18,9 +19,11 @@ import Transcation from './Transcation';
 
 const Emp = ({ setPadding }) => {
   const [isAmountVisible, setAmountVisible] = useState(false);
+  const [isSlippageVisible, setSlippageVisible] = useState(false);
   const [isTokenVisible, setTokenVisible] = useState(false);
   const [order, setOrder] = useState(false);
   const [selectedTokenA, setSelectedTokenA] = useState(Tokens[0]);
+  console.log(selectedTokenA);
   const [selectedTokenB, setSelectedTokenB] = useState(Tokens[1]);
   const [isSelectingTokenA, setIsSelectingTokenA] = useState(true);
   const [amountOut, setAmountOut] = useState('0');
@@ -29,8 +32,10 @@ const Emp = ({ setPadding }) => {
   const [swapHash, setSwapHash] = useState('');
   const [swapSuccess, setSwapSuccess] = useState(false);
   const [tradeInfo, setTradeInfo] = useState(undefined);
+  const [selectedPercentage, setSelectedPercentage] = useState('');
   const { address } = useAccount();
   const [fees, setFees] = useState(0);
+  const [minAmountOut, setMinAmountOut] = useState('0');
 
   const [usdValue, setUsdValue] = useState('0.00');
   const [conversionRate, setConversionRate] = useState(null);
@@ -50,6 +55,29 @@ const Emp = ({ setPadding }) => {
     useStore.setState({ adapter: adapter });
   }
 
+  const { data: tokenBalance, isLoading } = useBalance({
+    address: address, // Use the connected wallet address
+    token: selectedTokenA.address, // Token address of TokenA
+  });
+
+  // Format the chain balance
+  const formattedChainBalance = tokenBalance
+    ? parseFloat(tokenBalance.formatted).toFixed(2) // Format to 6 decimal places
+    : '0.000000';
+
+  const handlePercentageChange = (e) => {
+    const percentage = e.target.value === '' ? null : parseInt(e.target.value); // If 'Select' is chosen, set to null
+    setSelectedPercentage(percentage);
+    const calculatedAmount = percentage ? calculateAmount(percentage) : ''; // If no selection, clear the amount
+    setAmountIn(calculatedAmount); // Update the amount input with the calculated value
+  };
+
+  // Calculate the amount based on the selected percentage
+  const calculateAmount = (percentage) => {
+    const balance = parseFloat(tokenBalance?.formatted || 0); // If the balance is loading, assume 0 balance
+    return (balance * (percentage / 100)).toFixed(2); // Calculate the percentage of balance
+  };
+
   const WETH_ADDRESS = '0xa1077a294dde1b09bb078844df40758a5d0f9a27';
   const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -63,10 +91,24 @@ const Emp = ({ setPadding }) => {
   };
 
   const convertToBigInt = (amount, decimals) => {
-    const parsedAmountIn = BigInt(Math.floor(amount * Math.pow(10, 6)));
-    if (decimals >= 6)
-      return parsedAmountIn * BigInt(10) ** BigInt(decimals - 6);
-    else return parsedAmountIn / BigInt(10) ** BigInt(6 - decimals);
+    // Add input validation
+    if (!amount || isNaN(amount) || !decimals || isNaN(decimals)) {
+      return BigInt(0);
+    }
+
+    try {
+      const parsedAmount = parseFloat(amount);
+      const parsedAmountIn = BigInt(Math.floor(parsedAmount * Math.pow(10, 6)));
+
+      if (decimals >= 6) {
+        return parsedAmountIn * BigInt(10) ** BigInt(decimals - 6);
+      } else {
+        return parsedAmountIn / BigInt(10) ** BigInt(6 - decimals);
+      }
+    } catch (error) {
+      console.error('Error converting to BigInt:', error);
+      return BigInt(0);
+    }
   };
 
   const {
@@ -79,18 +121,19 @@ const Emp = ({ setPadding }) => {
     address: '0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32',
     functionName: 'findBestPath',
     args: [
-      amountIn && selectedTokenA && parseFloat(amountIn)
+      // Add validation for amountIn and selectedTokenA
+      amountIn && selectedTokenA && !isNaN(parseFloat(amountIn))
         ? convertToBigInt(
             parseFloat(amountIn),
-            parseInt(selectedTokenA.decimal)
+            parseInt(selectedTokenA.decimal) || 18 // Provide default decimal if missing
           )
         : BigInt(0),
       selectedTokenA?.address === EMPTY_ADDRESS
         ? WETH_ADDRESS
-        : selectedTokenA?.address,
+        : selectedTokenA?.address || EMPTY_ADDRESS,
       selectedTokenB?.address === EMPTY_ADDRESS
         ? WETH_ADDRESS
-        : selectedTokenB?.address,
+        : selectedTokenB?.address || EMPTY_ADDRESS,
       BigInt('3'),
     ],
   });
@@ -100,13 +143,15 @@ const Emp = ({ setPadding }) => {
     address: '0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32',
     functionName: 'findBestPath',
     args: [
-      convertToBigInt(1, parseInt(selectedTokenA.decimal)),
+      selectedTokenA?.decimal
+        ? convertToBigInt(1, parseInt(selectedTokenA.decimal))
+        : BigInt(0),
       selectedTokenA?.address === EMPTY_ADDRESS
         ? WETH_ADDRESS
-        : selectedTokenA?.address,
+        : selectedTokenA?.address || EMPTY_ADDRESS,
       selectedTokenB?.address === EMPTY_ADDRESS
         ? WETH_ADDRESS
-        : selectedTokenB?.address,
+        : selectedTokenB?.address || EMPTY_ADDRESS,
       BigInt('3'),
     ],
   });
@@ -131,6 +176,12 @@ const Emp = ({ setPadding }) => {
       BigInt('3'),
     ],
   });
+
+  const handleSlippageCalculated = (adjustedAmount) => {
+    setMinAmountOut(adjustedAmount.toString());
+    // Update the amountOut state with the adjusted amount
+    setAmountOut(adjustedAmount.toString());
+  };
 
   useEffect(() => {
     const fetchConversionRate = async () => {
@@ -238,6 +289,7 @@ const Emp = ({ setPadding }) => {
         setSwapSuccess(false);
       });
   };
+
   return (
     <>
       <div className="w-full border border-white rounded-xl py-10 2xl:px-16 lg:px-12 md:px-8 px-4 bg-black md:mt-0 mt-4">
@@ -254,8 +306,12 @@ const Emp = ({ setPadding }) => {
           >
             SWAP
           </div>
-          <div className="min-w-[27px] h-[25px]">
-            <img src={Sett} alt="Sett" className="w-full h-full" />
+
+          <div
+            onClick={() => setSlippageVisible(true)}
+            className="min-w-[27px] h-[25px]"
+          >
+            <img src={Sett} alt="Sett" className="w-full h-full cursor-pointer" />
           </div>
           <div
             onClick={() => {
@@ -275,16 +331,32 @@ const Emp = ({ setPadding }) => {
           <div className="text-zinc-200 text-base font-normal roboto leading-normal">
             Pay
           </div>
+
           <div className="text-center">
             <span className="text-gray-400 text-base font-normal roboto leading-normal">
-              Available
+              Balance
             </span>
             <span className="text-gray-400 text-base font-normal roboto leading-normal">
               {' '}
               :{' '}
             </span>
             <span className="text-white text-base font-normal roboto leading-normal">
-              0
+              {isLoading
+                ? 'Loading..'
+                : `${
+                    tokenBalance
+                      ? parseFloat(tokenBalance.formatted).toFixed(2)
+                      : '0.00'
+                  }`}
+              <select
+                className="text-white bg-black border border-[#3b3c4e] rounded-lg ms-2 py-1 cursor-pointer"
+                value={selectedPercentage}
+                onChange={handlePercentageChange}
+              >
+                <option value="">Max</option>
+                <option value={50}>50%</option>
+                <option value={100}>100%</option>
+              </select>
             </span>
           </div>
         </div>
@@ -293,6 +365,8 @@ const Emp = ({ setPadding }) => {
             onClick={() => {
               setIsSelectingTokenA(true);
               setTokenVisible(true);
+              setSelectedPercentage('');
+              setAmountIn('');
             }}
             className="flex justify-between gap-4 items-center cursor-pointer"
           >
@@ -323,9 +397,15 @@ const Emp = ({ setPadding }) => {
               />
             </svg>
           </div>
+          <div className="flex justify-between gap-3 items-center lg:px-2 mb-4"></div>
+
           <input
             type="text"
-            placeholder="0"
+            placeholder={
+              formattedChainBalance === '0.000000'
+                ? '0'
+                : calculateAmount(selectedPercentage)
+            }
             value={amountIn}
             onChange={(e) => setAmountIn(e.target.value)}
             className="text-white text-xl font-bold roboto text-right w-full leading-7 outline-none border-none bg-transparent"
@@ -529,6 +609,14 @@ const Emp = ({ setPadding }) => {
           </div>
         </div>
       </div>
+
+      {isSlippageVisible && (
+        <SlippageCalculator
+          tradeInfo={tradeInfo}
+          onSlippageCalculated={handleSlippageCalculated}
+          onClose={() => setSlippageVisible(false)}
+        />
+      )}
 
       <div aria-label="Modal Success">
         {swapSuccess && (

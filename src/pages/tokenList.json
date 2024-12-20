@@ -3,7 +3,7 @@
         "name": "PULSECHAIN",
         "ticker": "PLS",
         "address": "0x0000000000000000000000000000000000000000",
-        "image": "https://dd.dexscreener.com/ds-data/chains/pulsechain.png",
+        "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/24735.png",
         "decimal": "18",
         "featured": true
     },
@@ -18,8 +18,8 @@
     {
         "name": "WRAPPED PULSECHAIN",
         "ticker": "WPLS",
-        "address": "0xa1077a294dde1b09bb078844df40758a5d0f9a27",
-        "image": "https://dd.dexscreener.com/ds-data/chains/pulsechain.png",
+        "address": "0xA1077a294dDE1B09bB078844df40758a5D0f9a27",
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0xA1077a294dDE1B09bB078844df40758a5D0f9a27.png",
         "decimal": "18",
         "featured": true
     },
@@ -31,19 +31,12 @@
         "decimal": "18",
         "featured": true
     },
-    {
-        "name": "INCENTIVE",
-        "ticker": "INC",
-        "address": "0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d",
-        "image": "https://tokens.app.pulsex.com/images/tokens/0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d.png",
-        "decimal": "18",
-        "featured": true
-    },
+
     {
         "name": "ATROPA",
         "ticker": "ATROPA",
         "address": "0xCc78A0acDF847A2C1714D2A925bB4477df5d48a6",
-        "image": "https://github.com/piteasio/app-tokens/blob/main/token-logo/0xCc78A0acDF847A2C1714D2A925bB4477df5d48a6.png",
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0xCc78A0acDF847A2C1714D2A925bB4477df5d48a6.png",
         "decimal": "18",
         "featured": true
     },
@@ -78,244 +71,5 @@
         "image": "https://tokens.app.pulsex.com/images/tokens/0x0Cb6F5a34ad42ec934882A05265A7d5F59b51A2f.png",
         "decimal": "6",
         "featured": true
-    },
-    {
-        "name": "PermaGIFF",
-        "ticker": "pGIFF",
-        "address": "0x8fC70fd5F10Cd5494EB369b0737CefD22eB33F17",
-        "image": "https://www.geckoterminal.com/_next/image?url=https%3A%2F%2Fassets.coingecko.com%2Fcoins%2Fimages%2F37732%2Fsmall%2Fpgiff.png%3F1715336369&w=32&q=75",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "GIFFORDwear",
-        "ticker": "GIFF",
-        "address": "0x6e86e2b8be6228d1c12aA9d82f5Ec3F27A88Ecce",
-        "image": "https://www.geckoterminal.com/_next/image?url=https%3A%2F%2Fassets.coingecko.com%2Fcoins%2Fimages%2F37731%2Fsmall%2Fgiff.png%3F1715336261&w=32&q=75",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Big Bonus Coin",
-        "ticker": "BBC",
-        "address": "0x8b4cfb020aF9AcAd95AD80020cE8f67FBB2C700E",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x8b4cfb020af9acad95ad80020ce8f67fbb2c700e.png?size=lg&key=76f26a",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "9INCH",
-        "ticker": "9INCH",
-        "address": "0x3ca80d83277e721171284667829c686527B8b3c5",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x3ca80d83277e721171284667829c686527b8b3c5.png?size=lg&key=c35f65",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Teddy Bear",
-        "ticker": "BEAR",
-        "address": "0xd6c31bA0754C4383A41c0e9DF042C62b5e918f6d",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0xd6c31ba0754c4383a41c0e9df042c62b5e918f6d.png?size=lg&key=d84374",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Spark Swap",
-        "ticker": "Spark",
-        "address": "0x6386704cD6f7A584EA9D23cccA66aF7EBA5a727e",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x6386704cd6f7a584ea9d23ccca66af7eba5a727e.png?size=lg&key=d66813",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "SOLID X",
-        "ticker": "SOLIDX",
-        "address": "0x8Da17Db850315A34532108f0f5458fc0401525f6",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x8da17db850315a34532108f0f5458fc0401525f6.png?size=lg&key=25207c",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "9MM",
-        "ticker": "9MM",
-        "address": "0x7b39712Ef45F7dcED2bBDF11F3D5046bA61dA719",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x7b39712ef45f7dced2bbdf11f3d5046ba61da719.png?size=lg&key=f530b2",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "HEX - ethereum",
-        "ticker": "eHEX",
-        "address": "0x57fde0a71132198BBeC939B98976993d8D89D225",
-        "image": "https://tokens.app.pulsex.com/images/tokens/0x57fde0a71132198BBeC939B98976993d8D89D225.png",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Wrapped BTC - ethereum",
-        "ticker": "eWBTC",
-        "address": "0xb17D901469B9208B17d916112988A3FeD19b5cA1",
-        "image": "https://tokens.app.pulsex.com/images/tokens/0xb17D901469B9208B17d916112988A3FeD19b5cA1.png",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "dickwifbutt",
-        "ticker": "DWB",
-        "address": "0xAEbcD0F8f69ECF9587e292bdfc4d731c1abedB68",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0xaebcd0f8f69ecf9587e292bdfc4d731c1abedb68.png?size=lg&key=7d8d24",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "AxisAlive",
-        "ticker": "AXIS",
-        "address": "0x8BDB63033b02C15f113De51EA1C3a96Af9e8ecb5",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x8bdb63033b02c15f113de51ea1c3a96af9e8ecb5.png?size=lg&key=c23b47",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Hex Orange Address",
-        "ticker": "HOA",
-        "address": "0x7901a3569679AEc3501dbeC59399F327854a70fe",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x7901a3569679aec3501dbec59399f327854a70fe.png?size=lg&key=898653",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Pulse Drip",
-        "ticker": "PDRIP",
-        "address": "0xeB2CEed77147893Ba8B250c796c2d4EF02a72B68",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0xeb2ceed77147893ba8b250c796c2d4ef02a72b68.png?size=lg&key=e9e03b",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "LUSD Stablecoin - pulsechain",
-        "ticker": "pLUSD",
-        "address": "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x5f98805a4e8be255a32880fdec7f6728c6568ba0.png?size=lg&key=ed1d76",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "BROmance",
-        "ticker": "BRO",
-        "address": "0x401464296A7e0cd14D85AB6baF0Dc91B5ad5Ad1b",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x401464296a7e0cd14d85ab6baf0dc91b5ad5ad1b.png?size=lg&key=2c137f",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Orange Man Good",
-        "ticker": "OMG",
-        "address": "0xf21aeE14137E9bC4B3D5170300dde849f7fE2D85",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0xf21aee14137e9bc4b3d5170300dde849f7fe2d85.png?size=lg&key=ca74c6",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "SCUBA STEVE",
-        "ticker": "TEVE",
-        "address": "0x5FE90464eD06B809D3f8888aD12e98346E409d4D",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x5fe90464ed06b809d3f8888ad12e98346e409d4d.png?size=lg&key=090952",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "BABY SHARK",
-        "ticker": "HARK",
-        "address": "0xCD2854239FEde3B392061397C1f9F3446d605a82",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0xcd2854239fede3b392061397c1f9f3446d605a82.png?size=lg&key=de69ea",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "DickWifPump",
-        "ticker": "DWP",
-        "address": "0x424E38032E9D3BfD0A72f837B4d930A6831D11c6",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x424e38032e9d3bfd0a72f837b4d930a6831d11c6.png?size=lg&key=e09b43",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Icosa from Ethereum",
-        "ticker": "ICSA",
-        "address": "0xb4d363D5dF85f0fBc746c236Fd410d82BF856f78",
-        "image": "https://github.com/piteasio/app-tokens/blob/main/token-logo/0xb4d363D5dF85f0fBc746c236Fd410d82BF856f78.png",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Icosa Burn",
-        "ticker": "iBurn",
-        "address": "0xBd2826B7823537fcD30D738aBe4250AD6262209c",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0xbd2826b7823537fcd30d738abe4250ad6262209c.png?size=lg&key=17d4d7",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "PXDC Stablecoin",
-        "ticker": "PXDC",
-        "address": "0xeB6b7932Da20c6D7B3a899D5887d86dfB09A6408",
-        "image": "https://tokens.app.pulsex.com/images/tokens/0xeB6b7932Da20c6D7B3a899D5887d86dfB09A6408.png",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Maximus DECI",
-        "ticker": "DECI",
-        "address": "0x6b32022693210cd2cfc466b9ac0085de8fc34ea6",
-        "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/22189.png",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Good Old Fashioned Un Registered Security",
-        "ticker": "GOFURS",
-        "address": "0x54f667dB585b7B10347429C72c36c8B59aB441cb",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x54f667db585b7b10347429c72c36c8b59ab441cb.png?size=lg&key=3aaa8d",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Freedom of Peach フリーダム オブ ピーチ",
-        "ticker": "PEACH",
-        "address": "0x3cC6704b0902475587363DEfbD6dAb2ec0581628",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x3cc6704b0902475587363defbd6dab2ec0581628.png?size=lg&key=6a009c",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "ナナナ Banana Republic",
-        "ticker": "Nanana",
-        "address": "0x74D98E37132dF921dF38c5A2Ae8748aDbab63238",
-        "image": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x74d98e37132df921df38c5a2ae8748adbab63238.png?size=lg&key=afabd3",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "Hedron",
-        "ticker": "HDRN",
-        "address": "0x3819f64f282bf135d62168C1e513280dAF905e06",
-        "image": "https://tokens.app.pulsex.com/images/tokens/0x3819f64f282bf135d62168C1e513280dAF905e06.png",
-        "featured": true
-    },
-    {
-        "name": "The Rise of Cock",
-        "ticker": "COCK",
-        "address": "0x40b49a9e5B8E3CC137E9CA57A5F4382D1B3dF6FE",
-        "image": "https://ipfs.io/ipfs/QmPwb3N33j6zYevEAi2z18DFEjfJ8pjFaZTP3A4dz3raHn/30px%20logo.png",
-        "decimal": "18",
-        "featured": true
-    },
-    {
-        "name": "COAST",
-        "ticker": "CST",
-        "decimal": "6",
-        "address": "0x600136dA8cc6D1Ea07449514604dc4ab7098dB82",
-        "featured": true,
-        "image": ""
     }
 ]

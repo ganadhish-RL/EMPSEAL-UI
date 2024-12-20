@@ -27,6 +27,7 @@
     "swiper": "^11.0.6",
     "viem": "^2.13.3",
     "wagmi": "^2.9.8",
+    "web3": "^4.16.0",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
