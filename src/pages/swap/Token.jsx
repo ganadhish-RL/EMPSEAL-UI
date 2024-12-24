@@ -179,7 +179,7 @@ const Token = ({ onClose, onSelect }) => {
                 <div className="text-white text-base roboto leading-relaxed tracking-wide flex gap-2 items-center">
                   <img
                     src={tokenDetails.logoURI}
-                    className="w-8 h-8"
+                    className="w-4 h-4"
                     alt={tokenDetails.name}
                     onError={(e) => {
                       e.target.src = "path/to/fallback/image.png"; // Add a fallback image

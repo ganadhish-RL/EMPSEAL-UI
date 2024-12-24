@@ -41,7 +41,7 @@ const Wallet = () => {
 
   return (
     <div className="w-full border border-white rounded-xl py-4 2xl:px-6 lg:px-5 px-4 bg-black md:flex gap-8">
-      <div className="flex flex-col bg-[#161616] p-5 rounded-lg w-full md:max-w-[216px]">
+      <div className="flex flex-col bg-[#161616] p-5 rounded-lg w-full md:max-w-[202px]">
         <div className="flex items-center gap-2 mb-4">
           <img src={Logo} alt="Logo" className="h-8" />
           {address ? (
@@ -76,7 +76,7 @@ const Wallet = () => {
           </div>
         </div>
       </div>
-      <div className="flex justify-center gap-4 flex-col wallet_bg relative z-10 mt-3">
+      <div className="flex justify-center gap-4 flex-col wallet_bg relative z-10 md:mt-0 mt-3">
         <WalletConnect
           icon={<img src={WalletImg} alt="Wallet Icon" />}
           onChainChange={handleChainChange}

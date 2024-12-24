@@ -79,7 +79,7 @@ export default function WalletConnect({
         return (
           <div className="flex flex-col justify-center items-center gap-4">
             <button
-              className="px-4 xl:px-2 py-2 text-white rounded-full shadow-sm cursor-pointer bg-secondary font-semibold flex items-center gap-2 roboto"
+              className="px-4 xl:px-4 py-2 text-white rounded-full shadow-sm cursor-pointer bg-secondary font-semibold flex items-center gap-2 roboto xl:justify-start justify-center"
               onClick={openAccountModal}
               type="button"
             >
@@ -87,7 +87,7 @@ export default function WalletConnect({
               Connected
             </button>
             <button
-              className="px-4 py-2 text-white bg-primary rounded-full font-semibold flex items-center gap-2 roboto"
+              className="px-4 py-2 text-white bg-primary rounded-full font-semibold flex items-center gap-2 roboto xl:justify-start justify-center"
               onClick={openChainModal}
               type="button"
             >

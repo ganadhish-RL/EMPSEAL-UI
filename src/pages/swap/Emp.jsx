@@ -176,7 +176,7 @@ const Emp = ({ setPadding }) => {
       BigInt('3'),
     ],
   });
-
+  
   const handleSlippageCalculated = (adjustedAmount) => {
     setMinAmountOut(adjustedAmount.toString());
     // Update the amountOut state with the adjusted amount
@@ -475,18 +475,6 @@ const Emp = ({ setPadding }) => {
           <div className="text-zinc-200 text-base font-normal roboto leading-normal">
             Receive
           </div>
-          <div className="text-center">
-            <span className="text-gray-400 text-base font-normal roboto leading-normal">
-              Available
-            </span>
-            <span className="text-gray-400 text-base font-normal roboto leading-normal">
-              {' '}
-              :{' '}
-            </span>
-            <span className="text-white text-base font-normal roboto leading-normal">
-              0
-            </span>
-          </div>
         </div>
 
         <div className="flex w-full border border-[#3b3c4e] px-4 py-4 rounded-2xl mt-3">
@@ -621,6 +609,7 @@ const Emp = ({ setPadding }) => {
       <div aria-label="Modal Success">
         {swapSuccess && (
           <Transcation
+          transactionHash={swapHash}
             onClose={() => setSwapSuccess(false)} // Close modal when clicked
           />
         )}
