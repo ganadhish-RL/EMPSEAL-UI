@@ -12,21 +12,40 @@ const calculateSlippage = (amountOut, slippagePercent) => {
 
 const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
   const [slippage, setSlippage] = useState(0);
-  const [customSlippage, setCustomSlippage] = useState(''); // For the input field
+  const [customSlippage, setCustomSlippage] = useState(''); // Store as string to handle empty input
 
   const handleSlippageSelect = (value) => {
     setSlippage(value);
+    setCustomSlippage(value.toString());
     calculateAdjustedAmount(value);
   };
 
   const handleCustomSlippageChange = (e) => {
-    const value = parseFloat(e.target.value);
-    if (isNaN(value) || value < 0 || value > 5) {
+    const inputValue = e.target.value;
+    
+    // Allow empty string for backspace
+    if (inputValue === '') {
+      setCustomSlippage('');
+      setSlippage(0);
       return;
     }
-    setCustomSlippage(value);
-    setSlippage(value);
-    calculateAdjustedAmount(value);
+
+    const value = parseFloat(inputValue);
+    
+    // Validate input
+    if (isNaN(value)) return;
+    
+    // Allow input up to 5
+    if (value > 5) return;
+    
+    // Store the raw input as string
+    setCustomSlippage(inputValue);
+    
+    // Only update slippage and calculate if value is within valid range
+    if (value >= 0.1 && value <= 5) {
+      setSlippage(value);
+      calculateAdjustedAmount(value);
+    }
   };
 
   const calculateAdjustedAmount = (slippageValue) => {
@@ -50,12 +69,11 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
     }
   }, [tradeInfo]);
 
-  const slippageOptions = [0.5, 1.0]; // Predefined options (buttons)
+  const slippageOptions = [0.5, 1.0];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-black border border-white rounded-xl p-6 w-full max-w-md relative">
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white"
@@ -80,12 +98,9 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
             </button>
           ))}
 
-          {/* Custom input for the fourth option */}
           <input
-            type="number"
-            step="0.1"
-            min="0.1"
-            max="5"
+            type="text"
+            inputMode="decimal"
             value={customSlippage}
             onChange={handleCustomSlippageChange}
             className="w-16 px-2 py-1 rounded bg-[#161616] text-white text-center focus:outline-none border border-white"
@@ -96,7 +111,7 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
         <div className="flex justify-end mt-4">
           <button
             onClick={onClose}
-            className="px-4 py-1 bg-black  text-white rounded border-[2px] border-[#FF9900]  roboto"
+            className="px-4 py-1 bg-black text-white rounded border-[2px] border-[#FF9900] roboto"
           >
             Close
           </button>

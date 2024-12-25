@@ -8,6 +8,7 @@ import Info from '../../assets/images/info.svg';
 import { Link } from 'react-router-dom';
 import Amount from './Amount';
 import Token from './Token';
+import { formatEther } from "viem";
 import { useAccount, useReadContract, useWatchBlocks, useBalance } from 'wagmi';
 import SlippageCalculator from './SlippageCalculator';
 import { RouterABI } from './routerAbi';
@@ -24,6 +25,7 @@ const Emp = ({ setPadding }) => {
   const [order, setOrder] = useState(false);
   const [selectedTokenA, setSelectedTokenA] = useState(Tokens[0]);
   console.log(selectedTokenA);
+  const [isRateReversed, setIsRateReversed] = useState(false);
   const [selectedTokenB, setSelectedTokenB] = useState(Tokens[1]);
   const [isSelectingTokenA, setIsSelectingTokenA] = useState(true);
   const [amountOut, setAmountOut] = useState('0');
@@ -33,7 +35,9 @@ const Emp = ({ setPadding }) => {
   const [swapSuccess, setSwapSuccess] = useState(false);
   const [tradeInfo, setTradeInfo] = useState(undefined);
   const [selectedPercentage, setSelectedPercentage] = useState('');
-  const { address } = useAccount();
+  const { address, chain } = useAccount();
+  const [balanceAddress, setBalanceAddress] = useState(null);
+  const { data : datas } = useBalance({ address });
   const [fees, setFees] = useState(0);
   const [minAmountOut, setMinAmountOut] = useState('0');
 
@@ -43,6 +47,25 @@ const Emp = ({ setPadding }) => {
     setSwapStatus('IDLE'); // Reset status when closing modal
   };
 
+   useEffect(() => {
+      if (address && datas) {
+       
+        setBalanceAddress(formatEther(datas.value));
+      } else if (!address) {
+        setBalanceAddress("0.00");
+      }
+
+    }, [address, datas]);
+  
+    const formattedBalance = balanceAddress
+    ? `${parseFloat(balanceAddress).toFixed(2)}`
+    : "0.00";
+      
+
+      console.log(formattedBalance)
+
+      
+  
   function setRoute(path) {
     useStore.setState({ route: path });
   }
@@ -59,24 +82,41 @@ const Emp = ({ setPadding }) => {
     address: address, // Use the connected wallet address
     token: selectedTokenA.address, // Token address of TokenA
   });
+  console.log(tokenBalance)
 
   // Format the chain balance
   const formattedChainBalance = tokenBalance
     ? parseFloat(tokenBalance.formatted).toFixed(2) // Format to 6 decimal places
     : '0.000000';
 
-  const handlePercentageChange = (e) => {
-    const percentage = e.target.value === '' ? null : parseInt(e.target.value); // If 'Select' is chosen, set to null
-    setSelectedPercentage(percentage);
-    const calculatedAmount = percentage ? calculateAmount(percentage) : ''; // If no selection, clear the amount
-    setAmountIn(calculatedAmount); // Update the amount input with the calculated value
-  };
+    const handlePercentageChange = (e) => {
+      const percentage = e.target.value === '' ? '' : parseInt(e.target.value);
+      setSelectedPercentage(percentage);
+      const calculatedAmount = calculateAmount(percentage);
+      setAmountIn(calculatedAmount);
+    };
 
   // Calculate the amount based on the selected percentage
   const calculateAmount = (percentage) => {
-    const balance = parseFloat(tokenBalance?.formatted || 0); // If the balance is loading, assume 0 balance
-    return (balance * (percentage / 100)).toFixed(2); // Calculate the percentage of balance
+    if (!percentage) return '';
+    
+    let balance;
+    if (selectedTokenA.address === '0x0000000000000000000000000000000000000000') {
+      // For native token (EMPTY_ADDRESS)
+      balance = parseFloat(formattedBalance || 0);
+    } else {
+      // For other tokens
+      balance = parseFloat(tokenBalance?.formatted || 0);
+    }
+    const calculatedAmount = balance * (percentage / 100);
+    if (selectedTokenA.address === '0x0000000000000000000000000000000000000000' && percentage === 100) {
+      // Leave some balance for gas fees (e.g., 0.01 units)
+      return Math.max(0, (calculatedAmount - 0.01)).toFixed(6);
+    }
+    
+    return calculatedAmount.toFixed(6);
   };
+
 
   const WETH_ADDRESS = '0xa1077a294dde1b09bb078844df40758a5d0f9a27';
   const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -289,7 +329,23 @@ const Emp = ({ setPadding }) => {
         setSwapSuccess(false);
       });
   };
+  const getRateDisplay = () => {
+    if (!singleToken?.amounts?.[singleToken.amounts.length - 1]) return '0';
+    
+    const rate = parseFloat(
+      formatUnits(
+        singleToken.amounts[singleToken.amounts.length - 1],
+        parseInt(selectedTokenB.decimal)
+      )
+    );
+    
+    return isRateReversed ? (1 / rate).toFixed(6) : rate.toFixed(6);
+  };
 
+  useEffect(() => {
+    setSelectedPercentage('');
+    setAmountIn('');
+  }, [selectedTokenA]);
   return (
     <>
       <div className="w-full border border-white rounded-xl py-10 2xl:px-16 lg:px-12 md:px-8 px-4 bg-black md:mt-0 mt-4">
@@ -330,6 +386,17 @@ const Emp = ({ setPadding }) => {
         <div className="flex justify-between gap-3 items-center lg:px-2">
           <div className="text-zinc-200 text-base font-normal roboto leading-normal">
             Pay
+            <select
+      className="text-white bg-black border border-[#3b3c4e] rounded-lg ms-2 py-1 cursor-pointer"
+      value={selectedPercentage}
+      onChange={handlePercentageChange}
+      disabled={isLoading}
+    >
+      <option value="">Max</option>
+      <option value={50}>50%</option>
+      <option value={100}>100%</option>
+    </select>
+
           </div>
 
           <div className="text-center">
@@ -341,22 +408,16 @@ const Emp = ({ setPadding }) => {
               :{' '}
             </span>
             <span className="text-white text-base font-normal roboto leading-normal">
-              {isLoading
-                ? 'Loading..'
-                : `${
-                    tokenBalance
-                      ? parseFloat(tokenBalance.formatted).toFixed(2)
-                      : '0.00'
-                  }`}
-              <select
-                className="text-white bg-black border border-[#3b3c4e] rounded-lg ms-2 py-1 cursor-pointer"
-                value={selectedPercentage}
-                onChange={handlePercentageChange}
-              >
-                <option value="">Max</option>
-                <option value={50}>50%</option>
-                <option value={100}>100%</option>
-              </select>
+            {isLoading
+  ? 'Loading..'
+  : selectedTokenA.address === EMPTY_ADDRESS
+  ? `${formattedBalance}`
+  : `${
+      tokenBalance
+        ? parseFloat(tokenBalance.formatted).toFixed(2)
+        : '0.00'
+    }`}
+
             </span>
           </div>
         </div>
@@ -521,27 +582,13 @@ const Emp = ({ setPadding }) => {
         </div>
         <div className="flex justify-center items-center gap-2 my-4">
           <div className="text-white text-base font-normal roboto leading-normal">
-            1 {selectedTokenA.ticker} ={' '}
-            {singleToken &&
-            singleToken.amounts &&
-            singleToken.amounts[singleToken.amounts.length - 1]
-              ? parseFloat(
-                  formatUnits(
-                    singleToken.amounts[singleToken.amounts.length - 1],
-                    parseInt(selectedTokenB.decimal)
-                  )
-                ).toFixed(6)
-              : '0'}{' '}
-            {selectedTokenB.ticker}
+          1 {isRateReversed ? selectedTokenB.ticker : selectedTokenA.ticker} ={' '}
+          {getRateDisplay()}{' '}
+          {isRateReversed ? selectedTokenA.ticker : selectedTokenB.ticker}
           </div>
           <div
             className="cursor-pointer"
-            onClick={() => {
-              const _tokenA = selectedTokenA;
-              const _tokenB = selectedTokenB;
-              setSelectedTokenA(_tokenB);
-              setSelectedTokenB(_tokenA);
-            }}
+            onClick={() => setIsRateReversed(!isRateReversed)}
           >
             <img src={Refresh} alt="Refresh" />
           </div>

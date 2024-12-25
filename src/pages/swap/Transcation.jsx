@@ -36,7 +36,7 @@ const Transcation = ({ onClose, transactionHash }) => {
               <Link target="_blank" to={`https://otter.pulsechain.com/tx/${transactionHash}`}>
               <div className="text-white text-base font-bold roboto text-center leading-normal">
                 
-                View on Etherscan
+                View on Otterscan
               </div>
               </Link>
 
