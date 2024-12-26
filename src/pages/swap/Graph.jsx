@@ -100,7 +100,7 @@ const Graph = ({ padding }) => {
   };
 
   return (
-    <div className={`w-full border-[2px] border-[#FF9900] rounded-xl pt-4 pb-12 bg-black ${padding}`}>
+    <div className={`w-full border-[2px] border-[#FF9900] rounded-xl pt-4  bg-black ${padding}`}>
       {loading && (
         <div className="text-white text-center py-4">Loading Chart...</div>
       )}

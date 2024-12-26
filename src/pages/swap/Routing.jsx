@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Eth from "../../assets/images/eth.png";
 import Bi from "../../assets/images/bi.png";
-import Arrow from "../../assets/images/icon-wrapper.png";
+import Arrow from "../../assets/images/arrow-2.svg";
 import Line from "../../assets/images/Line 106.png";
 import tokens from "../tokenList.json";
 import adapters from "../adapters.json";
@@ -57,7 +57,7 @@ const Routing = ({ routing }) => {
                 <div className="flex flex-col gap-2">
 
                   <div className="flex flex-col gap-4">
-                    <img src={Arrow} alt="Arrow" />
+                    <img className="w-2.5 h-2.5" src={Arrow} alt="Arrow" />
                     <p className="text-white text-[10px] font-bold roboto">{getAdapter(adapter[index])}</p>
                   </div>
                 </div>

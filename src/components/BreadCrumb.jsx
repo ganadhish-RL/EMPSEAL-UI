@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import Arrow from '../assets/images/arrow-2.svg';
 
 const BreadCrumb = () => {
   const location = useLocation();
@@ -16,7 +17,14 @@ const BreadCrumb = () => {
         {/* Home link always appears */}
         <li className="breadcrumb-item text-[#FF9900]">
           <Link className="me-2" to="/">Home</Link>
-          {pathnames.length > 0 && <span> &gt; </span> } {/* Separator after Home if there are more segments */}
+          {pathnames.length > 0 && (
+    <img 
+      src={Arrow} 
+      alt="separator" 
+      className="mx-2 inline-block" 
+      style={{ width: '10px', height: '10px' }}
+    />
+  )}
         </li>
         
         {/* Generate breadcrumb links for each path segment */}

@@ -6,7 +6,7 @@ import Graph from "./Graph";
 import Table from "./Table";
 
 const Normal = () => {
-  const [padding, setPadding] = React.useState("lg:h-[332px] h-full");
+  const [padding, setPadding] = React.useState("lg:min-h-[332px] h-full");
   return (
     <>
       <div className="bg-[#121214] py-3 relative">
