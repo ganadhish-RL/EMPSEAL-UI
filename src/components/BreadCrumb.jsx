@@ -9,35 +9,43 @@ const BreadCrumb = () => {
     return null;
   }
   // Helper function to format the breadcrumb text
-  const formatBreadcrumb = (text) => text.replace(/-/g, '_').toUpperCase();
+  const formatBreadcrumb = (text) => text.replace(/-/g, '_');
 
   return (
     <nav aria-label="breadcrumb ">
       <ol className="breadcrumb flex container mx-auto px-24 pt-4">
         {/* Home link always appears */}
-        <li className="breadcrumb-item text-[#FF9900]">
-          <Link className="me-2" to="/">Home</Link>
+        <li className="breadcrumb-item text-[#FF9900] roboto">
+          <Link className="me-2" to="/">
+            Home
+          </Link>
           {pathnames.length > 0 && (
-    <img 
-      src={Arrow} 
-      alt="separator" 
-      className="mx-2 inline-block" 
-      style={{ width: '10px', height: '10px' }}
-    />
-  )}
+            <img
+              src={Arrow}
+              alt="separator"
+              className="mx-2 inline-block"
+              style={{ width: '21px', height: '21px' }}
+            />
+          )}
         </li>
-        
+
         {/* Generate breadcrumb links for each path segment */}
         {pathnames.map((value, index) => {
           const to = `/${pathnames.slice(0, index + 1).join('/')}`;
           const isLast = index === pathnames.length - 1;
           return isLast ? (
-            <li className="breadcrumb-item active text-white ms-2" key={to} aria-current="page">
+            <li
+              className="breadcrumb-item active text-white ms-2 capitalize roboto"
+              key={to}
+              aria-current="page"
+            >
               {formatBreadcrumb(value)}
             </li>
           ) : (
             <li className="breadcrumb-item text-[#FF9900] ps-2 pe-1" key={to}>
-              <Link className="pe-2" to={to}>{formatBreadcrumb(value)}</Link>
+              <Link className="pe-2" to={to}>
+                {formatBreadcrumb(value)}
+              </Link>
               <span> &gt; </span> {/* Separator for intermediate segments */}
             </li>
           );

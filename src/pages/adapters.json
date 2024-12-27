@@ -20,10 +20,6 @@
         "address": "0x6AeC9Ab81A6D66Cae61B1F11c9A5c3d06020bfCB"
     },
     {
-        "name": "eazyswap",
-        "address": "0x9C8667cFd275D8Ad7D25108d810e166586c7FABC"
-    },
-    {
         "name": "9MMV3",
         "address": "0x4c2191cd497B0e15AA331B38A57F4329A8E018C3"
     },
@@ -36,7 +32,7 @@
         "address": "0xcfE09D7f35131DAfebD12356C4f52b17f65Da2E5"
     },
     {
-        "name": "phuxV2",
-        "address": "0xe92d374a55655f4b8447e3a6eaca87bbc09dd8d7"
+        "name": "EmpXStable",
+        "address": "0x9862E4CDf41344081490c1CC0132d555ad1C4853"
     }
 ]

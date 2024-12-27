@@ -48,16 +48,16 @@ const Wallet = () => {
             <Link
               to="#"
               target="_blank"
-              className="text-white font-mono text-sm truncate"
+              className="text-white font-mono text-sm truncate roboto"
             >
               {truncateAddress(address)}
             </Link>
           ) : (
-            <span className="text-gray-400">Not connected</span>
+            <span className="text-gray-400">Not Connected</span>
           )}
         </div>
         {chainName ? (
-          <div className="text-white text-sm font-medium mb-2 flex items-center">
+          <div className="text-white text-sm font-medium mb-2 flex items-center roboto">
             {chainIconUrl && (
               <img
                 src={chainIconUrl}
@@ -71,7 +71,7 @@ const Wallet = () => {
           <div className="text-gray-400 text-sm">No chain found</div>
         )}
         <div className="flex items-center gap-2">
-          <div className="text-white text-lg font-bold">
+          <div className="text-white text-lg font-bold roboto">
             {formattedBalance} {chain?.nativeCurrency?.symbol || "ETH"}
           </div>
         </div>

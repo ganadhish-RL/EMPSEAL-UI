@@ -8,7 +8,7 @@ import Info from '../../assets/images/info.svg';
 import { Link } from 'react-router-dom';
 import Amount from './Amount';
 import Token from './Token';
-import { formatEther } from "viem";
+import { formatEther } from 'viem';
 import { useAccount, useReadContract, useWatchBlocks, useBalance } from 'wagmi';
 import SlippageCalculator from './SlippageCalculator';
 import { RouterABI } from './routerAbi';
@@ -17,6 +17,7 @@ import Tokens from '../tokenList.json';
 import { swapTokens } from '../../utils/contractCalls';
 import { useStore } from '../../redux/store/routeStore';
 import Transcation from './Transcation';
+import { Copy, Check } from 'lucide-react';
 
 const Emp = ({ setPadding }) => {
   const [isAmountVisible, setAmountVisible] = useState(false);
@@ -37,9 +38,11 @@ const Emp = ({ setPadding }) => {
   const [selectedPercentage, setSelectedPercentage] = useState('');
   const { address, chain } = useAccount();
   const [balanceAddress, setBalanceAddress] = useState(null);
-  const { data : datas } = useBalance({ address });
+  const { data: datas } = useBalance({ address });
   const [fees, setFees] = useState(0);
   const [minAmountOut, setMinAmountOut] = useState('0');
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [activeTokenAddress, setActiveTokenAddress] = useState(null);
 
   const [usdValue, setUsdValue] = useState('0.00');
   const [conversionRate, setConversionRate] = useState(null);
@@ -47,25 +50,20 @@ const Emp = ({ setPadding }) => {
     setSwapStatus('IDLE'); // Reset status when closing modal
   };
 
-   useEffect(() => {
-      if (address && datas) {
-       
-        setBalanceAddress(formatEther(datas.value));
-      } else if (!address) {
-        setBalanceAddress("0.00");
-      }
+  useEffect(() => {
+    if (address && datas) {
+      setBalanceAddress(formatEther(datas.value));
+    } else if (!address) {
+      setBalanceAddress('0.00');
+    }
+  }, [address, datas]);
 
-    }, [address, datas]);
-  
-    const formattedBalance = balanceAddress
+  const formattedBalance = balanceAddress
     ? `${parseFloat(balanceAddress).toFixed(2)}`
-    : "0.00";
-      
+    : '0.00';
 
-      console.log(formattedBalance)
+  console.log(formattedBalance);
 
-      
-  
   function setRoute(path) {
     useStore.setState({ route: path });
   }
@@ -82,26 +80,28 @@ const Emp = ({ setPadding }) => {
     address: address, // Use the connected wallet address
     token: selectedTokenA.address, // Token address of TokenA
   });
-  console.log(tokenBalance)
+  console.log(tokenBalance);
 
   // Format the chain balance
   const formattedChainBalance = tokenBalance
     ? parseFloat(tokenBalance.formatted).toFixed(2) // Format to 6 decimal places
     : '0.000000';
 
-    const handlePercentageChange = (e) => {
-      const percentage = e.target.value === '' ? '' : parseInt(e.target.value);
-      setSelectedPercentage(percentage);
-      const calculatedAmount = calculateAmount(percentage);
-      setAmountIn(calculatedAmount);
-    };
+  const handlePercentageChange = (e) => {
+    const percentage = e.target.value === '' ? '' : parseInt(e.target.value);
+    setSelectedPercentage(percentage);
+    const calculatedAmount = calculateAmount(percentage);
+    setAmountIn(calculatedAmount);
+  };
 
   // Calculate the amount based on the selected percentage
   const calculateAmount = (percentage) => {
     if (!percentage) return '';
-    
+
     let balance;
-    if (selectedTokenA.address === '0x0000000000000000000000000000000000000000') {
+    if (
+      selectedTokenA.address === '0x0000000000000000000000000000000000000000'
+    ) {
       // For native token (EMPTY_ADDRESS)
       balance = parseFloat(formattedBalance || 0);
     } else {
@@ -109,14 +109,16 @@ const Emp = ({ setPadding }) => {
       balance = parseFloat(tokenBalance?.formatted || 0);
     }
     const calculatedAmount = balance * (percentage / 100);
-    if (selectedTokenA.address === '0x0000000000000000000000000000000000000000' && percentage === 100) {
+    if (
+      selectedTokenA.address === '0x0000000000000000000000000000000000000000' &&
+      percentage === 100
+    ) {
       // Leave some balance for gas fees (e.g., 0.01 units)
-      return Math.max(0, (calculatedAmount - 0.01)).toFixed(6);
+      return Math.max(0, calculatedAmount - 0.01).toFixed(6);
     }
-    
+
     return calculatedAmount.toFixed(6);
   };
-
 
   const WETH_ADDRESS = '0xa1077a294dde1b09bb078844df40758a5d0f9a27';
   const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -216,7 +218,7 @@ const Emp = ({ setPadding }) => {
       BigInt('3'),
     ],
   });
-  
+
   const handleSlippageCalculated = (adjustedAmount) => {
     setMinAmountOut(adjustedAmount.toString());
     // Update the amountOut state with the adjusted amount
@@ -331,14 +333,14 @@ const Emp = ({ setPadding }) => {
   };
   const getRateDisplay = () => {
     if (!singleToken?.amounts?.[singleToken.amounts.length - 1]) return '0';
-    
+
     const rate = parseFloat(
       formatUnits(
         singleToken.amounts[singleToken.amounts.length - 1],
         parseInt(selectedTokenB.decimal)
       )
     );
-    
+
     return isRateReversed ? (1 / rate).toFixed(6) : rate.toFixed(6);
   };
 
@@ -346,6 +348,21 @@ const Emp = ({ setPadding }) => {
     setSelectedPercentage('');
     setAmountIn('');
   }, [selectedTokenA]);
+
+  const handleCopyAddress = async (address) => {
+    try {
+      await navigator.clipboard.writeText(address);
+      setActiveTokenAddress(address);
+      setCopySuccess(true);
+      setTimeout(() => {
+        setCopySuccess(false);
+        setActiveTokenAddress(null);
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy address:', err);
+    }
+  };
+
   return (
     <>
       <div className="w-full border border-white rounded-xl py-10 2xl:px-16 lg:px-12 md:px-8 px-4 bg-black md:mt-0 mt-4">
@@ -367,7 +384,11 @@ const Emp = ({ setPadding }) => {
             onClick={() => setSlippageVisible(true)}
             className="min-w-[27px] h-[25px]"
           >
-            <img src={Sett} alt="Sett" className="w-full h-full cursor-pointer" />
+            <img
+              src={Sett}
+              alt="Sett"
+              className="w-full h-full cursor-pointer"
+            />
           </div>
           <div
             onClick={() => {
@@ -387,16 +408,15 @@ const Emp = ({ setPadding }) => {
           <div className="text-zinc-200 text-base font-normal roboto leading-normal">
             Pay
             <select
-      className="text-white bg-black border border-[#3b3c4e] rounded-lg ms-2 py-1 cursor-pointer"
-      value={selectedPercentage}
-      onChange={handlePercentageChange}
-      disabled={isLoading}
-    >
-      <option value="">Max</option>
-      <option value={50}>50%</option>
-      <option value={100}>100%</option>
-    </select>
-
+              className="text-white bg-black border border-[#3b3c4e] rounded-lg ms-2 py-1 cursor-pointer"
+              value={selectedPercentage}
+              onChange={handlePercentageChange}
+              disabled={isLoading}
+            >
+              <option value="">Select</option>
+              <option value={50}>50%</option>
+              <option value={100}>100%</option>
+            </select>
           </div>
 
           <div className="text-center">
@@ -408,16 +428,15 @@ const Emp = ({ setPadding }) => {
               :{' '}
             </span>
             <span className="text-white text-base font-normal roboto leading-normal">
-            {isLoading
-  ? 'Loading..'
-  : selectedTokenA.address === EMPTY_ADDRESS
-  ? `${formattedBalance}`
-  : `${
-      tokenBalance
-        ? parseFloat(tokenBalance.formatted).toFixed(2)
-        : '0.00'
-    }`}
-
+              {isLoading
+                ? 'Loading..'
+                : selectedTokenA.address === EMPTY_ADDRESS
+                ? `${formattedBalance}`
+                : `${
+                    tokenBalance
+                      ? parseFloat(tokenBalance.formatted).toFixed(2)
+                      : '0.00'
+                  }`}
             </span>
           </div>
         </div>
@@ -458,10 +477,19 @@ const Emp = ({ setPadding }) => {
               />
             </svg>
           </div>
-          <div className="flex justify-between gap-3 items-center lg:px-2 mb-4"></div>
+          <button
+            onClick={() => handleCopyAddress(selectedTokenA.address)}
+            className="p-1 hover:bg-gray-800 rounded-md transition-colors ms-2"
+          >
+            {copySuccess && activeTokenAddress === selectedTokenA.address ? (
+              <Check className="w-4 h-4 text-green-500" />
+            ) : (
+              <Copy className="w-4 h-4 text-gray-400 hover:text-white" />
+            )}
+          </button>
 
           <input
-            type="text"
+            type="number"
             placeholder={
               formattedChainBalance === '0.000000'
                 ? '0'
@@ -469,10 +497,10 @@ const Emp = ({ setPadding }) => {
             }
             value={amountIn}
             onChange={(e) => setAmountIn(e.target.value)}
-            className="text-white text-xl font-bold roboto text-right w-full leading-7 outline-none border-none bg-transparent"
+            className="text-white text-xl font-bold roboto text-right w-full leading-7 outline-none border-none bg-transparent token_input"
           />
         </div>
-        <div className="text-right text-gray-400 text-sm mt-2 pe-1">
+        <div className="text-right text-gray-400 text-sm mt-2 pe-1 roboto">
           {conversionRate ? `≈ $${usdValue} USD` : 'Fetching rate...'}
         </div>
         <div
@@ -573,8 +601,18 @@ const Emp = ({ setPadding }) => {
               />
             </svg>
           </div>
+          <button
+            onClick={() => handleCopyAddress(selectedTokenB.address)}
+            className="p-1 hover:bg-gray-800 rounded-md transition-colors ms-2"
+          >
+            {copySuccess && activeTokenAddress === selectedTokenB.address ? (
+              <Check className="w-4 h-4 text-green-500" />
+            ) : (
+              <Copy className="w-4 h-4 text-gray-400 hover:text-white" />
+            )}
+          </button>
           <input
-            type="text"
+            type="number"
             placeholder="0"
             value={parseFloat(amountOut).toFixed(6)}
             className="text-white text-xl font-bold roboto text-right w-full leading-7 outline-none border-none bg-transparent"
@@ -582,9 +620,9 @@ const Emp = ({ setPadding }) => {
         </div>
         <div className="flex justify-center items-center gap-2 my-4">
           <div className="text-white text-base font-normal roboto leading-normal">
-          1 {isRateReversed ? selectedTokenB.ticker : selectedTokenA.ticker} ={' '}
-          {getRateDisplay()}{' '}
-          {isRateReversed ? selectedTokenA.ticker : selectedTokenB.ticker}
+            1 {isRateReversed ? selectedTokenB.ticker : selectedTokenA.ticker} ={' '}
+            {getRateDisplay()}{' '}
+            {isRateReversed ? selectedTokenA.ticker : selectedTokenB.ticker}
           </div>
           <div
             className="cursor-pointer"
@@ -656,7 +694,7 @@ const Emp = ({ setPadding }) => {
       <div aria-label="Modal Success">
         {swapSuccess && (
           <Transcation
-          transactionHash={swapHash}
+            transactionHash={swapHash}
             onClose={() => setSwapSuccess(false)} // Close modal when clicked
           />
         )}

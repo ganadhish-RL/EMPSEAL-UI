@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const calculateSlippage = (amountOut, slippagePercent) => {
   if (slippagePercent < 0.1 || slippagePercent > 5) {
@@ -13,6 +13,7 @@ const calculateSlippage = (amountOut, slippagePercent) => {
 const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
   const [slippage, setSlippage] = useState(0);
   const [customSlippage, setCustomSlippage] = useState(''); // Store as string to handle empty input
+  const modalRef = useRef(null);
 
   const handleSlippageSelect = (value) => {
     setSlippage(value);
@@ -69,11 +70,25 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
     }
   }, [tradeInfo]);
 
+ 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
+
   const slippageOptions = [0.5, 1.0];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-black border border-white rounded-xl p-6 w-full max-w-md relative">
+      <div ref={modalRef} className="bg-black border border-white rounded-xl p-6 w-full max-w-md relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white"

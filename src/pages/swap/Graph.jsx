@@ -115,7 +115,7 @@ const Graph = ({ padding }) => {
       </div>
 
       {highValue !== null && (
-        <div className="text-white text-[12px] px-4 pt-2">
+        <div className="text-white text-[12px] px-4 pt-2 roboto">
           <strong>Price:</strong> {highValue}
         </div>
       )}

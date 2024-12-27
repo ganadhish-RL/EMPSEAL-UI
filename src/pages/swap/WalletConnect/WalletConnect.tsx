@@ -84,7 +84,7 @@ export default function WalletConnect({
               type="button"
             >
               {icon && <span>{icon}</span>}
-              Connected
+              Disconnect
             </button>
             <button
               className="px-4 py-2 text-white bg-primary rounded-full font-semibold flex items-center gap-2 roboto xl:justify-start justify-center"

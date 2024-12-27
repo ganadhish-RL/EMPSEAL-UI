@@ -57,7 +57,7 @@
         "featured": true
     },
     {
-        "name": "USDC - ethereum",
+        "name": "USDC",
         "ticker": "eUSDC",
         "address": "0x15D38573d2feeb82e7ad5187aB8c1D52810B1f07",
         "image": "https://tokens.app.pulsex.com/images/tokens/0x15D38573d2feeb82e7ad5187aB8c1D52810B1f07.png",
