@@ -43,9 +43,10 @@ const Emp = ({ setPadding }) => {
   const [minAmountOut, setMinAmountOut] = useState('0');
   const [copySuccess, setCopySuccess] = useState(false);
   const [activeTokenAddress, setActiveTokenAddress] = useState(null);
-
   const [usdValue, setUsdValue] = useState('0.00');
+  const [usdValueTokenB, setUsdValueTokenB] = useState('0.00');
   const [conversionRate, setConversionRate] = useState(null);
+  const [conversionRateTokenB, setConversionRateTokenB] = useState(null);
   const handleCloseSuccessModal = () => {
     setSwapStatus('IDLE'); // Reset status when closing modal
   };
@@ -248,6 +249,28 @@ const Emp = ({ setPadding }) => {
   }, []);
 
   useEffect(() => {
+    const fetchConversionRateTokenB = async () => {
+      try {
+        const response = await fetch(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${selectedTokenB.name.toLowerCase()}&vs_currencies=usd`
+        );
+
+        const data = await response.json();
+        console.log(data);
+
+        const rate = data?.[selectedTokenB.name.toLowerCase()]?.usd || null;
+
+        setConversionRateTokenB(rate);
+      } catch (error) {
+        console.error('Failed to fetch conversion rate:', error);
+        setConversionRateTokenB(null);
+      }
+    };
+
+    fetchConversionRateTokenB();
+  }, []);
+
+  useEffect(() => {
     console.log('quote data', data);
     if (data && data.amounts && data.amounts.length > 0) {
       console.log('quote data', data);
@@ -309,6 +332,16 @@ const Emp = ({ setPadding }) => {
     }
   }, [amountIn, conversionRate]);
 
+  useEffect(() => {
+    if (conversionRateTokenB) {
+      const valueInUSD = (parseFloat(amountOut || 0) * conversionRateTokenB).toFixed(
+        6
+      );
+      setUsdValueTokenB(valueInUSD);
+    }
+  }, [amountOut, conversionRateTokenB]);
+
+
   const confirmSwap = async () => {
     await swapTokens(
       (_swapStatus) => {
@@ -361,6 +394,35 @@ const Emp = ({ setPadding }) => {
     } catch (err) {
       console.error('Failed to copy address:', err);
     }
+  };
+
+  const isInsufficientBalance = () => {
+    const inputAmount = parseFloat(amountIn) || 0;
+    if (selectedTokenA.address === EMPTY_ADDRESS) {
+      return inputAmount > parseFloat(formattedBalance);
+    } else {
+      return inputAmount > parseFloat(tokenBalance?.formatted || '0');
+    }
+  };
+
+  const getButtonText = () => {
+    if (isInsufficientBalance()) {
+      return 'Insufficient Balance';
+    }
+    
+    if (quoteLoading) {
+      return 'Loading...';
+    }
+    
+    if (selectedTokenA.address === EMPTY_ADDRESS && selectedTokenB.address === WETH_ADDRESS) {
+      return 'Wrap PLS';
+    }
+    
+    if (selectedTokenA.address === WETH_ADDRESS && selectedTokenB.address === EMPTY_ADDRESS) {
+      return 'Unwrap WPLS';
+    }
+    
+    return 'Swap';
   };
 
   return (
@@ -562,7 +624,7 @@ const Emp = ({ setPadding }) => {
         </div>
         <div className="flex justify-between gap-3 items-center">
           <div className="text-zinc-200 text-base font-normal roboto leading-normal">
-            Receive
+            Min. to Receive
           </div>
         </div>
 
@@ -618,6 +680,9 @@ const Emp = ({ setPadding }) => {
             className="text-white text-xl font-bold roboto text-right w-full leading-7 outline-none border-none bg-transparent"
           />
         </div>
+        <div className="text-right text-gray-400 text-sm mt-2 pe-1 roboto">
+          {conversionRateTokenB ? `≈ $${usdValueTokenB} USD` : 'Fetching rate...'}
+        </div>
         <div className="flex justify-center items-center gap-2 my-4">
           <div className="text-white text-base font-normal roboto leading-normal">
             1 {isRateReversed ? selectedTokenB.ticker : selectedTokenA.ticker} ={' '}
@@ -633,17 +698,14 @@ const Emp = ({ setPadding }) => {
         </div>
         <button
           onClick={() => setAmountVisible(true)}
-          className="w-full h-14 flex justify-center items-center rounded-xl bg-[#FF9900] roboto text-black text-base font-bold border hover:text-[#FF9900] border-[#FF9900] hover:bg-transparent"
+          disabled={isInsufficientBalance()}
+          className={`w-full h-14 flex justify-center items-center rounded-xl ${
+            isInsufficientBalance() 
+              ? 'bg-gray-500 cursor-not-allowed' 
+              : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
+          } roboto text-black text-base font-bold border border-[#FF9900]`}
         >
-          {quoteLoading
-            ? 'Loading...'
-            : selectedTokenA.address === EMPTY_ADDRESS &&
-              selectedTokenB.address === WETH_ADDRESS
-            ? 'Wrap PLS'
-            : selectedTokenA.address === WETH_ADDRESS &&
-              selectedTokenB.address === EMPTY_ADDRESS
-            ? 'Unwrap WPLS'
-            : 'Swap'}
+          {getButtonText()}
         </button>
         <div className="md:max-w-[403px] w-full mx-auto my-5 h-px relative bg-gray-700" />
         <div className="px-1 w-full mx-auto">

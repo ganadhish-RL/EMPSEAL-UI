@@ -246,10 +246,7 @@ body {
     height: 390px!important;
   }
   .h_grid_metallic{
-    height: 800px!important;
-  }
-  .h_grid6 {
-    height: 800px!important;
+    height: 260px!important;
   }
   .mt260{
     margin-top: 260px!important;
@@ -273,3 +270,16 @@ body {
 //   font-size: 30px!important;
 // }
 // }
+
+@media (max-width: 1024px) and (min-width: 768px) {
+  .container-class { /* Replace with your actual container class */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .section-class { /* Replace with your section class for individual cards */
+    width: 100%; /* Optional: Adjust the width to ensure full utilization */
+    margin-bottom: 20px; /* Space between sections */
+  }
+}

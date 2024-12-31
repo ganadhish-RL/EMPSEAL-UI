@@ -4,6 +4,7 @@ import {
   writeContract,
   waitForTransactionReceipt,
 } from "@wagmi/core";
+import { toast } from "react-toastify";
 import { SwapStatus, TradeInfo } from "./types/interface";
 import { WPLS } from "./abis/wplsABI";
 import { config } from "../Wagmi/config";
@@ -14,7 +15,7 @@ const JadRouterAddress = '0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32';
 const WETH_ADDRESS: Address = "0xa1077a294dde1b09bb078844df40758a5d0f9a27";
 const EMPTY_ADDRESS: Address = "0x0000000000000000000000000000000000000000";
 
-const checkAllowance = async (tokenInAddress: string, userAddress: Address) => {
+ const checkAllowance = async (tokenInAddress: string, userAddress: Address) => {
   try {
     let result = await readContract(config, {
       abi: erc20Abi,
@@ -31,7 +32,7 @@ const checkAllowance = async (tokenInAddress: string, userAddress: Address) => {
   }
 };
 
-const callApprove = async (tokenInAddress: string, amountIn: bigint) => {
+ const callApprove = async (tokenInAddress: string, amountIn: bigint) => {
   try {
     let result = await writeContract(config, {
       abi: erc20Abi,
@@ -207,8 +208,17 @@ export const swapTokens = async (
     if (tokenInAddress !== EMPTY_ADDRESS) {
       const approvedTokens = await checkAllowance(tokenInAddress, userAddress);
       if (approvedTokens.data < tradeInfo.amountIn) {
-        setStatus("APPROVING");
-        await callApprove(tokenInAddress, tradeInfo.amountIn);
+        try {
+          setStatus("APPROVING");
+          await callApprove(tokenInAddress, tradeInfo.amountIn);
+          setStatus("APPROVED");
+          toast.success("Token approved! Ready to confirm the transaction.");
+        } catch (error) {
+          setStatus("ERROR");
+          console.error("Approval failed:", error);
+          toast.error("Token approval failed");
+          throw error; // Rethrow if necessary for further error handling
+        }
       }
     }
     // setStatus("APPROVED");
@@ -223,6 +233,7 @@ export const swapTokens = async (
       swapResponse = await swapToEth(tradeInfo, userAddress);
     } else {
       swapResponse = await swap(tradeInfo, userAddress);
+      toast.success("Transaction Successful");
     }
     setStatus("SWAPPED");
     setSwapHash(swapResponse.data);

@@ -2,6 +2,7 @@ import React from "react";
 import Trans from "../../assets/images/trans.png";
 import { swapTokens } from "../../utils/contractCalls";
 import { Link } from "react-router-dom";
+import Logo from '../../assets/images/swap-emp.png';
 
 const Transcation = ({ onClose, transactionHash }) => {
   return (
@@ -27,7 +28,7 @@ const Transcation = ({ onClose, transactionHash }) => {
               />
             </svg>
             <div className="mt-10">
-              <img src={Trans} alt="Trans" className="mx-auto" />
+              <img src={Logo} alt="Trans" className="mx-auto" />
             </div>
             <div className="text-white text-sm font-bold roboto text-center leading-normal mt-10">
               Transaction Submitted

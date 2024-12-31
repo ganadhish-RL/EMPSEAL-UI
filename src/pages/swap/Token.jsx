@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Arrow from '../../assets/icons/downarrow.svg';
 import Tokens from '../tokenList.json';
+import FrequentlyUsedToken from '../frequentlyToken.json';
 import Web3 from 'web3';
 import { ERC20_ABI } from './tokenFetch';
 import { useBalance } from 'wagmi';
@@ -121,6 +122,13 @@ const Token = ({ onClose, onSelect }) => {
       token.address.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const frequentlyUsedTokens = FrequentlyUsedToken.filter(
+    (token) =>
+      token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      token.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      token.address.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const handleTokenLookup = async (address) => {
     setError(null);
     setTokenDetails(null);
@@ -234,10 +242,10 @@ const Token = ({ onClose, onSelect }) => {
             </button>
           </div>
           <div className="flex flex-wrap gap-4 mt-6">
-            {filteredTokens.map((token, index) => (
+            {frequentlyUsedTokens.map((token, index) => (
               <div
                 key={index}
-                className="flex flex-row items-center cursor-pointer roboto"
+                className="flex flex-row items-center cursor-pointer roboto  p-2 rounded-2xl border border-[#3b3c4e]"
                 onClick={() => handleFeaturedTokenClick(token)}
               >
                 <img

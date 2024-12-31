@@ -27,4 +27,5 @@ export type SwapStatus =
   | "SWAPPING"
   | "SWAPPED"
   | "IDLE"
+  | "ERROR"
   | "FAILED";

@@ -1,6 +1,14 @@
 [
     {
-        "name": "PULSECHAIN",
+        "name": "Incentive",
+        "address": "0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d",
+        "ticker": "INC",
+        "decimals": 18,
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d.png",
+        "featured": true
+    },
+    {
+        "name": "Ayush",
         "ticker": "PLS",
         "address": "0x0000000000000000000000000000000000000000",
         "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/24735.png",
