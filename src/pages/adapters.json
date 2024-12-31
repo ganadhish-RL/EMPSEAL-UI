@@ -1,7 +1,11 @@
 [
     {
-        "name": "pulsex",
+        "name": "PulsexV2",
         "address": "0x842e05D2cAF940B25d7B7Db291ABDc88748d7F90"
+    },
+    {
+        "name": "PulsexV1",
+        "address": "0xa5ab0aF6eE886770B31Fb9350f7FC8F433dC2C59"
     },
     {
         "name": "9MM",
