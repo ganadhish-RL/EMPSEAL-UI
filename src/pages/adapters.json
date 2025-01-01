@@ -32,11 +32,11 @@
         "address": "0x60aC7C03D50403ce666533D9Ce28deBf1F446282"
     },
     {
-        "name": "uniswapV3",
+        "name": "UniswapV3",
         "address": "0xcfE09D7f35131DAfebD12356C4f52b17f65Da2E5"
     },
     {
         "name": "EmpXStable",
-        "address": "0x9862E4CDf41344081490c1CC0132d555ad1C4853"
+        "address": "0xf586000c24e2b640a0478dcf51de856df5e3328a"
     }
 ]

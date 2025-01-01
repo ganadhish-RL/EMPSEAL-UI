@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 
 const calculateSlippage = (amountOut, slippagePercent) => {
-  if (slippagePercent < 0.1 || slippagePercent > 5) {
-    throw new Error('Invalid slippage percentage. Must be between 0.1 and 5.');
+  if (slippagePercent < 0.5 || slippagePercent > 5) {
+    throw new Error("Invalid slippage percentage. Must be between 0.5 and 5");
   }
   return (
     (amountOut * BigInt(10000 - Math.round(slippagePercent * 100))) /
@@ -12,7 +12,7 @@ const calculateSlippage = (amountOut, slippagePercent) => {
 
 const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
   const [slippage, setSlippage] = useState(0);
-  const [customSlippage, setCustomSlippage] = useState(''); // Store as string to handle empty input
+  const [customSlippage, setCustomSlippage] = useState(""); // Store as string to handle empty input
   const modalRef = useRef(null);
 
   const handleSlippageSelect = (value) => {
@@ -23,27 +23,27 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
 
   const handleCustomSlippageChange = (e) => {
     const inputValue = e.target.value;
-    
+
     // Allow empty string for backspace
-    if (inputValue === '') {
-      setCustomSlippage('');
+    if (inputValue === "") {
+      setCustomSlippage("");
       setSlippage(0);
       return;
     }
 
     const value = parseFloat(inputValue);
-    
+
     // Validate input
     if (isNaN(value)) return;
-    
+
     // Allow input up to 5
     if (value > 5) return;
-    
+
     // Store the raw input as string
     setCustomSlippage(inputValue);
-    
+
     // Only update slippage and calculate if value is within valid range
-    if (value >= 0.1 && value <= 5) {
+    if (value >= 0.5 && value <= 5) {
       setSlippage(value);
       calculateAdjustedAmount(value);
     }
@@ -60,7 +60,7 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
         onSlippageCalculated(decimalAdjusted);
       }
     } catch (error) {
-      console.error('Error calculating slippage:', error);
+      console.error("Error calculating slippage:", error);
     }
   };
 
@@ -70,7 +70,6 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
     }
   }, [tradeInfo]);
 
- 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -78,17 +77,20 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
 
-  const slippageOptions = [0.5, 1.0];
+  const slippageOptions = [0.5, 1.0, 2.0];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div ref={modalRef} className="bg-black border border-white rounded-xl p-6 w-full max-w-md relative">
+      <div
+        ref={modalRef}
+        className="bg-black border border-white rounded-xl p-6 w-full max-w-md relative"
+      >
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white"
@@ -105,8 +107,8 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
               onClick={() => handleSlippageSelect(option)}
               className={`px-4 py-1.5 rounded ${
                 slippage === option
-                  ? 'bg-[#FF9900] text-black'
-                  : 'bg-[#161616] text-gray-300 hover:bg-gray-600'
+                  ? "bg-[#FF9900] text-black"
+                  : "bg-[#161616] text-gray-300 hover:bg-gray-600"
               }`}
             >
               {option}%
