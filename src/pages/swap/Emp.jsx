@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import Logo from '../../assets/images/swap-emp.png';
-import Sett from '../../assets/images/setting.png';
-import Ar from '../../assets/images/arrow.svg';
-import Usdc from '../../assets/images/usdc.svg';
-import Refresh from '../../assets/images/refresh.svg';
-import Info from '../../assets/images/info.svg';
-import { Link } from 'react-router-dom';
-import Amount from './Amount';
-import Token from './Token';
-import { formatEther } from 'viem';
-import { useAccount, useReadContract, useWatchBlocks, useBalance } from 'wagmi';
-import SlippageCalculator from './SlippageCalculator';
-import { RouterABI } from './routerAbi';
-import { formatUnits } from 'viem';
-import Tokens from '../tokenList.json';
-import { swapTokens } from '../../utils/contractCalls';
-import { useStore } from '../../redux/store/routeStore';
-import Transcation from './Transcation';
-import { Copy, Check } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import Logo from "../../assets/images/swap-emp.png";
+import Sett from "../../assets/images/setting.png";
+import Ar from "../../assets/images/arrow.svg";
+import Usdc from "../../assets/images/usdc.svg";
+import Refresh from "../../assets/images/refresh.svg";
+import Info from "../../assets/images/info.svg";
+import { Link } from "react-router-dom";
+import Amount from "./Amount";
+import Token from "./Token";
+import { formatEther } from "viem";
+import { useAccount, useReadContract, useWatchBlocks, useBalance } from "wagmi";
+import SlippageCalculator from "./SlippageCalculator";
+import { RouterABI } from "./routerAbi";
+import { formatUnits } from "viem";
+import Tokens from "../tokenList.json";
+import { swapTokens } from "../../utils/contractCalls";
+import { useStore } from "../../redux/store/routeStore";
+import Transcation from "./Transcation";
+import { Copy, Check } from "lucide-react";
 
 const Emp = ({ setPadding }) => {
   const [isAmountVisible, setAmountVisible] = useState(false);
@@ -25,45 +25,42 @@ const Emp = ({ setPadding }) => {
   const [isTokenVisible, setTokenVisible] = useState(false);
   const [order, setOrder] = useState(false);
   const [selectedTokenA, setSelectedTokenA] = useState(Tokens[0]);
-  console.log(selectedTokenA);
   const [isRateReversed, setIsRateReversed] = useState(false);
   const [selectedTokenB, setSelectedTokenB] = useState(Tokens[1]);
   const [isSelectingTokenA, setIsSelectingTokenA] = useState(true);
-  const [amountOut, setAmountOut] = useState('0');
-  const [amountIn, setAmountIn] = useState('0');
-  const [swapStatus, setSwapStatus] = useState('IDLE');
-  const [swapHash, setSwapHash] = useState('');
+  const [amountOut, setAmountOut] = useState("0");
+  const [amountIn, setAmountIn] = useState("0");
+  const [swapStatus, setSwapStatus] = useState("IDLE");
+  const [swapHash, setSwapHash] = useState("");
   const [swapSuccess, setSwapSuccess] = useState(false);
   const [tradeInfo, setTradeInfo] = useState(undefined);
-  const [selectedPercentage, setSelectedPercentage] = useState('');
+  const [selectedPercentage, setSelectedPercentage] = useState("");
   const { address, chain } = useAccount();
   const [balanceAddress, setBalanceAddress] = useState(null);
   const { data: datas } = useBalance({ address });
   const [fees, setFees] = useState(0);
-  const [minAmountOut, setMinAmountOut] = useState('0');
+  const [minAmountOut, setMinAmountOut] = useState("0");
   const [copySuccess, setCopySuccess] = useState(false);
   const [activeTokenAddress, setActiveTokenAddress] = useState(null);
-  const [usdValue, setUsdValue] = useState('0.00');
-  const [usdValueTokenB, setUsdValueTokenB] = useState('0.00');
+  const [usdValue, setUsdValue] = useState("0.00");
+  const [usdValueTokenB, setUsdValueTokenB] = useState("0.00");
   const [conversionRate, setConversionRate] = useState(null);
   const [conversionRateTokenB, setConversionRateTokenB] = useState(null);
   const handleCloseSuccessModal = () => {
-    setSwapStatus('IDLE'); // Reset status when closing modal
+    setSwapStatus("IDLE"); // Reset status when closing modal
   };
 
   useEffect(() => {
     if (address && datas) {
       setBalanceAddress(formatEther(datas.value));
     } else if (!address) {
-      setBalanceAddress('0.00');
+      setBalanceAddress("0.00");
     }
   }, [address, datas]);
 
   const formattedBalance = balanceAddress
     ? `${parseFloat(balanceAddress).toFixed(2)}`
-    : '0.00';
-
-  console.log(formattedBalance);
+    : "0.00";
 
   function setRoute(path) {
     useStore.setState({ route: path });
@@ -81,15 +78,14 @@ const Emp = ({ setPadding }) => {
     address: address, // Use the connected wallet address
     token: selectedTokenA.address, // Token address of TokenA
   });
-  console.log(tokenBalance);
 
   // Format the chain balance
   const formattedChainBalance = tokenBalance
     ? parseFloat(tokenBalance.formatted).toFixed(2) // Format to 6 decimal places
-    : '0.000000';
+    : "0.000000";
 
   const handlePercentageChange = (e) => {
-    const percentage = e.target.value === '' ? '' : parseInt(e.target.value);
+    const percentage = e.target.value === "" ? "" : parseInt(e.target.value);
     setSelectedPercentage(percentage);
     const calculatedAmount = calculateAmount(percentage);
     setAmountIn(calculatedAmount);
@@ -97,11 +93,11 @@ const Emp = ({ setPadding }) => {
 
   // Calculate the amount based on the selected percentage
   const calculateAmount = (percentage) => {
-    if (!percentage) return '';
+    if (!percentage) return "";
 
     let balance;
     if (
-      selectedTokenA.address === '0x0000000000000000000000000000000000000000'
+      selectedTokenA.address === "0x0000000000000000000000000000000000000000"
     ) {
       // For native token (EMPTY_ADDRESS)
       balance = parseFloat(formattedBalance || 0);
@@ -111,7 +107,7 @@ const Emp = ({ setPadding }) => {
     }
     const calculatedAmount = balance * (percentage / 100);
     if (
-      selectedTokenA.address === '0x0000000000000000000000000000000000000000' &&
+      selectedTokenA.address === "0x0000000000000000000000000000000000000000" &&
       percentage === 100
     ) {
       // Leave some balance for gas fees (e.g., 0.01 units)
@@ -121,8 +117,8 @@ const Emp = ({ setPadding }) => {
     return calculatedAmount.toFixed(6);
   };
 
-  const WETH_ADDRESS = '0xa1077a294dde1b09bb078844df40758a5d0f9a27';
-  const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
+  const WETH_ADDRESS = "0xa1077a294dde1b09bb078844df40758a5d0f9a27";
+  const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
   const handleTokenSelect = (token) => {
     if (isSelectingTokenA) {
@@ -149,7 +145,7 @@ const Emp = ({ setPadding }) => {
         return parsedAmountIn / BigInt(10) ** BigInt(6 - decimals);
       }
     } catch (error) {
-      console.error('Error converting to BigInt:', error);
+      console.error("Error converting to BigInt:", error);
       return BigInt(0);
     }
   };
@@ -161,8 +157,8 @@ const Emp = ({ setPadding }) => {
     error,
   } = useReadContract({
     abi: RouterABI,
-    address: '0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32',
-    functionName: 'findBestPath',
+    address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
+    functionName: "findBestPath",
     args: [
       // Add validation for amountIn and selectedTokenA
       amountIn && selectedTokenA && !isNaN(parseFloat(amountIn))
@@ -177,14 +173,14 @@ const Emp = ({ setPadding }) => {
       selectedTokenB?.address === EMPTY_ADDRESS
         ? WETH_ADDRESS
         : selectedTokenB?.address || EMPTY_ADDRESS,
-      BigInt('3'),
+      BigInt("3"),
     ],
   });
 
   const { data: singleToken, refetch: singleTokenRefresh } = useReadContract({
     abi: RouterABI,
-    address: '0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32',
-    functionName: 'findBestPath',
+    address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
+    functionName: "findBestPath",
     args: [
       selectedTokenA?.decimal
         ? convertToBigInt(1, parseInt(selectedTokenA.decimal))
@@ -195,7 +191,7 @@ const Emp = ({ setPadding }) => {
       selectedTokenB?.address === EMPTY_ADDRESS
         ? WETH_ADDRESS
         : selectedTokenB?.address || EMPTY_ADDRESS,
-      BigInt('3'),
+      BigInt("3"),
     ],
   });
 
@@ -208,15 +204,15 @@ const Emp = ({ setPadding }) => {
 
   const { data: feeData } = useReadContract({
     abi: RouterABI,
-    address: '0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32',
-    functionName: 'findBestPath',
+    address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
+    functionName: "findBestPath",
     args: [
       amountIn && selectedTokenA && parseFloat(amountIn)
         ? convertToBigInt(parseFloat(amountIn) * 0.0028, 18)
         : BigInt(0),
       selectedTokenA?.address,
-      WETH_ADDRESS,
-      BigInt('3'),
+      selectedTokenB?.address,
+      BigInt("3"),
     ],
   });
 
@@ -227,53 +223,75 @@ const Emp = ({ setPadding }) => {
   };
 
   useEffect(() => {
-    const fetchConversionRate = async () => {
+    const fetchConversionRateTokenA = async () => {
       try {
+        if (selectedTokenA.address === EMPTY_ADDRESS) {
+          return WETH_ADDRESS.toLowerCase();
+        }
         const response = await fetch(
-          `https://api.coingecko.com/api/v3/simple/price?ids=${selectedTokenA.name.toLowerCase()}&vs_currencies=usd`
+          `https://api.geckoterminal.com/api/v2/simple/networks/pulsechain/token_price/${selectedTokenA.address.toLowerCase()}`
         );
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
         const data = await response.json();
-        console.log(data);
 
-        const rate = data?.[selectedTokenA.name.toLowerCase()]?.usd || null;
+        // Validate and extract token prices
+        const tokenPrices = data?.data?.attributes?.token_prices;
+        if (!tokenPrices) {
+          throw new Error("Token prices not found");
+        }
 
-        setConversionRate(rate);
+        const tokenPrice = tokenPrices[selectedTokenA.address.toLowerCase()];
+
+        setConversionRate(tokenPrice);
       } catch (error) {
-        console.error('Failed to fetch conversion rate:', error);
-        setConversionRate(null);
+        console.error("Error fetching token price:", error.message);
       }
     };
 
-    fetchConversionRate();
-  }, []);
+    fetchConversionRateTokenA();
+  }, [selectedTokenA.address]);
 
   useEffect(() => {
     const fetchConversionRateTokenB = async () => {
       try {
+        if (selectedTokenB.address === EMPTY_ADDRESS) {
+          return WETH_ADDRESS;
+        }
         const response = await fetch(
-          `https://api.coingecko.com/api/v3/simple/price?ids=${selectedTokenB.name.toLowerCase()}&vs_currencies=usd`
+          `https://api.geckoterminal.com/api/v2/simple/networks/pulsechain/token_price/${selectedTokenB.address.toLowerCase()}`
         );
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
         const data = await response.json();
-        console.log(data);
 
-        const rate = data?.[selectedTokenB.name.toLowerCase()]?.usd || null;
+        // Validate and extract token prices
+        const tokenPrices = data?.data?.attributes?.token_prices;
+        if (!tokenPrices) {
+          throw new Error("Token prices not found");
+        }
 
-        setConversionRateTokenB(rate);
+        const tokenPrice = tokenPrices[selectedTokenB.address.toLowerCase()];
+
+        setConversionRateTokenB(tokenPrice);
       } catch (error) {
-        console.error('Failed to fetch conversion rate:', error);
-        setConversionRateTokenB(null);
+        console.error("Error fetching token price:", error.message);
       }
     };
 
     fetchConversionRateTokenB();
-  }, []);
+  }, [selectedTokenB.address]);
 
   useEffect(() => {
-    console.log('quote data', data);
+    // console.log("quote data", data);
     if (data && data.amounts && data.amounts.length > 0) {
-      console.log('quote data', data);
+      // console.log("quote data", data);
       if (selectedTokenB) {
         setRoute(data.path);
         setAdapter(data.adapters);
@@ -308,11 +326,11 @@ const Emp = ({ setPadding }) => {
         };
         setTradeInfo(trade);
       } else {
-        setAmountOut('0');
+        setAmountOut("0");
         setTradeInfo(undefined);
       }
     } else {
-      setAmountOut('0');
+      setAmountOut("0");
       setTradeInfo(undefined);
       setRoute([selectedTokenA.address, selectedTokenB.address]);
     }
@@ -324,23 +342,29 @@ const Emp = ({ setPadding }) => {
   }, [amountIn, selectedTokenA, selectedTokenB]);
 
   useEffect(() => {
-    if (conversionRate) {
-      const valueInUSD = (parseFloat(amountIn || 0) * conversionRate).toFixed(
-        6
-      );
+    if (conversionRate && !isNaN(conversionRate)) {
+      const valueInUSD = (
+        parseFloat(amountIn || 0) * parseFloat(conversionRate)
+      ).toFixed(6);
       setUsdValue(valueInUSD);
+    } else {
+      console.error("Missing or invalid conversion rate:", conversionRate);
     }
   }, [amountIn, conversionRate]);
 
   useEffect(() => {
-    if (conversionRateTokenB) {
-      const valueInUSD = (parseFloat(amountOut || 0) * conversionRateTokenB).toFixed(
-        6
-      );
+    if (conversionRateTokenB && !isNaN(conversionRateTokenB)) {
+      const valueInUSD = (
+        parseFloat(amountOut || 0) * parseFloat(conversionRateTokenB)
+      ).toFixed(6);
       setUsdValueTokenB(valueInUSD);
+    } else {
+      console.error(
+        "Missing or invalid conversion rate:",
+        conversionRateTokenB
+      );
     }
   }, [amountOut, conversionRateTokenB]);
-
 
   const confirmSwap = async () => {
     await swapTokens(
@@ -360,12 +384,12 @@ const Emp = ({ setPadding }) => {
         setAmountVisible(false);
       })
       .catch((error) => {
-        console.error('Swap failed', error);
+        console.error("Swap failed", error);
         setSwapSuccess(false);
       });
   };
   const getRateDisplay = () => {
-    if (!singleToken?.amounts?.[singleToken.amounts.length - 1]) return '0';
+    if (!singleToken?.amounts?.[singleToken.amounts.length - 1]) return "0";
 
     const rate = parseFloat(
       formatUnits(
@@ -378,8 +402,8 @@ const Emp = ({ setPadding }) => {
   };
 
   useEffect(() => {
-    setSelectedPercentage('');
-    setAmountIn('');
+    setSelectedPercentage("");
+    setAmountIn("");
   }, [selectedTokenA]);
 
   const handleCopyAddress = async (address) => {
@@ -392,7 +416,7 @@ const Emp = ({ setPadding }) => {
         setActiveTokenAddress(null);
       }, 2000);
     } catch (err) {
-      console.error('Failed to copy address:', err);
+      console.error("Failed to copy address:", err);
     }
   };
 
@@ -401,28 +425,34 @@ const Emp = ({ setPadding }) => {
     if (selectedTokenA.address === EMPTY_ADDRESS) {
       return inputAmount > parseFloat(formattedBalance);
     } else {
-      return inputAmount > parseFloat(tokenBalance?.formatted || '0');
+      return inputAmount > parseFloat(tokenBalance?.formatted || "0");
     }
   };
 
   const getButtonText = () => {
     if (isInsufficientBalance()) {
-      return 'Insufficient Balance';
+      return "Insufficient Balance";
     }
-    
+
     if (quoteLoading) {
-      return 'Loading...';
+      return "Loading...";
     }
-    
-    if (selectedTokenA.address === EMPTY_ADDRESS && selectedTokenB.address === WETH_ADDRESS) {
-      return 'Wrap PLS';
+
+    if (
+      selectedTokenA.address === EMPTY_ADDRESS &&
+      selectedTokenB.address === WETH_ADDRESS
+    ) {
+      return "Wrap PLS";
     }
-    
-    if (selectedTokenA.address === WETH_ADDRESS && selectedTokenB.address === EMPTY_ADDRESS) {
-      return 'Unwrap WPLS';
+
+    if (
+      selectedTokenA.address === WETH_ADDRESS &&
+      selectedTokenB.address === EMPTY_ADDRESS
+    ) {
+      return "Unwrap WPLS";
     }
-    
-    return 'Swap';
+
+    return "Swap";
   };
 
   return (
@@ -433,10 +463,10 @@ const Emp = ({ setPadding }) => {
           <div
             onClick={() => {
               setOrder(false);
-              setPadding('lg:h-[295px] h-full');
+              setPadding("lg:h-[295px] h-full");
             }}
             className={`${
-              order ? 'border-[#3b3c4e]' : 'border-[#FF9900]'
+              order ? "border-[#3b3c4e]" : "border-[#FF9900]"
             } cursor-pointer md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
           >
             SWAP
@@ -459,8 +489,8 @@ const Emp = ({ setPadding }) => {
             }}
             className={`${
               order
-                ? 'border-[#FF9900]'
-                : 'border-[#3b3c4e] opacity-50 cursor-not-allowed'
+                ? "border-[#FF9900]"
+                : "border-[#3b3c4e] opacity-50 cursor-not-allowed"
             }  md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
           >
             LIMIT ORDER
@@ -476,7 +506,6 @@ const Emp = ({ setPadding }) => {
               disabled={isLoading}
             >
               <option value="">Select</option>
-              <option value={25}>25%</option>
               <option value={50}>50%</option>
               <option value={100}>100%</option>
             </select>
@@ -487,18 +516,18 @@ const Emp = ({ setPadding }) => {
               Balance
             </span>
             <span className="text-gray-400 text-base font-normal roboto leading-normal">
-              {' '}
-              :{' '}
+              {" "}
+              :{" "}
             </span>
             <span className="text-white text-base font-normal roboto leading-normal">
               {isLoading
-                ? 'Loading..'
+                ? "Loading.."
                 : selectedTokenA.address === EMPTY_ADDRESS
                 ? `${formattedBalance}`
                 : `${
                     tokenBalance
                       ? parseFloat(tokenBalance.formatted).toFixed(2)
-                      : '0.00'
+                      : "0.00"
                   }`}
             </span>
           </div>
@@ -508,8 +537,8 @@ const Emp = ({ setPadding }) => {
             onClick={() => {
               setIsSelectingTokenA(true);
               setTokenVisible(true);
-              setSelectedPercentage('');
-              setAmountIn('');
+              setSelectedPercentage("");
+              setAmountIn("");
             }}
             className="flex justify-between gap-4 items-center cursor-pointer"
           >
@@ -554,8 +583,8 @@ const Emp = ({ setPadding }) => {
           <input
             type="number"
             placeholder={
-              formattedChainBalance === '0.000000'
-                ? '0'
+              formattedChainBalance === "0.000000"
+                ? "0"
                 : calculateAmount(selectedPercentage)
             }
             value={amountIn}
@@ -564,11 +593,11 @@ const Emp = ({ setPadding }) => {
           />
         </div>
         <div className="text-right text-gray-400 text-sm mt-2 pe-1 roboto">
-          {conversionRate ? `≈ $${usdValue} USD` : 'Fetching rate...'}
+          {conversionRate ? `$${usdValue} USD` : "Fetching Rate..."}
         </div>
         <div
           className={`lg:px-1 mt-3 flex gap-4 lg:flex-nowrap flex-wrap items-center ${
-            order ? '' : 'hidden'
+            order ? "" : "hidden"
           }`}
         >
           <div className="md:w-[300px] w-full">
@@ -682,12 +711,12 @@ const Emp = ({ setPadding }) => {
           />
         </div>
         <div className="text-right text-gray-400 text-sm mt-2 pe-1 roboto">
-          {conversionRateTokenB ? `≈ $${usdValueTokenB} USD` : 'Fetching rate...'}
+          {conversionRateTokenB ? `$${usdValueTokenB} USD` : "Fetching Rate..."}
         </div>
         <div className="flex justify-center items-center gap-2 my-4">
           <div className="text-white text-base font-normal roboto leading-normal">
-            1 {isRateReversed ? selectedTokenB.ticker : selectedTokenA.ticker} ={' '}
-            {getRateDisplay()}{' '}
+            1 {isRateReversed ? selectedTokenB.ticker : selectedTokenA.ticker} ={" "}
+            {getRateDisplay()}{" "}
             {isRateReversed ? selectedTokenA.ticker : selectedTokenB.ticker}
           </div>
           <div
@@ -701,9 +730,9 @@ const Emp = ({ setPadding }) => {
           onClick={() => setAmountVisible(true)}
           disabled={isInsufficientBalance()}
           className={`w-full h-14 flex justify-center items-center rounded-xl ${
-            isInsufficientBalance() 
-              ? 'bg-gray-500 cursor-not-allowed' 
-              : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
+            isInsufficientBalance()
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent"
           } roboto text-black text-base font-bold border border-[#FF9900]`}
         >
           {getButtonText()}
@@ -734,13 +763,10 @@ const Emp = ({ setPadding }) => {
               <img src={Info} alt="Info" />
             </div>
             <div className="text-right text-white text-[12px] font-normal roboto leading-none">
-              {feeData &&
-              feeData.data &&
-              feeData.data.amounts &&
-              feeData.data.amounts.length > 0
-                ? feeData.data.amounts[feeData.data.amounts.length - 1]
-                : 0}{' '}
-              PLS
+              {/* {feeData && feeData.amounts && feeData.amounts.length > 0
+                ? feeData.amounts[feeData.amounts.length - 1]
+                : 0} */}
+              0.3%
             </div>
           </div>
         </div>

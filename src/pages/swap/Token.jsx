@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Arrow from '../../assets/icons/downarrow.svg';
-import Tokens from '../tokenList.json';
-import FrequentlyUsedToken from '../frequentlyToken.json';
-import Web3 from 'web3';
-import { ERC20_ABI } from './tokenFetch';
-import { useBalance } from 'wagmi';
+import React, { useState, useEffect, useRef } from "react";
+import Arrow from "../../assets/icons/downarrow.svg";
+import Tokens from "../tokenList.json";
+import FrequentlyUsedToken from "../frequentlyToken.json";
+import Web3 from "web3";
+import { ERC20_ABI } from "./tokenFetch";
+import { useBalance } from "wagmi";
 
-const RPC_URL = 'https://rpc.pulsechain.com';
+const RPC_URL = "https://rpc.pulsechain.com";
 const web3 = new Web3(RPC_URL);
 
 const isValidAddress = (address) => web3.utils.isAddress(address);
 
 const lookupTokenByAddress = async (address) => {
   if (!isValidAddress(address)) {
-    console.log('Invalid address');
+    console.log("Invalid address");
     return null;
   }
 
@@ -42,7 +42,7 @@ const lookupTokenByAddress = async (address) => {
       decimal: decimals,
     };
   } catch (error) {
-    console.error('Error fetching token details:', error);
+    console.error("Error fetching token details:", error);
     return null;
   }
 };
@@ -51,14 +51,14 @@ const TokenListItem = ({ token, walletAddress, onClick }) => {
   const { data: tokenBalance, isLoading: balanceLoading } = useBalance({
     address: walletAddress,
     token:
-      token.address === '0x0000000000000000000000000000000000000000'
+      token.address === "0x0000000000000000000000000000000000000000"
         ? undefined
         : token.address,
   });
 
   const formattedBalance = tokenBalance
     ? parseFloat(tokenBalance.formatted).toFixed(4)
-    : '0.0000';
+    : "0.0000";
 
   return (
     <div
@@ -71,7 +71,7 @@ const TokenListItem = ({ token, walletAddress, onClick }) => {
           className="w-4 h-4"
           alt={token.name}
           onError={(e) => {
-            e.target.src = 'path/to/fallback/image.png';
+            e.target.src = "path/to/fallback/image.png";
           }}
         />
         <div>
@@ -82,7 +82,7 @@ const TokenListItem = ({ token, walletAddress, onClick }) => {
       </div>
       <div className="text-right">
         <div className="text-white text-sm font-normal roboto tracking-wide">
-          {balanceLoading ? 'Loading...' : formattedBalance}
+          {balanceLoading ? "Loading..." : formattedBalance}
         </div>
         <div className="text-gray-400 text-xs roboto mt-2">{token.ticker}</div>
       </div>
@@ -91,7 +91,7 @@ const TokenListItem = ({ token, walletAddress, onClick }) => {
 };
 
 const Token = ({ onClose, onSelect }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [tokenDetails, setTokenDetails] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -104,11 +104,11 @@ const Token = ({ onClose, onSelect }) => {
       if (window.ethereum) {
         try {
           const accounts = await window.ethereum.request({
-            method: 'eth_requestAccounts',
+            method: "eth_requestAccounts",
           });
           setWalletAddress(accounts[0]);
         } catch (error) {
-          console.error('Error getting wallet address:', error);
+          console.error("Error getting wallet address:", error);
         }
       }
     };
@@ -120,14 +120,14 @@ const Token = ({ onClose, onSelect }) => {
       token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       token.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
       token.address.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ).sort((a, b) => a.name.localeCompare(b.name));
 
   const frequentlyUsedTokens = FrequentlyUsedToken.filter(
     (token) =>
       token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       token.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
       token.address.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ).sort((a, b) => a.name.localeCompare(b.name));
 
   const handleTokenLookup = async (address) => {
     setError(null);
@@ -140,10 +140,10 @@ const Token = ({ onClose, onSelect }) => {
         setTokenDetails(details);
         setError(null);
       } else {
-        setError('Token not found or invalid address.');
+        setError("Token not found or invalid address.");
       }
     } catch (err) {
-      setError('Failed to fetch token details.');
+      setError("Failed to fetch token details.");
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -175,9 +175,9 @@ const Token = ({ onClose, onSelect }) => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
 
@@ -252,7 +252,7 @@ const Token = ({ onClose, onSelect }) => {
                   src={token.image}
                   alt={token.name}
                   className="w-6 h-6 rounded-full"
-                  onError={(e) => (e.target.src = 'path/to/fallback/image.png')}
+                  onError={(e) => (e.target.src = "path/to/fallback/image.png")}
                 />
                 <p className="text-white text-xs mt-0 ms-2">{token.ticker}</p>
               </div>

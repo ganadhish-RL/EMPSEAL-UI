@@ -46,10 +46,16 @@ export function formatFloat(value: number) {
   return value;
 }
 
-export function getTokenInfoByAddress(
-  address: string
-): { name: string; decimal: string; icon: string, ticker: string } | undefined {
-  console.log(address);
+export function getTokenInfoByAddress(address: string):
+  | {
+      name: string;
+      decimal: string;
+      icon: string;
+      ticker: string;
+      address: string;
+    }
+  | undefined {
+  // console.log(address);
   if (!address) {
     return undefined;
   }
@@ -64,6 +70,7 @@ export function getTokenInfoByAddress(
   if (importedToken) {
     return {
       name: importedToken.name,
+      address: importedToken.address,
       decimal: importedToken.decimal,
       icon: importedToken.image,
       ticker: importedToken.ticker,

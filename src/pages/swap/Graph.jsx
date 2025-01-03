@@ -19,37 +19,44 @@ const Graph = ({ padding }) => {
   const [tokenSymbol, setTokenSymbol] = useState("");
 
   // Read token symbol for custom tokens
-  const { data: symbolData } = useReadContract({
-    address: path[0] === EMPTY_ADDRESS ? path[1] : path[0],
-    abi: ERC20_ABI,
-    functionName: 'symbol',
-    enabled: path[0] !== EMPTY_ADDRESS || path[1] !== EMPTY_ADDRESS
-  });
+  // const { data: symbolData } = useReadContract({
+  //   address: path[0] === EMPTY_ADDRESS ? path[1] : path[0],
+  //   abi: ERC20_ABI,
+  //   functionName: "symbol",
+  //   enabled: path[0] !== EMPTY_ADDRESS || path[1] !== EMPTY_ADDRESS,
+  // });
 
   useEffect(() => {
     const fetchTokenData = async () => {
       // Reset states
       setLoading(true);
       setError(null);
-      
+
+      const finalTokenInfo = path[0] === EMPTY_ADDRESS ? path[1] : path[0];
       try {
         // Get token info from predefined list or fetch from contract
-        let tokenInfo = getTokenInfoByAddress(path[0] === EMPTY_ADDRESS ? path[1] : path[0]);
-        let searchQuery;
+        let tokenInfo = getTokenInfoByAddress(
+          path[0] === EMPTY_ADDRESS ? path[1] : path[0]
+        );
 
-        if (tokenInfo) {
-          // Use predefined token info
-          searchQuery = tokenInfo.ticker;
-        } else if (symbolData) {
-          // Use symbol from contract
-          searchQuery = symbolData;
-        } else {
-          throw new Error("Could not determine token symbol");
-        }
+        // console.log("Final token info: ", finalTokenInfo);
+        // console.log("Token address: ", tokenInfo);
+
+        // let searchQuery;
+        // if (tokenInfo) {
+        //   // Use predefined token info
+        //   searchQuery = tokenInfo.ticker;
+        // } else if (symbolData) {
+        //   // Use symbol from contract
+        //   searchQuery = symbolData;
+        // } else {
+        //   throw new Error("Could not determine token symbol");
+        // }
 
         // Fetch pool info
         const pairInfo = await axios.get(
-          `https://api.geckoterminal.com/api/v2/search/pools?query=${searchQuery}&network=pulsechain&page=1`
+          // `https://api.geckoterminal.com/api/v2/search/pools?query=${searchQuery}&network=pulsechain&page=1`
+          `https://api.geckoterminal.com/api/v2/networks/pulsechain/tokens/${finalTokenInfo}/pools?page=1`
         );
 
         if (!pairInfo.data.data || pairInfo.data.data.length === 0) {
@@ -57,7 +64,8 @@ const Graph = ({ padding }) => {
         }
 
         const pairAddress = pairInfo.data.data[0].id.replace("pulsechain_", "");
-        
+        // console.log("Pair address: ", pairAddress);
+
         // Fetch OHLCV data
         const response = await axios.get(
           `https://api.geckoterminal.com/api/v2/networks/pulsechain/pools/${pairAddress}/ohlcv/day?aggregate=1`
@@ -65,7 +73,7 @@ const Graph = ({ padding }) => {
 
         if (response.data) {
           setOvhList(transformData(response.data));
-          
+
           const ohlcvList = response.data.data.attributes.ohlcv_list;
           const high = Math.max(...ohlcvList.map((item) => item[2]));
           setHighValue(high);
@@ -85,7 +93,7 @@ const Graph = ({ padding }) => {
     if (path && (path[0] || path[1])) {
       fetchTokenData();
     }
-  }, [path, symbolData]);
+  }, [path]);
 
   const transformData = (apiData) => {
     const ohlcvList = apiData.data.attributes.ohlcv_list;
@@ -100,23 +108,24 @@ const Graph = ({ padding }) => {
   };
 
   return (
-    <div className={`w-full border-[2px] border-[#FF9900] rounded-xl pt-4  bg-black ${padding}`}>
+    <div
+      className={`w-full border-[2px] border-[#FF9900] rounded-xl pt-4  bg-black ${padding}`}
+    >
       {loading && (
         <div className="text-white text-center py-4">Loading Chart...</div>
       )}
-      {error && (
-        <div className="text-red-500 text-center py-4">{error}</div>
-      )}
+      {error && <div className="text-red-500 text-center py-4">{error}</div>}
 
       <div className="flex justify-start gap-2 px-4 mt-2">
         <div className="text-white text-[14px] font-bold roboto leading-normal">
-          {baseName || symbolData || "Loading..."}
+          {baseName || "Loading..."}
         </div>
       </div>
 
       {highValue !== null && (
         <div className="text-white text-[12px] px-4 pt-2 roboto">
-          <strong>Price:</strong> {highValue}
+          <strong>Price High:</strong> {highValue}
+          {/* <strong>Price High:</strong> {parseFloat(highValue).toFixed(18)} */}
         </div>
       )}
 

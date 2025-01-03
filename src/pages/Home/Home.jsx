@@ -1,20 +1,20 @@
-import React from 'react';
-import Logo from '../../assets/images/emp-large-logo.png';
-import Logo1 from '../../assets/images/emp-main-logo.png';
-import Fire from '../../assets/images/fire.png';
-import Metallic from '../../assets/images/metallic.png';
-import Bracket from '../../assets/images/bracket.png';
-import Market from '../../assets/images/market.png';
-import Git from '../../assets/images/github.png';
-import GB from '../../assets/images/gitbook.svg';
-import X from '../../assets/images/x.png';
-import Master from '../../assets/images/master.png';
-import Star from '../../assets/images/star.png';
-import Cell from '../../assets/images/cell.gif';
-import Dia from '../../assets/images/diamond.png';
-import Stone from '../../assets/images/bridge.png';
-import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import React from "react";
+import Logo from "../../assets/images/emp-large-logo.png";
+import Logo1 from "../../assets/images/emp-main-logo.png";
+import Fire from "../../assets/images/fire.png";
+import Metallic from "../../assets/images/metallic.png";
+import Bracket from "../../assets/images/bracket.png";
+import Market from "../../assets/images/market.png";
+import Git from "../../assets/images/github.png";
+import GB from "../../assets/images/gitbook.svg";
+import X from "../../assets/images/x.png";
+import Master from "../../assets/images/master.png";
+import Star from "../../assets/images/star.png";
+import Cell from "../../assets/images/cell.gif";
+import Dia from "../../assets/images/diamond.png";
+import Stone from "../../assets/images/bridge.png";
+import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const Home = () => {
   return (
@@ -50,10 +50,10 @@ const Home = () => {
               </div>
               <div>
                 <div className="text-center text-white md:text-[25px] text-xl font-bold">
-                  Mint | Yield | Daas{' '}
+                  Mint | Yield | Daas{" "}
                 </div>
                 <div className="text-center text-white text-lg font-light mt-3">
-                  An art and innovation intersect.{' '}
+                  An art and innovation intersect.{" "}
                 </div>
               </div>
               {/* <div className="text-center text-white 2xl:text-[29.14px] text-lg font-bold wmo 2xl:h-[400px] md:h-[250px] h-[250px]">
@@ -98,48 +98,47 @@ const Home = () => {
           </div>
 
           <div className="section-class 2xl:max-w-[370px] xl:max-w-[370px] lg:max-w-[680px] md:max-w-[515px] w-full md:mt-0 mt-10">
-            
             <div className="w-full rounded-3xl border border-[#90A321] h_grid1 px-4 py-3 relative">
               <div className="w-[74px] h-[74px] rounded-full flex justify-center items-center bg-[#FFE500] absolute right-8 bottom-[-20px]">
                 <img src={Bracket} alt="Bracket" />
               </div>
-              <div className="bg-[#dee870] rounded-[35px] px-5 py-3 text-neutral-900 2xl:text-xl text-base font-medium lexend leading-[25px]">
+              <div className="bg-[#dee870] rounded-[35px] px-5 py-3 blur-lg text-neutral-900 2xl:text-xl text-base font-medium lexend leading-[25px]">
                 Add <span className="font-bold">EMP X</span> | SWAP to your
-                products and earn <br className="2xl:block hidden" />{' '}
+                products and earn <br className="2xl:block hidden" />{" "}
                 transaction fees
               </div>
             </div>
             <Link to="/nft-marketplace" className="pointer-events-none">
-            <div className="w-full rounded-3xl border border-white black px-4 py-3 relative mt-10 flex flex-col justify-center items-center">
-              <div className="absolute left-0 right-0 top-0 bottom-0 mx-auto my-auto px-5 py-5 h-full">
-                <img src={Market} alt="Market" className="w-full h-full" />
+              <div className="w-full rounded-3xl border border-white black px-4 py-3 relative mt-10 flex flex-col justify-center items-center">
+                <div className="absolute left-0 right-0 top-0 bottom-0 mx-auto my-auto px-5 py-5 h-full">
+                  <img src={Market} alt="Market" className="w-full h-full" />
+                </div>
+                <div className="text-center text-black text-2xl font-light relative z-50 mt-4 2xl:top-[70px] lg:top-[30px] top-[70px]">
+                  EMP X
+                </div>
+                <div className="market_text text-center text-black 2xl:text-[50px] lg:text-2xl text-[50px] font-bold relative z-50 mt-3 2xl:top-[70px] lg:top-[20px] top-[50px]">
+                  MARKET
+                </div>
+                <div className="text-center text-black 2xl:text-[20px] lg:text-xl text-[20px] font-light relative z-50 mt-3 2xl:top-[75px] lg:top-[30px] top-[40px]">
+                  Decentralised NFT <br /> Marketplace
+                </div>
+                <div className="mt260 opacity-0 text-black 2xl:text-[26px] md:text-base text-lg font-normal leading-[30px] roboto relative z-50 2xl:left-[-30px] lg:left-[-40px] md:left-[-70px] left-[-50px] 2xl:mt-[220px] top-[-20px] lg:mt-[50px] mt-[160px]"></div>
               </div>
-              <div className="text-center text-black text-2xl font-light relative z-50 mt-4 2xl:top-[70px] lg:top-[30px] top-[70px]">
-                EMP X
-              </div>
-              <div className="market_text text-center text-black 2xl:text-[50px] lg:text-2xl text-[50px] font-bold relative z-50 mt-3 2xl:top-[70px] lg:top-[20px] top-[50px]">
-                MARKET
-              </div>
-              <div className="text-center text-black 2xl:text-[20px] lg:text-xl text-[20px] font-light relative z-50 mt-3 2xl:top-[75px] lg:top-[30px] top-[40px]">
-                Decentralised NFT <br /> Marketplace
-              </div>
-              <div className="mt260 opacity-0 text-black 2xl:text-[26px] md:text-base text-lg font-normal leading-[30px] roboto relative z-50 2xl:left-[-30px] lg:left-[-40px] md:left-[-70px] left-[-50px] 2xl:mt-[220px] top-[-20px] lg:mt-[50px] mt-[160px]"></div>
-            </div>
             </Link>
             <div className="w-full rounded-2xl border border-white black px-4 py-5 relative mt-8 flex gap-8 justify-center items-center h_grid2">
               <Link target="_blank" to="https://github.com/3mperorsSeal">
-              <img src={Git} alt="Git" />
+                <img src={Git} alt="Git" />
               </Link>
-              <Link target="_blank" to="https://x.com/EmperorsSeal"> 
-              <img src={X} alt="X" />
+              <Link target="_blank" to="https://x.com/EmperorsSeal">
+                <img src={X} alt="X" />
               </Link>
-              <Link target="_blank" to="https://x.com/EmperorsSeal"> 
-              <img src={Master} alt="Master" />
+              <Link target="_blank" to="https://x.com/EmperorsSeal">
+                <img src={Master} alt="Master" />
               </Link>
             </div>
             <div className="w-full rounded-2xl border border-white black px-4 py-6 relative mt-8 flex gap-8 justify-center items-center h_grid6">
               <div className="text-center text-white text-base font-bold leading-[14px]">
-              MULTI SIGNATURE SAFE
+                MULTI SIGNATURE SAFE
               </div>
             </div>
           </div>
@@ -205,23 +204,24 @@ const Home = () => {
                   </span>
                   <span className="text-white text-sm font-light">| </span>
                   <span className="text-white text-xs font-light">SWAP</span> */}
-                
+
                   {/* </Link> */}
                 </div>
                 {/* <Link to="/swap"> */}
-             
+
                 <img
-                    src={Logo1}
-                    alt="Logo1"
-                    className="w-[125px] h-16 object-contain mb-12"
-                  />
-                  <div className="text-white  bg-[#3a383b] w-max px-4 py-2 rounded-full font-bold ms-5">
-                    <span>Swap</span><span className="ps-4">Trade</span>
-                  </div>
+                  src={Logo1}
+                  alt="Logo1"
+                  className="w-[125px] h-16 object-contain mb-12"
+                />
+                <div className="text-white  bg-[#3a383b] w-max px-4 py-2 rounded-full font-bold ms-5">
+                  <span>Swap</span>
+                  <span className="ps-4">Trade</span>
+                </div>
                 {/* </Link> */}
               </div>
             </Link>
-            <div className="w-full rounded-3xl border border-[#916894] 2xl:py-8 lg:py-4 py-8 relative mt-4 h_grid4 px-9 pt-8 pb-8">
+            <div className="w-full blur-lg rounded-3xl border border-[#916894] 2xl:py-8 lg:py-4 py-8 relative mt-4 h_grid4 px-9 pt-8 pb-8">
               <img
                 src={Dia}
                 alt="Dia"
@@ -229,7 +229,7 @@ const Home = () => {
               />
               <div className="relative z-50">
                 <div className="text-white 2xl:text-[21.90px] lg:text-base text-[21.90px] font-extrabold">
-                  DASHBOARD{' '}
+                  DASHBOARD{" "}
                 </div>
                 <div className="text-white 2xl:text-sm lg:text-xs text-sm font-extralight mt-2">
                   Protocol & Market Analysis
@@ -238,7 +238,7 @@ const Home = () => {
                   All-Time Volume
                 </div>
                 <div className="text-white 2xl:text-3xl lg:text-xl text-3xl font-bold">
-                  $ 445 m{' '}
+                  $ 445 m{" "}
                 </div>
                 <div className="2xl:mt-4 lg:mt-1 mt-4 text-gray-300 text-xs font-normal">
                   Total Users
