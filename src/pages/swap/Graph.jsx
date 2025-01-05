@@ -18,14 +18,6 @@ const Graph = ({ padding }) => {
   const [highValue, setHighValue] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState("");
 
-  // Read token symbol for custom tokens
-  // const { data: symbolData } = useReadContract({
-  //   address: path[0] === EMPTY_ADDRESS ? path[1] : path[0],
-  //   abi: ERC20_ABI,
-  //   functionName: "symbol",
-  //   enabled: path[0] !== EMPTY_ADDRESS || path[1] !== EMPTY_ADDRESS,
-  // });
-
   useEffect(() => {
     const fetchTokenData = async () => {
       // Reset states
@@ -39,24 +31,10 @@ const Graph = ({ padding }) => {
           path[0] === EMPTY_ADDRESS ? path[1] : path[0]
         );
 
-        // console.log("Final token info: ", finalTokenInfo);
-        // console.log("Token address: ", tokenInfo);
-
-        // let searchQuery;
-        // if (tokenInfo) {
-        //   // Use predefined token info
-        //   searchQuery = tokenInfo.ticker;
-        // } else if (symbolData) {
-        //   // Use symbol from contract
-        //   searchQuery = symbolData;
-        // } else {
-        //   throw new Error("Could not determine token symbol");
-        // }
-
         // Fetch pool info
         const pairInfo = await axios.get(
           // `https://api.geckoterminal.com/api/v2/search/pools?query=${searchQuery}&network=pulsechain&page=1`
-          `https://api.geckoterminal.com/api/v2/networks/pulsechain/tokens/${finalTokenInfo}/pools?page=1`
+          `https://api.geckoterminal.com/api/v2/networks/pulsechain/tokens/${finalTokenInfo.toLowerCase()}/pools?page=1`
         );
 
         if (!pairInfo.data.data || pairInfo.data.data.length === 0) {
@@ -68,7 +46,7 @@ const Graph = ({ padding }) => {
 
         // Fetch OHLCV data
         const response = await axios.get(
-          `https://api.geckoterminal.com/api/v2/networks/pulsechain/pools/${pairAddress}/ohlcv/day?aggregate=1`
+          `https://api.geckoterminal.com/api/v2/networks/pulsechain/pools/${pairAddress.toLowerCase()}/ohlcv/day?aggregate=1`
         );
 
         if (response.data) {
@@ -90,9 +68,17 @@ const Graph = ({ padding }) => {
       }
     };
 
-    if (path && (path[0] || path[1])) {
-      fetchTokenData();
-    }
+    const timeout = setTimeout(() => {
+      if (path && (path[0] || path[1])) {
+        fetchTokenData();
+      }
+    }, 1000);
+
+    // setOvhList([]);
+    // setBaseName("");
+    // setQuoteName("");
+    // setHighValue(null);
+    return () => clearTimeout(timeout);
   }, [path]);
 
   const transformData = (apiData) => {

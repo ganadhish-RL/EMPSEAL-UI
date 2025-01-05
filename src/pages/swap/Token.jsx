@@ -127,7 +127,7 @@ const Token = ({ onClose, onSelect }) => {
       token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       token.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
       token.address.toLowerCase().includes(searchQuery.toLowerCase())
-  ).sort((a, b) => a.name.localeCompare(b.name));
+  );
 
   const handleTokenLookup = async (address) => {
     setError(null);

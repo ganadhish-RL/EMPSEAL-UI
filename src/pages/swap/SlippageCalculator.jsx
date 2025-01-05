@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-
+// Helper function to calculate slippage
 const calculateSlippage = (amountOut, slippagePercent) => {
   if (slippagePercent < 0.5 || slippagePercent > 5) {
     throw new Error("Invalid slippage percentage. Must be between 0.5 and 5");
@@ -11,69 +11,97 @@ const calculateSlippage = (amountOut, slippagePercent) => {
 };
 
 const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
-  const [slippage, setSlippage] = useState(0);
-  const [customSlippage, setCustomSlippage] = useState(""); // Store as string to handle empty input
+  const [slippage, setSlippage] = useState(0.5);
+  const [customSlippage, setCustomSlippage] = useState("");
+  const [slippageApplied, setSlippageApplied] = useState(false);
+  const originalAmountRef = useRef(null);
   const modalRef = useRef(null);
 
+  // Store original amount when tradeInfo changes and ref is empty
+  useEffect(() => {
+    if (tradeInfo?.amountOut && !originalAmountRef.current) {
+      originalAmountRef.current = tradeInfo.amountOut;
+    }
+  }, [tradeInfo?.amountOut]);
+
+  // Calculate slippage when necessary
+  useEffect(() => {
+    if (
+      originalAmountRef.current &&
+      slippage >= 0.5 &&
+      slippage <= 5 &&
+      !slippageApplied
+    ) {
+      try {
+        // Always calculate based on original amount
+        const adjustedAmount = calculateSlippage(
+          originalAmountRef.current,
+          slippage
+        );
+        onSlippageCalculated(adjustedAmount);
+        setSlippageApplied(true);
+      } catch (error) {
+        console.error("Error calculating slippage:", error);
+      }
+    }
+  }, [slippage, onSlippageCalculated, slippageApplied]);
+
+  // Handle slippage option selection
   const handleSlippageSelect = (value) => {
-    setSlippage(value);
-    setCustomSlippage(value.toString());
-    calculateAdjustedAmount(value);
+    if (slippage !== value) {
+      setSlippage(value);
+      setCustomSlippage(value.toString());
+      setSlippageApplied(false);
+    }
   };
 
+  // Handle custom slippage input change
   const handleCustomSlippageChange = (e) => {
     const inputValue = e.target.value;
-
-    // Allow empty string for backspace
     if (inputValue === "") {
       setCustomSlippage("");
-      setSlippage(0);
       return;
     }
 
     const value = parseFloat(inputValue);
+    if (isNaN(value) || value < 0.5 || value > 5) return;
 
-    // Validate input
-    if (isNaN(value)) return;
-
-    // Allow input up to 5
-    if (value > 5) return;
-
-    // Store the raw input as string
     setCustomSlippage(inputValue);
-
-    // Only update slippage and calculate if value is within valid range
-    if (value >= 0.5 && value <= 5) {
-      setSlippage(value);
-      calculateAdjustedAmount(value);
-    }
+    setSlippage(value);
+    setSlippageApplied(false);
   };
 
-  const calculateAdjustedAmount = (slippageValue) => {
-    try {
-      if (tradeInfo && tradeInfo.amountOut) {
+  // Reset slippage state and calculate immediately
+  const handleResetSlippage = () => {
+    if (originalAmountRef.current) {
+      try {
+        const defaultSlippage = 0.5;
         const adjustedAmount = calculateSlippage(
-          tradeInfo.amountOut,
-          slippageValue
+          originalAmountRef.current,
+          defaultSlippage
         );
-        const decimalAdjusted = Number(adjustedAmount) / 10 ** 18;
-        onSlippageCalculated(decimalAdjusted);
+        onSlippageCalculated(adjustedAmount);
+        setSlippage(defaultSlippage);
+        setCustomSlippage("");
+        setSlippageApplied(true);
+      } catch (error) {
+        console.error("Error resetting slippage:", error);
       }
-    } catch (error) {
-      console.error("Error calculating slippage:", error);
     }
   };
 
-  useEffect(() => {
-    if (tradeInfo && tradeInfo.amountOut) {
-      calculateAdjustedAmount(slippage);
-    }
-  }, [tradeInfo]);
+  // Handle modal close
+  const handleModalClose = () => {
+    setSlippageApplied(false);
+    originalAmountRef.current = null; // Reset the original amount reference
+    onClose();
+  };
 
+  // Close modal if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        onClose();
+        handleModalClose();
       }
     };
 
@@ -81,7 +109,7 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [onClose]);
+  }, []);
 
   const slippageOptions = [0.5, 1.0, 2.0];
 
@@ -92,7 +120,7 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
         className="bg-black border border-white rounded-xl p-6 w-full max-w-md relative"
       >
         <button
-          onClick={onClose}
+          onClick={handleModalClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white"
         >
           ✕
@@ -125,9 +153,18 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
           />
         </div>
 
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-between mt-4">
+          {/* Reset button */}
           <button
-            onClick={onClose}
+            onClick={handleResetSlippage}
+            className="px-4 py-1 bg-[#FF9900] text-black rounded border-[2px] border-[#FF9900] roboto"
+          >
+            Reset Slippage
+          </button>
+
+          {/* Close button */}
+          <button
+            onClick={handleModalClose}
             className="px-4 py-1 bg-black text-white rounded border-[2px] border-[#FF9900] roboto"
           >
             Close

@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import S from '../../assets/images/s.svg';
-import Three from '../../assets/images/324.svg';
-import Refresh from '../../assets/images/refresh.svg';
-import Info from '../../assets/images/info.svg';
-import { formatUnits } from 'viem';
-import Transcation from './Transcation';
+import React, { useState, useRef, useEffect } from "react";
+import S from "../../assets/images/s.svg";
+import Three from "../../assets/images/324.svg";
+import Refresh from "../../assets/images/refresh.svg";
+import Info from "../../assets/images/info.svg";
+import { formatUnits } from "viem";
+import Transcation from "./Transcation";
 const Amount = ({
   onClose,
   amountIn,
@@ -26,9 +26,9 @@ const Amount = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
 
@@ -39,10 +39,23 @@ const Amount = ({
     try {
       await confirm();
     } catch (error) {
-      console.error('Confirmation failed:', error);
+      console.error("Confirmation failed:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const formatNumber = (value) => {
+    if (!value) return ""; // Handle empty input
+
+    const [integerPart, decimalPart] = value.split(".");
+    const formattedInteger = integerPart
+      .replace(/\D/g, "") // Allow only digits
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Add commas to integer part
+
+    return decimalPart !== undefined
+      ? `${formattedInteger}.${decimalPart.replace(/\D/g, "")}` // Remove non-numeric from decimal
+      : formattedInteger;
   };
 
   return (
@@ -53,23 +66,23 @@ const Amount = ({
             ref={modalRef}
             className="md:max-w-[390px] w-full bg-black border border-white rounded-3xl relative py-6 px-6 mx-auto"
           >
-          <svg
-            onClick={onClose}
-            className="absolute cursor-pointer right-8 top-8"
-            width={18}
-            height={19}
-            viewBox="0 0 18 19"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M17 1.44824L1 17.6321M1 1.44824L17 17.6321"
-              stroke="#ffff"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+            <svg
+              onClick={onClose}
+              className="absolute cursor-pointer right-8 top-8"
+              width={18}
+              height={19}
+              viewBox="0 0 18 19"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M17 1.44824L1 17.6321M1 1.44824L17 17.6321"
+                stroke="#ffff"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
             <div className="flex gap-3 items-center">
               <svg
                 className="cursor-pointer"
@@ -111,13 +124,14 @@ const Amount = ({
                 You Receive
               </div>
               <div className="text-white text-2xl font-bold roboto leading-9 flex gap-3 items-center">
-                {amountOut}
+                {formatNumber(amountOut)}
                 <img src={tokenB.image} alt="S" className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-6 text-gray-40 text-white text-sm font-normal robotoleading-normal">
-              Output is estimated. You will receive at least {amountOut}{' '}
-              {tokenB.ticker} or the transaction will revert
+              Output is estimated. You will receive at least{" "}
+              {formatNumber(amountOut)} {tokenB.ticker} or the transaction will
+              revert
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-6">
               <div className="text-gray-400 text-sm font-normal roboto leading-normal">
@@ -125,7 +139,7 @@ const Amount = ({
               </div>
               <div className="flex gap-2 items-center">
                 <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                  1 {tokenA.ticker} ={' '}
+                  1 {tokenA.ticker} ={" "}
                   {singleToken &&
                   singleToken.amounts &&
                   singleToken.amounts[singleToken.amounts.length - 1]
@@ -135,12 +149,12 @@ const Amount = ({
                           parseInt(tokenB.decimal)
                         )
                       ).toFixed(6)
-                    : '0'}{' '}
+                    : "0"}{" "}
                   {tokenB.ticker}
                 </div>
-                <div className="cursor-pointer" onClick={() => refresh()}>
+                {/* <div className="cursor-pointer" onClick={() => refresh()}>
                   <img src={Refresh} alt="Refresh" />
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-2">
@@ -151,7 +165,7 @@ const Amount = ({
                 <img src={Info} alt="Info" />
               </div>
               <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                {amountOut} {tokenB.ticker}
+                {formatNumber(amountOut)} {tokenB.ticker}
               </div>
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-2">
@@ -162,7 +176,7 @@ const Amount = ({
                 <img src={Info} alt="Info" />
               </div>
               <div className="text-right text-white text-sm font-normal roboto leading-normal">
-              {((amountOut / 100) * 0.01).toFixed(2)} %
+                {((amountOut / 1000) * 0.01).toFixed(2)} %
               </div>
             </div>
             <button

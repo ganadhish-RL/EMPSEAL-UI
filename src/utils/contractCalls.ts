@@ -1,8 +1,9 @@
-import { Address, erc20Abi, formatUnits } from "viem";
+import { Address, erc20Abi, formatUnits, parseGwei } from "viem";
 import {
   readContract,
   writeContract,
   waitForTransactionReceipt,
+  getGasPrice,
 } from "@wagmi/core";
 import { toast } from "react-toastify";
 import { SwapStatus, TradeInfo } from "./types/interface";
@@ -11,11 +12,11 @@ import { config } from "../Wagmi/config";
 import { EMPSEALROUTERABI } from "./abis/empSealRouterAbi";
 import Tokens from "../pages/tokenList.json";
 import { convertToBigInt } from "./utils";
-const JadRouterAddress = '0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32';
+const JadRouterAddress = "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32";
 const WETH_ADDRESS: Address = "0xa1077a294dde1b09bb078844df40758a5d0f9a27";
 const EMPTY_ADDRESS: Address = "0x0000000000000000000000000000000000000000";
 
- const checkAllowance = async (tokenInAddress: string, userAddress: Address) => {
+const checkAllowance = async (tokenInAddress: string, userAddress: Address) => {
   try {
     let result = await readContract(config, {
       abi: erc20Abi,
@@ -32,7 +33,7 @@ const EMPTY_ADDRESS: Address = "0x0000000000000000000000000000000000000000";
   }
 };
 
- const callApprove = async (tokenInAddress: string, amountIn: bigint) => {
+const callApprove = async (tokenInAddress: string, amountIn: bigint) => {
   try {
     let result = await writeContract(config, {
       abi: erc20Abi,
@@ -51,9 +52,11 @@ const EMPTY_ADDRESS: Address = "0x0000000000000000000000000000000000000000";
 };
 
 const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
-  console.log(tradeInfo)
-  console.log(userAddress)
+  // console.log("Trade infomation in swap no split from PLS: ", tradeInfo);
   try {
+    // const adjustAmountOut = BigInt(975);
+    // const minOutput = (tradeInfo.amountOut * adjustAmountOut) / BigInt(1000);
+
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
       address: JadRouterAddress,
@@ -62,11 +65,11 @@ const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
         {
           adapters: tradeInfo.adapters,
           amountIn: tradeInfo.amountIn,
-          amountOut: (tradeInfo.amountOut),
+          amountOut: tradeInfo.amountOut,
           path: tradeInfo.path,
         },
         userAddress,
-        BigInt("0"),
+        BigInt("30"),
       ],
       value: tradeInfo.amountIn,
     });
@@ -76,13 +79,17 @@ const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
       data: result,
     };
   } catch (e: any) {
-    console.log('error', e)
+    console.log("error", e);
     throw e;
   }
 };
 
 const swapToEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
+  // console.log("Trade infomation in swap no split to PLS: ", tradeInfo);
   try {
+    // const adjustAmountOut = BigInt(975);
+    // const minOutput = (tradeInfo.amountOut * adjustAmountOut) / BigInt(1000);
+
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
       address: JadRouterAddress,
@@ -91,11 +98,11 @@ const swapToEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
         {
           adapters: tradeInfo.adapters,
           amountIn: tradeInfo.amountIn,
-          amountOut: (tradeInfo.amountOut * BigInt(3) / BigInt(100000)),
+          amountOut: tradeInfo.amountOut,
           path: tradeInfo.path,
         },
         userAddress,
-        BigInt(0),
+        BigInt("30"),
       ],
     });
     await waitForTransaction(result);
@@ -114,7 +121,7 @@ const swapNoSplitToEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
       abi: WPLS,
       address: WETH_ADDRESS,
       functionName: "withdraw",
-      args: [tradeInfo.amountIn]
+      args: [tradeInfo.amountIn],
     });
     await waitForTransaction(result);
     return {
@@ -124,9 +131,12 @@ const swapNoSplitToEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
   } catch (e: any) {
     throw e;
   }
-}
+};
 
-const swapNoSplitFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
+const swapNoSplitFromEth = async (
+  tradeInfo: TradeInfo,
+  userAddress: Address
+) => {
   try {
     let result = await writeContract(config, {
       abi: WPLS,
@@ -143,10 +153,14 @@ const swapNoSplitFromEth = async (tradeInfo: TradeInfo, userAddress: Address) =>
   } catch (e: any) {
     throw e;
   }
-}
+};
 
 const swap = async (tradeInfo: TradeInfo, userAddress: Address) => {
+  // console.log("Trade infomation in swap no split: ", tradeInfo);
   try {
+    const adjustAmountOut = BigInt(975);
+    const minOutput = (tradeInfo.amountOut * adjustAmountOut) / BigInt(1000);
+
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
       address: JadRouterAddress,
@@ -155,11 +169,12 @@ const swap = async (tradeInfo: TradeInfo, userAddress: Address) => {
         {
           adapters: tradeInfo.adapters,
           amountIn: tradeInfo.amountIn,
-          amountOut: (tradeInfo.amountOut * BigInt(3) / BigInt(100000)),
+          amountOut: tradeInfo.amountOut,
+          // amountOut: (tradeInfo.amountOut * BigInt(10)) / BigInt(10000),
           path: tradeInfo.path,
         },
         userAddress,
-        BigInt(0),
+        BigInt("30"),
       ],
     });
     await waitForTransaction(result);
@@ -225,7 +240,10 @@ export const swapTokens = async (
     setStatus("SWAPPING");
     if (tokenInAddress === EMPTY_ADDRESS && tokenOutAddress === WETH_ADDRESS) {
       swapResponse = await swapNoSplitFromEth(tradeInfo, userAddress);
-    } else if (tokenInAddress === WETH_ADDRESS && tokenOutAddress === EMPTY_ADDRESS) {
+    } else if (
+      tokenInAddress === WETH_ADDRESS &&
+      tokenOutAddress === EMPTY_ADDRESS
+    ) {
       swapResponse = await swapNoSplitToEth(tradeInfo, userAddress);
     } else if (tokenInAddress === EMPTY_ADDRESS) {
       swapResponse = await swapFromEth(tradeInfo, userAddress);
@@ -239,6 +257,16 @@ export const swapTokens = async (
     setSwapHash(swapResponse.data);
     return swapResponse;
   } catch (error) {
+    if (
+      error.message &&
+      error.message.includes("EmpsealRouter: Insufficient output amount")
+    ) {
+      setStatus("ERROR");
+      toast.error("Output amount too high. Adjust slippage and retry.");
+    } else {
+      setStatus("ERROR");
+      toast.error("Transaction rejected");
+    }
     throw error;
   }
 };

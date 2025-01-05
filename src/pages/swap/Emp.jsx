@@ -22,6 +22,7 @@ import { Copy, Check } from "lucide-react";
 const Emp = ({ setPadding }) => {
   const [isAmountVisible, setAmountVisible] = useState(false);
   const [isSlippageVisible, setSlippageVisible] = useState(false);
+  const [isSlippageApplied, setIsSlippageApplied] = useState(false);
   const [isTokenVisible, setTokenVisible] = useState(false);
   const [order, setOrder] = useState(false);
   const [selectedTokenA, setSelectedTokenA] = useState(Tokens[0]);
@@ -82,6 +83,16 @@ const Emp = ({ setPadding }) => {
   // Format the chain balance
   const formattedChainBalance = tokenBalance
     ? parseFloat(tokenBalance.formatted).toFixed(2) // Format to 6 decimal places
+    : "0.000000";
+
+  const { data: tokenBBalance } = useBalance({
+    address: address, // Use the connected wallet address
+    token: selectedTokenB.address, // Token address of TokenA
+  });
+
+  // Format the chain balance
+  const formattedChainBalanceTokenB = tokenBBalance
+    ? parseFloat(tokenBBalance.formatted).toFixed(2) // Format to 6 decimal places
     : "0.000000";
 
   const handlePercentageChange = (e) => {
@@ -217,10 +228,27 @@ const Emp = ({ setPadding }) => {
   });
 
   const handleSlippageCalculated = (adjustedAmount) => {
-    setMinAmountOut(adjustedAmount.toString());
-    // Update the amountOut state with the adjusted amount
-    setAmountOut(adjustedAmount.toString());
+    const tokenDecimals = selectedTokenB.decimal;
+    const decimalAdjusted = Number(adjustedAmount) / 10 ** tokenDecimals;
+
+    // Update states
+    setMinAmountOut(adjustedAmount);
+    setAmountOut(decimalAdjusted);
+
+    // Update tradeInfo state
+    setTradeInfo((prevTradeInfo) => ({
+      ...prevTradeInfo,
+      amountOut: adjustedAmount,
+    }));
+
+    // Reset minAmountOut if needed
+    setMinAmountOut("0");
   };
+
+  // Track tradeInfo updates
+  // useEffect(() => {
+  //   console.log("Updated tradeInfo:", tradeInfo);
+  // }, [tradeInfo]);
 
   useEffect(() => {
     const fetchConversionRateTokenA = async () => {
@@ -258,7 +286,10 @@ const Emp = ({ setPadding }) => {
   useEffect(() => {
     const fetchConversionRateTokenB = async () => {
       try {
-        if (selectedTokenB.address === EMPTY_ADDRESS) {
+        if (
+          selectedTokenB.address === EMPTY_ADDRESS ||
+          selectedTokenB.address === selectedTokenA.address
+        ) {
           return WETH_ADDRESS;
         }
         const response = await fetch(
@@ -289,56 +320,79 @@ const Emp = ({ setPadding }) => {
   }, [selectedTokenB.address]);
 
   useEffect(() => {
-    // console.log("quote data", data);
-    if (data && data.amounts && data.amounts.length > 0) {
-      // console.log("quote data", data);
-      if (selectedTokenB) {
-        setRoute(data.path);
-        setAdapter(data.adapters);
-        if (
-          (selectedTokenA?.address === EMPTY_ADDRESS &&
-            selectedTokenB?.address === WETH_ADDRESS) ||
-          (selectedTokenA?.address === WETH_ADDRESS &&
-            selectedTokenB?.address === EMPTY_ADDRESS)
-        ) {
-          setRoute([selectedTokenA.address, selectedTokenB.address]);
-          setAdapter([]);
-          setAmountOut(amountIn);
-        } else {
-          setAmountOut(
-            formatUnits(
-              data?.amounts[data.amounts.length - 1],
-              parseInt(selectedTokenB.decimal)
-            )
-          );
-        }
-        const trade = {
-          amountIn: data.amounts[0],
-          amountOut: data.amounts[data.amounts.length - 1],
-          amounts: data.amounts,
-          path: data.path,
-          pathTokens: data.path.map((pathAddress) => {
-            return (
-              Tokens.find((token) => token.address === pathAddress) || Tokens[0]
-            );
-          }),
-          adapters: data.adapters,
-        };
-        setTradeInfo(trade);
-      } else {
-        setAmountOut("0");
-        setTradeInfo(undefined);
-      }
-    } else {
+    if (!data || !data.amounts || data.amounts.length === 0) {
+      handleEmptyData();
+      return;
+    }
+
+    if (!selectedTokenB) {
       setAmountOut("0");
       setTradeInfo(undefined);
-      setRoute([selectedTokenA.address, selectedTokenB.address]);
+      return;
     }
-  }, [data, error]);
+
+    handleValidData();
+  }, [data, selectedTokenA, selectedTokenB, amountIn]);
+
+  // Helper Functions
+  const handleEmptyData = () => {
+    setAmountOut("0");
+    setTradeInfo(undefined);
+    setRoute([selectedTokenA?.address, selectedTokenB?.address]);
+  };
+
+  const handleValidData = () => {
+    const isDirectRoute =
+      (selectedTokenA?.address === EMPTY_ADDRESS &&
+        selectedTokenB?.address === WETH_ADDRESS) ||
+      (selectedTokenA?.address === WETH_ADDRESS &&
+        selectedTokenB?.address === EMPTY_ADDRESS);
+
+    if (isDirectRoute) {
+      setDirectRoute();
+    } else {
+      setCalculatedRoute();
+    }
+  };
+
+  const setDirectRoute = () => {
+    setRoute([selectedTokenA?.address, selectedTokenB?.address]);
+    setAdapter([]);
+    setAmountOut(amountIn);
+  };
+
+  const setCalculatedRoute = () => {
+    const amountOutValue = formatUnits(
+      data.amounts[data.amounts.length - 1],
+      parseInt(selectedTokenB.decimal)
+    );
+    const amountOutToTrimmed = (amountOutValue * 975) / 1000;
+    // setAmountOut(amountOutToTrimmed);
+    setAmountOut(amountOutValue);
+
+    const trade = {
+      amountIn: data.amounts[0],
+      amountOut: data.amounts[data.amounts.length - 1],
+      amounts: data.amounts,
+      path: data.path,
+      pathTokens: data.path.map(
+        (pathAddress) =>
+          Tokens.find((token) => token.address === pathAddress) || Tokens[0]
+      ),
+      adapters: data.adapters,
+    };
+    setRoute(data.path);
+    setAdapter(data.adapters);
+    setTradeInfo(trade);
+    setIsSlippageApplied(false);
+  };
 
   useEffect(() => {
-    quoteRefresh();
-    setPath([selectedTokenA.address, selectedTokenB.address]);
+    setTimeout(() => {
+      // Call the functions after 10 seconds
+      quoteRefresh();
+      setPath([selectedTokenA.address, selectedTokenB.address]);
+    }, 30000); // 10 seconds in milliseconds
   }, [amountIn, selectedTokenA, selectedTokenB]);
 
   useEffect(() => {
@@ -367,6 +421,9 @@ const Emp = ({ setPadding }) => {
   }, [amountOut, conversionRateTokenB]);
 
   const confirmSwap = async () => {
+    if (selectedTokenA.address == selectedTokenB.address) {
+      return null;
+    }
     await swapTokens(
       (_swapStatus) => {
         setSwapStatus(_swapStatus);
@@ -455,6 +512,28 @@ const Emp = ({ setPadding }) => {
     return "Swap";
   };
 
+  // Function to format the number with commas
+  const formatNumber = (value) => {
+    if (!value) return ""; // Handle empty input
+
+    const [integerPart, decimalPart] = value.split("."); // Split into integer and decimal parts
+    const formattedInteger = integerPart
+      .replace(/\D/g, "") // Allow only digits
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Add commas to integer part
+
+    // If there's a decimal part, return formatted integer + decimal
+    return decimalPart !== undefined
+      ? `${formattedInteger}.${decimalPart.replace(/\D/g, "")}` // Remove non-numeric from decimal
+      : formattedInteger;
+  };
+
+  // Function to handle input changes
+  const handleInputChange = (value) => {
+    // Remove commas before updating state
+    const rawValue = value.replace(/,/g, "");
+    setAmountIn(rawValue); // Update the state with the raw number
+  };
+
   return (
     <>
       <div className="w-full border border-white rounded-xl py-10 2xl:px-16 lg:px-12 md:px-8 px-4 bg-black md:mt-0 mt-4">
@@ -523,10 +602,12 @@ const Emp = ({ setPadding }) => {
               {isLoading
                 ? "Loading.."
                 : selectedTokenA.address === EMPTY_ADDRESS
-                ? `${formattedBalance}`
+                ? `${formatNumber(formattedBalance)}`
                 : `${
                     tokenBalance
-                      ? parseFloat(tokenBalance.formatted).toFixed(2)
+                      ? formatNumber(
+                          parseFloat(tokenBalance.formatted).toFixed(2)
+                        )
                       : "0.00"
                   }`}
             </span>
@@ -581,6 +662,18 @@ const Emp = ({ setPadding }) => {
           </button>
 
           <input
+            type="text" // Changed from "number" to "text" for better formatting control
+            placeholder={
+              formattedChainBalance === "0.000000"
+                ? "0"
+                : calculateAmount(selectedPercentage)
+            }
+            value={formatNumber(amountIn)}
+            onChange={(e) => handleInputChange(e.target.value)}
+            className="text-white text-xl font-bold roboto text-right w-full leading-7 outline-none border-none bg-transparent token_input"
+          />
+
+          {/* <input
             type="number"
             placeholder={
               formattedChainBalance === "0.000000"
@@ -590,10 +683,12 @@ const Emp = ({ setPadding }) => {
             value={amountIn}
             onChange={(e) => setAmountIn(e.target.value)}
             className="text-white text-xl font-bold roboto text-right w-full leading-7 outline-none border-none bg-transparent token_input"
-          />
+          /> */}
         </div>
         <div className="text-right text-gray-400 text-sm mt-2 pe-1 roboto">
-          {conversionRate ? `$${usdValue} USD` : "Fetching Rate..."}
+          {conversionRate
+            ? `$${formatNumber(usdValue)} USD`
+            : "Fetching Rate..."}
         </div>
         <div
           className={`lg:px-1 mt-3 flex gap-4 lg:flex-nowrap flex-wrap items-center ${
@@ -656,6 +751,28 @@ const Emp = ({ setPadding }) => {
           <div className="text-zinc-200 text-base font-normal roboto leading-normal">
             Min. to Receive
           </div>
+          <div className="text-center">
+            <span className="text-gray-400 text-base font-normal roboto leading-normal">
+              Balance
+            </span>
+            <span className="text-gray-400 text-base font-normal roboto leading-normal">
+              {" "}
+              :{" "}
+            </span>
+            <span className="text-white text-base font-normal roboto leading-normal">
+              {isLoading
+                ? "Loading.."
+                : selectedTokenA.address === EMPTY_ADDRESS
+                ? `${formatNumber(formattedChainBalanceTokenB)}`
+                : `${
+                    tokenBBalance
+                      ? formatNumber(
+                          parseFloat(tokenBBalance.formatted).toFixed(2)
+                        )
+                      : "0.00"
+                  }`}
+            </span>
+          </div>
         </div>
 
         <div className="flex w-full border border-[#3b3c4e] px-4 py-4 rounded-2xl mt-3">
@@ -704,14 +821,16 @@ const Emp = ({ setPadding }) => {
             )}
           </button>
           <input
-            type="number"
+            type="text"
             placeholder="0"
-            value={parseFloat(amountOut).toFixed(6)}
+            value={formatNumber(parseFloat(amountOut).toFixed(6))}
             className="text-white text-xl font-bold roboto text-right w-full leading-7 outline-none border-none bg-transparent"
           />
         </div>
         <div className="text-right text-gray-400 text-sm mt-2 pe-1 roboto">
-          {conversionRateTokenB ? `$${usdValueTokenB} USD` : "Fetching Rate..."}
+          {conversionRateTokenB
+            ? `$${formatNumber(usdValueTokenB)} USD`
+            : "Fetching Rate..."}
         </div>
         <div className="flex justify-center items-center gap-2 my-4">
           <div className="text-white text-base font-normal roboto leading-normal">
@@ -745,7 +864,7 @@ const Emp = ({ setPadding }) => {
               <img src={Info} alt="Info" />
             </div>
             <div className="text-right text-white text-[12px] font-normal roboto leading-none">
-              {amountIn} {selectedTokenA.ticker}
+              {formatNumber(amountIn)} {selectedTokenA.ticker}
             </div>
           </div>
           <div className="flex justify-between gap-2 items-center my-2">
@@ -754,21 +873,19 @@ const Emp = ({ setPadding }) => {
               <img src={Info} alt="Info" />
             </div>
             <div className="text-right text-white text-[12px] font-normal roboto leading-none">
-              {amountOut} {selectedTokenB.ticker}
+              {formatNumber(parseFloat(amountOut).toFixed(6))}{" "}
+              {selectedTokenB.ticker}
             </div>
           </div>
-          <div className="flex justify-between gap-2 items-center">
+          {/* <div className="flex justify-between gap-2 items-center">
             <div className="text-gray-400 text-[12px] font-normal roboto leading-none flex gap-1 items-center">
               EMPX Swap Fee
               <img src={Info} alt="Info" />
             </div>
             <div className="text-right text-white text-[12px] font-normal roboto leading-none">
-              {/* {feeData && feeData.amounts && feeData.amounts.length > 0
-                ? feeData.amounts[feeData.amounts.length - 1]
-                : 0} */}
               0.3%
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

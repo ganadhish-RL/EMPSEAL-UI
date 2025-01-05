@@ -33,11 +33,24 @@ const Wallet = () => {
     ? `${parseFloat(balance).toFixed(2)}`
     : "0.00";
 
-    const handleChainChange = (iconUrl, name) => {
-      setChainIconUrl(iconUrl);
-      setChainName(name);
-    };
-    
+  const formatNumber = (value) => {
+    if (!value) return ""; // Handle empty input
+
+    const [integerPart, decimalPart] = value.split("."); // Split into integer and decimal parts
+    const formattedInteger = integerPart
+      .replace(/\D/g, "") // Allow only digits
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Add commas to integer part
+
+    // If there's a decimal part, return formatted integer + decimal
+    return decimalPart !== undefined
+      ? `${formattedInteger}.${decimalPart.replace(/\D/g, "")}` // Remove non-numeric from decimal
+      : formattedInteger;
+  };
+
+  const handleChainChange = (iconUrl, name) => {
+    setChainIconUrl(iconUrl);
+    setChainName(name);
+  };
 
   return (
     <div className="w-full border border-white rounded-xl py-4 2xl:px-6 lg:px-5 px-4 bg-black md:flex gap-8">
@@ -72,7 +85,8 @@ const Wallet = () => {
         )}
         <div className="flex items-center gap-2">
           <div className="text-white text-lg font-bold roboto">
-            {formattedBalance} {chain?.nativeCurrency?.symbol || "ETH"}
+            {formatNumber(formattedBalance)}{" "}
+            {chain?.nativeCurrency?.symbol || "ETH"}
           </div>
         </div>
       </div>
