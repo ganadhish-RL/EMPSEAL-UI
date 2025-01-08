@@ -2,7 +2,11 @@
 
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { getDefaultConfig, RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import {
+  getDefaultConfig,
+  RainbowKitProvider,
+  darkTheme,
+} from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { mode, hardhat } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
@@ -20,11 +24,7 @@ export default function WagmiProviderWrapper({
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-      <RainbowKitProvider
-          showRecentTransactions={true}
-          theme={darkTheme()}
-          modalSize="compact"
-        >
+        <RainbowKitProvider theme={darkTheme()} modalSize="compact">
           {children}
         </RainbowKitProvider>
       </QueryClientProvider>

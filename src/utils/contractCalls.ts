@@ -3,7 +3,6 @@ import {
   readContract,
   writeContract,
   waitForTransactionReceipt,
-  getGasPrice,
 } from "@wagmi/core";
 import { toast } from "react-toastify";
 import { SwapStatus, TradeInfo } from "./types/interface";
@@ -52,7 +51,7 @@ const callApprove = async (tokenInAddress: string, amountIn: bigint) => {
 };
 
 const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
-  // console.log("Trade infomation in swap no split from PLS: ", tradeInfo);
+  console.log("Trade infomation in swap no split from PLS: ", tradeInfo);
   try {
     // const adjustAmountOut = BigInt(975);
     // const minOutput = (tradeInfo.amountOut * adjustAmountOut) / BigInt(1000);
@@ -66,6 +65,7 @@ const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
           adapters: tradeInfo.adapters,
           amountIn: tradeInfo.amountIn,
           amountOut: tradeInfo.amountOut,
+          // amountOut: BigInt("0"),
           path: tradeInfo.path,
         },
         userAddress,
@@ -85,7 +85,7 @@ const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
 };
 
 const swapToEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
-  // console.log("Trade infomation in swap no split to PLS: ", tradeInfo);
+  console.log("Trade infomation in swap no split to PLS: ", tradeInfo);
   try {
     // const adjustAmountOut = BigInt(975);
     // const minOutput = (tradeInfo.amountOut * adjustAmountOut) / BigInt(1000);
@@ -156,10 +156,10 @@ const swapNoSplitFromEth = async (
 };
 
 const swap = async (tradeInfo: TradeInfo, userAddress: Address) => {
-  // console.log("Trade infomation in swap no split: ", tradeInfo);
+  console.log("Trade infomation in swap no split: ", tradeInfo);
   try {
-    const adjustAmountOut = BigInt(975);
-    const minOutput = (tradeInfo.amountOut * adjustAmountOut) / BigInt(1000);
+    // const adjustAmountOut = BigInt(975);
+    // const minOutput = (tradeInfo.amountOut * adjustAmountOut) / BigInt(1000);
 
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
@@ -169,7 +169,9 @@ const swap = async (tradeInfo: TradeInfo, userAddress: Address) => {
         {
           adapters: tradeInfo.adapters,
           amountIn: tradeInfo.amountIn,
+          // amountOut: BigInt("0"),
           amountOut: tradeInfo.amountOut,
+          // amounts[tradeInfo.amounts.length - 1],
           // amountOut: (tradeInfo.amountOut * BigInt(10)) / BigInt(10000),
           path: tradeInfo.path,
         },

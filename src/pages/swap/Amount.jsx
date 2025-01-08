@@ -115,7 +115,7 @@ const Amount = ({
                 You Pay
               </div>
               <div className="text-white text-2xl font-bold roboto leading-9 flex gap-3 items-center">
-                {amountIn}
+                {formatNumber(amountIn)}
                 <img src={tokenA.image} alt="Three" className="w-4 h-4" />
               </div>
             </div>

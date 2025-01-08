@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 // Helper function to calculate slippage
 const calculateSlippage = (amountOut, slippagePercent) => {
-  if (slippagePercent < 0.5 || slippagePercent > 5) {
+  if (slippagePercent < 0 || slippagePercent > 5) {
     throw new Error("Invalid slippage percentage. Must be between 0.5 and 5");
   }
   return (
@@ -11,16 +11,17 @@ const calculateSlippage = (amountOut, slippagePercent) => {
 };
 
 const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
-  const [slippage, setSlippage] = useState(0.5);
+  const [slippage, setSlippage] = useState(0);
   const [customSlippage, setCustomSlippage] = useState("");
   const [slippageApplied, setSlippageApplied] = useState(false);
   const originalAmountRef = useRef(null);
   const modalRef = useRef(null);
 
+  const lastAmount = tradeInfo.amounts[tradeInfo.amounts.length - 1];
   // Store original amount when tradeInfo changes and ref is empty
   useEffect(() => {
     if (tradeInfo?.amountOut && !originalAmountRef.current) {
-      originalAmountRef.current = tradeInfo.amountOut;
+      originalAmountRef.current = lastAmount;
     }
   }, [tradeInfo?.amountOut]);
 
@@ -28,16 +29,13 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
   useEffect(() => {
     if (
       originalAmountRef.current &&
-      slippage >= 0.5 &&
+      slippage >= 0 &&
       slippage <= 5 &&
       !slippageApplied
     ) {
       try {
         // Always calculate based on original amount
-        const adjustedAmount = calculateSlippage(
-          originalAmountRef.current,
-          slippage
-        );
+        const adjustedAmount = calculateSlippage(lastAmount, slippage);
         onSlippageCalculated(adjustedAmount);
         setSlippageApplied(true);
       } catch (error) {
@@ -64,7 +62,7 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
     }
 
     const value = parseFloat(inputValue);
-    if (isNaN(value) || value < 0.5 || value > 5) return;
+    if (isNaN(value) || value < 0 || value > 5) return;
 
     setCustomSlippage(inputValue);
     setSlippage(value);
@@ -75,7 +73,7 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
   const handleResetSlippage = () => {
     if (originalAmountRef.current) {
       try {
-        const defaultSlippage = 0.5;
+        const defaultSlippage = 0;
         const adjustedAmount = calculateSlippage(
           originalAmountRef.current,
           defaultSlippage
@@ -111,7 +109,7 @@ const SlippageCalculator = ({ tradeInfo, onSlippageCalculated, onClose }) => {
     };
   }, []);
 
-  const slippageOptions = [0.5, 1.0, 2.0];
+  const slippageOptions = [0.0, 0.5, 1.0, 2.0];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

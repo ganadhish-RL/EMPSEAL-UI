@@ -372,7 +372,9 @@ const Emp = ({ setPadding }) => {
 
     const trade = {
       amountIn: data.amounts[0],
-      amountOut: data.amounts[data.amounts.length - 1],
+      amountOut:
+        (data.amounts[data.amounts.length - 1] * BigInt(98)) / BigInt(100),
+      // data.amounts[data.amounts.length - 1],
       amounts: data.amounts,
       path: data.path,
       pathTokens: data.path.map(
