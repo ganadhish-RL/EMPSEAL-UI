@@ -51,11 +51,7 @@ const callApprove = async (tokenInAddress: string, amountIn: bigint) => {
 };
 
 const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
-  console.log("Trade infomation in swap no split from PLS: ", tradeInfo);
   try {
-    // const adjustAmountOut = BigInt(975);
-    // const minOutput = (tradeInfo.amountOut * adjustAmountOut) / BigInt(1000);
-
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
       address: JadRouterAddress,
@@ -85,11 +81,7 @@ const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
 };
 
 const swapToEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
-  console.log("Trade infomation in swap no split to PLS: ", tradeInfo);
   try {
-    // const adjustAmountOut = BigInt(975);
-    // const minOutput = (tradeInfo.amountOut * adjustAmountOut) / BigInt(1000);
-
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
       address: JadRouterAddress,
@@ -156,11 +148,7 @@ const swapNoSplitFromEth = async (
 };
 
 const swap = async (tradeInfo: TradeInfo, userAddress: Address) => {
-  console.log("Trade infomation in swap no split: ", tradeInfo);
   try {
-    // const adjustAmountOut = BigInt(975);
-    // const minOutput = (tradeInfo.amountOut * adjustAmountOut) / BigInt(1000);
-
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
       address: JadRouterAddress,

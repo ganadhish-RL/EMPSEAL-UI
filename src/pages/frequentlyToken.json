@@ -24,12 +24,12 @@
         "featured": true
     },
     {
+        "chainId": 369,
         "name": "Incentive",
         "address": "0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d",
         "ticker": "INC",
-        "decimals": 18,
-        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d.png",
-        "featured": true
+        "decimal": 18,
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d.png"
     },
     {
         "name": "HEX pulsechain",
