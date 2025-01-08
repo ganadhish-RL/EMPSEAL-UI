@@ -389,12 +389,16 @@ const Emp = ({ setPadding }) => {
     setIsSlippageApplied(false);
   };
 
+  // useEffect(() => {
+  //   quoteRefresh();
+  //   setPath([selectedTokenA.address, selectedTokenB.address]);
+  // }, [amountIn, selectedTokenA, selectedTokenB]);
+
   useEffect(() => {
     setTimeout(() => {
-      // Call the functions after 10 seconds
       quoteRefresh();
       setPath([selectedTokenA.address, selectedTokenB.address]);
-    }, 30000); // 10 seconds in milliseconds
+    }, 9000);
   }, [amountIn, selectedTokenA, selectedTokenB]);
 
   useEffect(() => {

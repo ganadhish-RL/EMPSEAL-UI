@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Arrow from "../../assets/images/arrow-2.svg";
 import tokenList from "../tokenList.json";
 import adapters from "../adapters.json";
-import { useStore } from '../../redux/store/routeStore';
+import { useStore } from "../../redux/store/routeStore";
 
 const Routing = ({ routing }) => {
   const [tokenImages, setTokenImages] = useState({});
@@ -32,18 +32,18 @@ const Routing = ({ routing }) => {
     // Then check tokenList.json
     const localImage = getLocalTokenImage(address);
     if (localImage) {
-      setTokenImages(prev => ({
+      setTokenImages((prev) => ({
         ...prev,
-        [address]: localImage
+        [address]: localImage,
       }));
       return localImage;
     }
 
     // Finally try GitHub
     const githubImage = getGithubTokenImage(address);
-    setTokenImages(prev => ({
+    setTokenImages((prev) => ({
       ...prev,
-      [address]: githubImage
+      [address]: githubImage,
     }));
     return githubImage;
   };
@@ -57,19 +57,19 @@ const Routing = ({ routing }) => {
           newTokenImages[address] = getTokenImage(address);
         }
       });
-      setTokenImages(prev => ({
+      setTokenImages((prev) => ({
         ...prev,
-        ...newTokenImages
+        ...newTokenImages,
       }));
     }
   }, [route]);
 
   const getAdapter = (address) => {
-    if (!address) return 'Unknown';
+    if (!address) return "Unknown";
     const foundAdapter = adapters.find(
       (a) => a.address.toLowerCase() === address.toLowerCase()
     );
-    return foundAdapter ? foundAdapter.name : 'Unknown';
+    return foundAdapter ? foundAdapter.name : "Unknown";
   };
 
   // Get token symbol from tokenList.json
@@ -77,7 +77,7 @@ const Routing = ({ routing }) => {
     const token = tokenList.find(
       (token) => token.address.toLowerCase() === address.toLowerCase()
     );
-    return token ? token.ticker : 'Unknown';
+    return token ? token.ticker : "Unknown";
   };
 
   if (!route || route.length === 0) {
@@ -87,32 +87,34 @@ const Routing = ({ routing }) => {
   return (
     <div className="w-full border border-white rounded-xl py-4 2xl:px-7 lg:px-5 px-4 bg-black">
       <div className="flex justify-center gap-2 md:flex-nowrap flex-wrap">
-        <button className="w-[85px] h-[28px] flex justify-center items-center rounded-md bg-black roboto text-[#FF9900] text-[8.24px] font-bold border hover:text-black border-[#FF9900] hover:bg-[#FF9900]">
+        <p className="w-[85px] h-[28px] flex justify-center items-center rounded-md bg-black roboto text-[#FF9900] text-[8.24px] font-bold border border-[#FF9900]">
           Routing
-        </button>
+        </p>
       </div>
-      
+
       <div className="flex justify-between gap-2 items-center mt-6">
         {route.map((address, index) => (
           <React.Fragment key={`${address}-${index}`}>
             <div className="flex flex-col items-center">
-              <img 
+              <img
                 className="w-6 h-6"
-                src={tokenImages[address] || '/path/to/fallback/image.png'}
+                src={tokenImages[address] || "/path/to/fallback/image.png"}
                 alt={getTokenSymbol(address)}
                 onError={(e) => {
                   console.log(`Failed to load image for ${address}`);
-                  e.target.src = '/path/to/fallback/image.png';
+                  e.target.src = "/path/to/fallback/image.png";
                 }}
               />
             </div>
-            
+
             {index < route.length - 1 && (
               <div className="flex flex-col gap-2">
                 <div className="flex flex-col gap-1">
                   <img className="w-6 h-6" src={Arrow} alt="Arrow" />
                   <p className="text-white text-[10px] font-bold roboto">
-                    {adapter && adapter[index] ? getAdapter(adapter[index]) : ''}
+                    {adapter && adapter[index]
+                      ? getAdapter(adapter[index])
+                      : ""}
                   </p>
                 </div>
               </div>

@@ -27,7 +27,7 @@
         "name": "DAI ethereum",
         "ticker": "DAI",
         "address": "0xefD766cCb38EaF1dfd701853BFCe31359239F305",
-        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0xefD766cCb38EaF1dfd701853BFCe31359239F305.png",
+        "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
         "decimal": "18",
         "featured": true
     },
@@ -81,7 +81,7 @@
     },
     {
         "name": "The Rise of Cock",
-        "ticker": "$COCK",
+        "ticker": "COCK",
         "address": "0x40b49a9e5B8E3CC137E9CA57A5F4382D1B3dF6FE",
         "image": "https://raw.githubusercontent.com/TheRiseofCOCK/Media/refs/heads/main/30px%20logo.png",
         "decimal": "18",

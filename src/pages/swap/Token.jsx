@@ -13,7 +13,7 @@ const isValidAddress = (address) => web3.utils.isAddress(address);
 
 const lookupTokenByAddress = async (address) => {
   if (!isValidAddress(address)) {
-    console.log("Invalid address");
+    console.error("Invalid address");
     return null;
   }
 
@@ -98,7 +98,6 @@ const Token = ({ onClose, onSelect }) => {
   const [walletAddress, setWalletAddress] = useState(null);
   const modalRef = useRef(null);
 
-  // Get connected wallet address
   useEffect(() => {
     const getAddress = async () => {
       if (window.ethereum) {
@@ -121,6 +120,48 @@ const Token = ({ onClose, onSelect }) => {
       token.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
       token.address.toLowerCase().includes(searchQuery.toLowerCase())
   ).sort((a, b) => a.name.localeCompare(b.name));
+
+  const SortedTokenList = () => {
+    const tokenPromises = filteredTokens.map((token) => ({
+      token,
+      balancePromise: useBalance({
+        address: walletAddress,
+        token:
+          token.address === "0x0000000000000000000000000000000000000000"
+            ? undefined
+            : token.address,
+      }),
+    }));
+
+    // Sort based on balance
+    const sortedTokens = [...tokenPromises].sort((a, b) => {
+      const balanceA = parseFloat(a.balancePromise.data?.formatted || "0");
+      const balanceB = parseFloat(b.balancePromise.data?.formatted || "0");
+
+      if (balanceA > 0 && balanceB > 0) {
+        if (balanceA !== balanceB) {
+          return balanceB - balanceA; // Sort descending
+        }
+      }
+      if (balanceA > 0 && balanceB === 0) return -1;
+      if (balanceB > 0 && balanceA === 0) return 1;
+
+      return a.token.name.localeCompare(b.token.name);
+    });
+
+    return (
+      <div className="max-h-[400px] overflow-y-auto">
+        {sortedTokens.map(({ token }, index) => (
+          <TokenListItem
+            key={index}
+            token={token}
+            walletAddress={walletAddress}
+            onClick={handleTokenSelect}
+          />
+        ))}
+      </div>
+    );
+  };
 
   const frequentlyUsedTokens = FrequentlyUsedToken.filter(
     (token) =>
@@ -267,7 +308,9 @@ const Token = ({ onClose, onSelect }) => {
               </p>
             </div>
 
-            {isLoading && (
+            <SortedTokenList />
+
+            {/* {isLoading && (
               <div className="text-white text-center mt-4">Loading...</div>
             )}
 
@@ -292,7 +335,7 @@ const Token = ({ onClose, onSelect }) => {
                   onClick={handleTokenSelect}
                 />
               ))}
-            </div>
+            </div> */}
 
             <div className="my-6">
               <img src={Arrow} alt="Arrow" className="mx-auto" />
