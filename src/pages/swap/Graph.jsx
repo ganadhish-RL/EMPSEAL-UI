@@ -104,13 +104,13 @@ const Graph = ({ padding }) => {
 
       <div className="flex justify-start gap-2 px-4 mt-2">
         <div className="text-white text-[14px] font-bold roboto leading-normal">
-          {baseName || "Loading..."}
+          {baseName || "Loading..."}/WPLS
         </div>
       </div>
 
       {highValue !== null && (
         <div className="text-white text-[12px] px-4 pt-2 roboto">
-          <strong>Price High:</strong> {highValue}
+          <strong>Price:</strong> {highValue}
           {/* <strong>Price High:</strong> {parseFloat(highValue).toFixed(18)} */}
         </div>
       )}

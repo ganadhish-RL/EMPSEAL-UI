@@ -168,7 +168,7 @@ const Emp = ({ setPadding }) => {
     error,
   } = useReadContract({
     abi: RouterABI,
-    address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
+    address: "0x0Cf6D948Cf09ac83a6bf40C7AD7b44657A9F2A52",
     functionName: "findBestPath",
     args: [
       // Add validation for amountIn and selectedTokenA
@@ -190,7 +190,7 @@ const Emp = ({ setPadding }) => {
 
   const { data: singleToken, refetch: singleTokenRefresh } = useReadContract({
     abi: RouterABI,
-    address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
+    address: "0x0Cf6D948Cf09ac83a6bf40C7AD7b44657A9F2A52",
     functionName: "findBestPath",
     args: [
       selectedTokenA?.decimal
@@ -215,7 +215,7 @@ const Emp = ({ setPadding }) => {
 
   const { data: feeData } = useReadContract({
     abi: RouterABI,
-    address: "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32",
+    address: "0x0Cf6D948Cf09ac83a6bf40C7AD7b44657A9F2A52",
     functionName: "findBestPath",
     args: [
       amountIn && selectedTokenA && parseFloat(amountIn)
@@ -253,11 +253,14 @@ const Emp = ({ setPadding }) => {
   useEffect(() => {
     const fetchConversionRateTokenA = async () => {
       try {
-        if (selectedTokenA.address === EMPTY_ADDRESS) {
-          return WETH_ADDRESS.toLowerCase();
-        }
+        // Determine which address to use for the API call
+        const addressToFetch =
+          selectedTokenA.address === EMPTY_ADDRESS
+            ? WETH_ADDRESS.toLowerCase()
+            : selectedTokenA.address.toLowerCase();
+
         const response = await fetch(
-          `https://api.geckoterminal.com/api/v2/simple/networks/pulsechain/token_price/${selectedTokenA.address.toLowerCase()}`
+          `https://api.geckoterminal.com/api/v2/simple/networks/pulsechain/token_price/${addressToFetch}`
         );
 
         if (!response.ok) {
@@ -272,7 +275,11 @@ const Emp = ({ setPadding }) => {
           throw new Error("Token prices not found");
         }
 
-        const tokenPrice = tokenPrices[selectedTokenA.address.toLowerCase()];
+        // Use the correct address to look up the price
+        const tokenPrice =
+          selectedTokenA.address === EMPTY_ADDRESS
+            ? tokenPrices[WETH_ADDRESS.toLowerCase()]
+            : tokenPrices[addressToFetch];
 
         setConversionRate(tokenPrice);
       } catch (error) {
@@ -286,14 +293,13 @@ const Emp = ({ setPadding }) => {
   useEffect(() => {
     const fetchConversionRateTokenB = async () => {
       try {
-        if (
-          selectedTokenB.address === EMPTY_ADDRESS ||
-          selectedTokenB.address === selectedTokenA.address
-        ) {
-          return WETH_ADDRESS;
-        }
+        const addressToFetch =
+          selectedTokenB.address === EMPTY_ADDRESS
+            ? WETH_ADDRESS.toLowerCase()
+            : selectedTokenB.address.toLowerCase();
+
         const response = await fetch(
-          `https://api.geckoterminal.com/api/v2/simple/networks/pulsechain/token_price/${selectedTokenB.address.toLowerCase()}`
+          `https://api.geckoterminal.com/api/v2/simple/networks/pulsechain/token_price/${addressToFetch}`
         );
 
         if (!response.ok) {
@@ -308,7 +314,11 @@ const Emp = ({ setPadding }) => {
           throw new Error("Token prices not found");
         }
 
-        const tokenPrice = tokenPrices[selectedTokenB.address.toLowerCase()];
+        // Use the correct address to look up the price
+        const tokenPrice =
+          selectedTokenB.address === EMPTY_ADDRESS
+            ? tokenPrices[WETH_ADDRESS.toLowerCase()]
+            : tokenPrices[addressToFetch];
 
         setConversionRateTokenB(tokenPrice);
       } catch (error) {
@@ -591,6 +601,7 @@ const Emp = ({ setPadding }) => {
               disabled={isLoading}
             >
               <option value="">Select</option>
+              <option value={25}>25%</option>
               <option value={50}>50%</option>
               <option value={100}>100%</option>
             </select>
@@ -598,7 +609,7 @@ const Emp = ({ setPadding }) => {
 
           <div className="text-center">
             <span className="text-gray-400 text-base font-normal roboto leading-normal">
-              Balance
+              Bal
             </span>
             <span className="text-gray-400 text-base font-normal roboto leading-normal">
               {" "}
@@ -759,7 +770,7 @@ const Emp = ({ setPadding }) => {
           </div>
           <div className="text-center">
             <span className="text-gray-400 text-base font-normal roboto leading-normal">
-              Balance
+              Bal
             </span>
             <span className="text-gray-400 text-base font-normal roboto leading-normal">
               {" "}

@@ -11,7 +11,7 @@ import { config } from "../Wagmi/config";
 import { EMPSEALROUTERABI } from "./abis/empSealRouterAbi";
 import Tokens from "../pages/tokenList.json";
 import { convertToBigInt } from "./utils";
-const JadRouterAddress = "0x91C2c07A1DdDF9a25Dc96517B62BEF0E52316B32";
+const RouterAddress = "0x0Cf6D948Cf09ac83a6bf40C7AD7b44657A9F2A52";
 const WETH_ADDRESS: Address = "0xa1077a294dde1b09bb078844df40758a5d0f9a27";
 const EMPTY_ADDRESS: Address = "0x0000000000000000000000000000000000000000";
 
@@ -21,7 +21,7 @@ const checkAllowance = async (tokenInAddress: string, userAddress: Address) => {
       abi: erc20Abi,
       address: tokenInAddress as Address,
       functionName: "allowance",
-      args: [userAddress, JadRouterAddress],
+      args: [userAddress, RouterAddress],
     });
     return {
       success: true,
@@ -38,7 +38,7 @@ const callApprove = async (tokenInAddress: string, amountIn: bigint) => {
       abi: erc20Abi,
       address: tokenInAddress as Address,
       functionName: "approve",
-      args: [JadRouterAddress, amountIn],
+      args: [RouterAddress, amountIn],
     });
     await waitForTransaction(result);
     return {
@@ -54,7 +54,7 @@ const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
   try {
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
-      address: JadRouterAddress,
+      address: RouterAddress,
       functionName: "swapNoSplitFromPLS",
       args: [
         {
@@ -84,7 +84,7 @@ const swapToEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
   try {
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
-      address: JadRouterAddress,
+      address: RouterAddress,
       functionName: "swapNoSplitToPLS",
       args: [
         {
@@ -151,7 +151,7 @@ const swap = async (tradeInfo: TradeInfo, userAddress: Address) => {
   try {
     let result = await writeContract(config, {
       abi: EMPSEALROUTERABI,
-      address: JadRouterAddress,
+      address: RouterAddress,
       functionName: "swapNoSplit",
       args: [
         {

@@ -212,8 +212,11 @@ const Home = () => {
                 <img
                   src={Logo1}
                   alt="Logo1"
-                  className="w-[125px] h-16 object-contain mb-12"
+                  className="w-[125px] h-16 object-contain mb-1"
                 />
+                <div className="text-white w-max  font-bold ms-5 py-1 mb-8">
+                  <span>On-chain DEX Aggregation</span>
+                </div>
                 <div className="text-white  bg-[#3a383b] w-max px-4 py-2 rounded-full font-bold ms-5">
                   <span>Swap</span>
                   <span className="ps-4">Trade</span>
