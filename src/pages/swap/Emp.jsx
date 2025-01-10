@@ -550,6 +550,8 @@ const Emp = ({ setPadding }) => {
     setAmountIn(rawValue); // Update the state with the raw number
   };
 
+  const minToReceive = amountOut * 0.003;
+  const minToReceiveAfterFee = amountOut - minToReceive;
   return (
     <>
       <div className="w-full border border-white rounded-xl py-10 2xl:px-16 lg:px-12 md:px-8 px-4 bg-black md:mt-0 mt-4">
@@ -766,7 +768,7 @@ const Emp = ({ setPadding }) => {
         </div>
         <div className="flex justify-between gap-3 items-center">
           <div className="text-zinc-200 text-base font-normal roboto leading-normal">
-            Min. to Receive
+            Receive
           </div>
           <div className="text-center">
             <span className="text-gray-400 text-base font-normal roboto leading-normal">
@@ -884,7 +886,7 @@ const Emp = ({ setPadding }) => {
               {formatNumber(amountIn)} {selectedTokenA.ticker}
             </div>
           </div>
-          <div className="flex justify-between gap-2 items-center my-2">
+          {/* <div className="flex justify-between gap-2 items-center my-2">
             <div className="text-gray-400 text-[12px] font-normal roboto leading-none flex gap-1 items-center">
               Min. to Receive
               <img src={Info} alt="Info" />
@@ -893,16 +895,17 @@ const Emp = ({ setPadding }) => {
               {formatNumber(parseFloat(amountOut).toFixed(6))}{" "}
               {selectedTokenB.ticker}
             </div>
-          </div>
-          {/* <div className="flex justify-between gap-2 items-center">
+          </div> */}
+          <div className="flex justify-between gap-2 items-center my-2">
             <div className="text-gray-400 text-[12px] font-normal roboto leading-none flex gap-1 items-center">
-              EMPX Swap Fee
+              Min. To Receive after Fee
               <img src={Info} alt="Info" />
             </div>
             <div className="text-right text-white text-[12px] font-normal roboto leading-none">
-              0.3%
+              ~ {formatNumber(parseFloat(minToReceiveAfterFee).toFixed(6))}{" "}
+              {selectedTokenB.ticker}
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
 
