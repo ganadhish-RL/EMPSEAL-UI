@@ -9,6 +9,8 @@ import Git from "../../assets/images/github.png";
 import GB from "../../assets/images/gitbook.svg";
 import X from "../../assets/images/x.png";
 import Master from "../../assets/images/master.png";
+import telegram from "../../assets/images/telegram.png";
+import GitBook from "../../assets/images/GitBook.png";
 import Star from "../../assets/images/star.png";
 import Cell from "../../assets/images/cell.gif";
 import Dia from "../../assets/images/diamond.png";
@@ -132,8 +134,14 @@ const Home = () => {
               <Link target="_blank" to="https://x.com/EmperorsSeal">
                 <img src={X} alt="X" />
               </Link>
-              <Link target="_blank" to="https://x.com/EmperorsSeal">
-                <img src={Master} alt="Master" />
+              <Link
+                target="_blank"
+                to="https://emperors-seal.gitbook.io/emperors-seal"
+              >
+                <img src={GB} className="h-8 flex" alt="Gitbook" />
+              </Link>
+              <Link target="_blank" to="https://t.me/EmpXEmpseal">
+                <img src={telegram} className="h-8 flex" alt="telegram" />
               </Link>
             </div>
             <div className="w-full rounded-2xl border border-white black px-4 py-6 relative mt-8 flex gap-8 justify-center items-center h_grid6">
