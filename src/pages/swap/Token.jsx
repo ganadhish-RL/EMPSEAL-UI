@@ -54,6 +54,7 @@ const TokenListItem = ({ token, walletAddress, onClick }) => {
       token.address === "0x0000000000000000000000000000000000000000"
         ? undefined
         : token.address,
+    watch: true,
   });
 
   const formattedBalance = tokenBalance
@@ -130,6 +131,7 @@ const Token = ({ onClose, onSelect }) => {
           token.address === "0x0000000000000000000000000000000000000000"
             ? undefined
             : token.address,
+        watch: true,
       }),
     }));
 

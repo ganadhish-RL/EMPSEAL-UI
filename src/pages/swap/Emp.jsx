@@ -78,6 +78,7 @@ const Emp = ({ setPadding }) => {
   const { data: tokenBalance, isLoading } = useBalance({
     address: address, // Use the connected wallet address
     token: selectedTokenA.address, // Token address of TokenA
+    watch: true,
   });
 
   // Format the chain balance
@@ -88,6 +89,7 @@ const Emp = ({ setPadding }) => {
   const { data: tokenBBalance } = useBalance({
     address: address, // Use the connected wallet address
     token: selectedTokenB.address, // Token address of TokenA
+    watch: true,
   });
 
   // Format the chain balance
@@ -898,7 +900,7 @@ const Emp = ({ setPadding }) => {
           </div> */}
           <div className="flex justify-between gap-2 items-center my-2">
             <div className="text-gray-400 text-[12px] font-normal roboto leading-none flex gap-1 items-center">
-              Min. To Receive after Fee
+              Min. To Receive
               <img src={Info} alt="Info" />
             </div>
             <div className="text-right text-white text-[12px] font-normal roboto leading-none">
