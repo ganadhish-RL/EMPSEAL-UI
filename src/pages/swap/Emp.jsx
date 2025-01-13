@@ -552,7 +552,7 @@ const Emp = ({ setPadding }) => {
     setAmountIn(rawValue); // Update the state with the raw number
   };
 
-  const minToReceive = amountOut * 0.003;
+  const minToReceive = amountOut * 0.0024;
   const minToReceiveAfterFee = amountOut - minToReceive;
   return (
     <>

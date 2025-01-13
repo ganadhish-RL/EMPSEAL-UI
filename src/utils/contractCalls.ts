@@ -65,7 +65,7 @@ const swapFromEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
           path: tradeInfo.path,
         },
         userAddress,
-        BigInt("30"),
+        BigInt("24"),
       ],
       value: tradeInfo.amountIn,
     });
@@ -94,7 +94,7 @@ const swapToEth = async (tradeInfo: TradeInfo, userAddress: Address) => {
           path: tradeInfo.path,
         },
         userAddress,
-        BigInt("30"),
+        BigInt("24"),
       ],
     });
     await waitForTransaction(result);
@@ -164,7 +164,7 @@ const swap = async (tradeInfo: TradeInfo, userAddress: Address) => {
           path: tradeInfo.path,
         },
         userAddress,
-        BigInt("30"),
+        BigInt("24"),
       ],
     });
     await waitForTransaction(result);

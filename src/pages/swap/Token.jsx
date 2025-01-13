@@ -312,7 +312,7 @@ const Token = ({ onClose, onSelect }) => {
 
             <SortedTokenList />
 
-            {/* {isLoading && (
+            {isLoading && (
               <div className="text-white text-center mt-4">Loading...</div>
             )}
 
@@ -327,17 +327,6 @@ const Token = ({ onClose, onSelect }) => {
                 onClick={handleTokenSelect}
               />
             )}
-
-            <div className="max-h-[400px] overflow-y-auto">
-              {filteredTokens.map((token, index) => (
-                <TokenListItem
-                  key={index}
-                  token={token}
-                  walletAddress={walletAddress}
-                  onClick={handleTokenSelect}
-                />
-              ))}
-            </div> */}
 
             <div className="my-6">
               <img src={Arrow} alt="Arrow" className="mx-auto" />
