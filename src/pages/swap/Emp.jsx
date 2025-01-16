@@ -509,14 +509,6 @@ const Emp = ({ setPadding }) => {
       ? "Insufficient Balance"
       : quoteLoading
       ? "Loading..."
-      : selectedTokenA.address ===
-          "0x0000000000000000000000000000000000000000" &&
-        selectedTokenB.address === "0xA1077a294dDE1B09bB078844df40758a5D0f9a27"
-      ? "Wrap PLS"
-      : selectedTokenA.address ===
-          "0xA1077a294dDE1B09bB078844df40758a5D0f9a27" &&
-        selectedTokenB.address === "0x0000000000000000000000000000000000000000"
-      ? "Unwrap WPLS"
       : "Swap";
   };
 
