@@ -17,6 +17,8 @@ const ProvidersList = ({
     if (quoteData?.routes) {
       setRoutes(quoteData.routes);
       console.log('data', quoteData);
+    } else {
+      setRoutes([]);
     }
   }, [quoteData]);
 

@@ -65,6 +65,7 @@ const Normal = () => {
               quoteAll={quoteAll}
               loading={loading}
               selectedRoute={selectedRoute}
+              setQuoteData={setQuoteData}
             />
           </div>
           <div className='md:max-w-[474px] w-full'>

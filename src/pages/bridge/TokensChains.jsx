@@ -187,7 +187,7 @@ const TokensChains = ({ onClose, onSelect }) => {
                       setTimeout(() => {
                         onSelect(token);
                       }, 100);
-                      selectedToken(token);
+                      setSelectedToken(token);
                       onClose();
                     }}
                   >

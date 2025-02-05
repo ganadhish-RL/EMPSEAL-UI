@@ -18,7 +18,13 @@ import { useStore } from '../../redux/store/routeStore';
 import Transcation from './Transcation';
 import { Copy, Check } from 'lucide-react';
 
-const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
+const Emp = ({
+  setPadding,
+  quoteAll,
+  loading,
+  selectedRoute,
+  setQuoteData,
+}) => {
   const [isAmountVisible, setAmountVisible] = useState(false);
   const [isSlippageApplied, setIsSlippageApplied] = useState(false);
   const [isTokenVisible, setTokenVisible] = useState(false);
@@ -407,6 +413,7 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
       quoteRefresh();
       setPath([selectedTokenA.address, selectedTokenB.address]);
     }, 9000);
+    setQuoteData(null);
   }, [amountIn, selectedTokenA, selectedTokenB]);
 
   useEffect(() => {
@@ -772,7 +779,11 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
               <input
                 type='text'
                 placeholder='0'
-                value={formatNumber(parseFloat(amountOut).toFixed(6))}
+                value={
+                  amountOut === '0' || !amountOut
+                    ? ''
+                    : parseFloat(amountOut).toFixed(6)
+                } // Ensure 0 or empty will display a blank field
                 className='text-white text-xl font-bold roboto text-start w-full leading-7 outline-none border-none bg-transparent ps-3'
               />
             </div>
@@ -837,9 +848,11 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
               onClick={() =>
                 quoteAll(selectedTokenA, selectedTokenB, amountIn, selfAddress)
               }
-              disabled={loading || amountIn === '0' || !amountIn}
+              disabled={
+                loading || amountIn === '0' || !amountIn || !selfAddress
+              }
               className={`w-full h-14 flex justify-center items-center rounded-xl mt-4 ${
-                loading || amountIn === '0' || !amountIn
+                loading || amountIn === '0' || !amountIn || !selfAddress
                   ? 'bg-gray-500 cursor-not-allowed'
                   : 'bg-blue-600 hover:bg-blue-700 text-white'
               } roboto text-base font-bold border border-blue-600`}
