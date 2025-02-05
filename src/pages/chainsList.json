@@ -1,0 +1,127 @@
+[
+  {
+    "id": 1,
+    "name": "ETH",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/eth-contrast.svg"
+  },
+  {
+    "id": 2,
+    "name": "BSC",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/bnb.svg"
+  },
+  {
+    "id": 3,
+    "name": "POLYGON",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/polygon.svg"
+  },
+  {
+    "id": 4,
+    "name": "POLYGON_ZKEVM",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/polygon-zkevm.svg"
+  },
+  {
+    "id": 5,
+    "name": "AVALANCHE",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/avalanche.svg"
+  },
+  {
+    "id": 6,
+    "name": "MOONRIVER",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/moonriver.svg"
+  },
+  {
+    "id": 7,
+    "name": "FANTOM",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/fantom.svg"
+  },
+  {
+    "id": 8,
+    "name": "ARBITRUM",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/arbitrum.svg"
+  },
+  {
+    "id": 9,
+    "name": "AURORA",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/aurora.svg"
+  },
+  {
+    "id": 10,
+    "name": "OPTIMISM",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/optimism.svg"
+  },
+  {
+    "id": 11,
+    "name": "CRONOS",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/cronos.svg"
+  },
+  {
+    "id": 12,
+    "name": "OKX",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/okexchain.svg"
+  },
+  {
+    "id": 13,
+    "name": "GNOSIS",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/gnosis.svg"
+  },
+  {
+    "id": 14,
+    "name": "FUSE",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/fuse.svg"
+  },
+  {
+    "id": 15,
+    "name": "MOONBEAM",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/moonbeam.svg"
+  },
+  {
+    "id": 16,
+    "name": "CELO",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/celo.svg"
+  },
+  {
+    "id": 17,
+    "name": "BOBA",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/boba.svg"
+  },
+  {
+    "id": 18,
+    "name": "PULSECHAIN",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/pulsechain.svg"
+  },
+  {
+    "id": 19,
+    "name": "LINEA",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/linea.svg"
+  },
+  {
+    "id": 20,
+    "name": "BASE",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/base.svg"
+  },
+  {
+    "id": 21,
+    "name": "MANTLE",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/mantle.svg"
+  },
+  {
+    "id": 22,
+    "name": "MANTA_PACIFIC",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/manta-pacific.svg"
+  },
+  {
+    "id": 23,
+    "name": "SCROLL",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/scroll.svg"
+  },
+  {
+    "id": 24,
+    "name": "ZETACHAIN",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/zetachain.svg"
+  },
+  {
+    "id": 25,
+    "name": "BLAST",
+    "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/blast.svg"
+  }
+]

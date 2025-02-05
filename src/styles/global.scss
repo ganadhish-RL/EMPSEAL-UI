@@ -1,9 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
 * {
   box-sizing: border-box;
@@ -19,11 +19,10 @@ html {
 
 :root {
   --table-bg: #222222;
-  --primary: #FF9900;
-  --grey-text:#FFFFFF99;
+  --primary: #ff9900;
+  --grey-text: #ffffff99;
   --white: #ffff;
   --black: #000000;
-
 }
 
 /* Track */
@@ -44,7 +43,7 @@ html {
   width: 4px;
 }
 
-.collection th{
+.collection th {
   background-color: var(--table-bg);
   color: var(--grey-text);
   font-weight: 400;
@@ -52,23 +51,19 @@ html {
   font-size: 12px;
 }
 
-.wallet_bg  button {
+.wallet_bg button {
   background-color: var(--primary);
   color: var(--black);
   border-radius: 5px;
   width: 100%;
   font-size: 14px;
-  
 }
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-
-
 
 .collection_row {
   background-color: var(--table-bg);
@@ -97,13 +92,13 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .roboto {
-  font-family: "Roboto Mono", monospace !important;
+  font-family: 'Roboto Mono', monospace !important;
 }
 .lexend {
-  font-family: "Lexend", sans-serif;
+  font-family: 'Lexend', sans-serif;
 }
 body {
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   background: #121214;
   overflow-x: hidden;
 }
@@ -142,7 +137,11 @@ body {
   background: linear-gradient(180deg, #000002 0%, #09070f 53%, #7a537f 100%);
 }
 .h_grid6 {
-  background: linear-gradient(90deg, rgba(121, 140, 243, 0.02) 0%, #331b3a80 100%)
+  background: linear-gradient(
+    90deg,
+    rgba(121, 140, 243, 0.02) 0%,
+    #331b3a80 100%
+  );
 }
 .wmo {
   writing-mode: vertical-rl;
@@ -201,12 +200,9 @@ body {
   cursor: pointer;
 }
 
-
-
 .border_gradient {
   position: relative;
   border-radius: 10px; /* Adjust radius as needed */
-  
 }
 .border_gradient::before {
   content: '';
@@ -217,20 +213,28 @@ body {
   bottom: 0;
   border-radius: 10px; /* Same as the main element’s border-radius */
   padding: 0.5px; /* Adjust this to control border thickness */
-  background: linear-gradient(to right, #FF9900, #FFFFFF);
-  -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-  mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
+  background: linear-gradient(to right, #ff9900, #ffffff);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   -webkit-mask-composite: destination-out;
   z-index: 1;
 }
 
 .top_seller {
-  background: linear-gradient(180deg, rgba(69, 64, 64, 0) 9.41%, #ff9900d1 194.53%);
+  background: linear-gradient(
+    180deg,
+    rgba(69, 64, 64, 0) 9.41%,
+    #ff9900d1 194.53%
+  );
+}
+
+.provider_gradient {
+  background: linear-gradient(
+    180deg,
+    rgba(69, 64, 64, 0) -8.59%,
+    #ff9900 194.53%
+  );
 }
 
 @keyframes marquee {
@@ -241,15 +245,15 @@ body {
     transform: translateX(-50%);
   }
 }
-@media (max-width:1024px) and (min-width:768px) {
-  .h_grid{
-    height: 390px!important;
+@media (max-width: 1024px) and (min-width: 768px) {
+  .h_grid {
+    height: 390px !important;
   }
-  .h_grid_metallic{
-    height: 260px!important;
+  .h_grid_metallic {
+    height: 260px !important;
   }
-  .mt260{
-    margin-top: 260px!important;
+  .mt260 {
+    margin-top: 260px !important;
   }
 }
 // @media (max-width:955px) and (min-width:900px) {
@@ -272,13 +276,15 @@ body {
 // }
 
 @media (max-width: 1024px) and (min-width: 768px) {
-  .container-class { /* Replace with your actual container class */
+  .container-class {
+    /* Replace with your actual container class */
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  .section-class { /* Replace with your section class for individual cards */
+  .section-class {
+    /* Replace with your section class for individual cards */
     width: 100%; /* Optional: Adjust the width to ensure full utilization */
     margin-bottom: 20px; /* Space between sections */
   }
