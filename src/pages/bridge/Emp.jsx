@@ -46,6 +46,7 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
   const [usdValueTokenB, setUsdValueTokenB] = useState('0.00');
   const [conversionRate, setConversionRate] = useState(null);
   const [conversionRateTokenB, setConversionRateTokenB] = useState(null);
+  const [selfAddress, setSelfAddress] = useState('');
   // const [loading, setLoading] = useState(false);
 
   const handleCloseSuccessModal = () => {
@@ -59,7 +60,6 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
           `https://api-v2.rubic.exchange/api/tokens/?network=PULSECHAIN&pageSize=100`
         );
         const data = await response.json();
-        console.log('data', data.results);
         if (data?.results) {
           setSelectedTokenA(data.results[0]);
           setSelectedTokenB(data.results[1]);
@@ -480,7 +480,7 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
   useEffect(() => {
     console.log('selectedRoute', selectedRoute);
     if (selectedRoute !== null) {
-      setAmountOut(selectedRoute?.estimate?.destinationUsdAmount);
+      setAmountOut(selectedRoute?.estimate?.destinationTokenAmount);
     }
   }, [selectedRoute]);
 
@@ -537,9 +537,13 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
     setAmountIn(rawValue); // Update the state with the raw number
   };
 
+  const handleSelfButtonClick = () => {
+    setSelfAddress(address); // Set the wallet address to the input field
+  };
+
   const minToReceive = amountOut * 0.0024;
   const minToReceiveAfterFee = amountOut - minToReceive;
-  const receiver = '0xCa397C293789F97d77c6bc665DaF7aaAF3336BE3';
+  // const receiver = '0xCa397C293789F97d77c6bc665DaF7aaAF3336BE3';
 
   // const quoteAll = async () => {
   //   setLoading(true);
@@ -600,7 +604,7 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
                   order ? 'border-[#3b3c4e]' : 'border-[#FF9900]'
                 } cursor-pointer md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
               >
-                RUBIK
+                Cross Chain Swap
               </div>
 
               <div
@@ -614,7 +618,7 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
                     : 'border-[#3b3c4e] opacity-50 cursor-not-allowed'
                 }  md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
               >
-                Hyperlane
+                Native Bridge
               </div>
             </div>
             <div className='flex justify-between gap-3 items-center mt-10'>
@@ -801,6 +805,9 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
                 <input
                   type='text'
                   placeholder='Add Address'
+                  value={selfAddress}
+                  // value={address} // Bind the input field to the state
+                  onChange={(e) => setSelfAddress(e.target.value)} // Allow the user to change the value manually
                   className='text-white text-sm font-bold roboto text-start w-full leading-7 outline-none border-none bg-transparent ps-3'
                 />
               </div>
@@ -810,8 +817,9 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
                     ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-transparent hover:text-black hover:bg-[#FF9900]'
                 } roboto text-[#FF9900] text-sm font-bold border border-[#FF9900]`}
+                onClick={handleSelfButtonClick}
               >
-                Paste Address
+                Self
               </button>
             </div>
             <button
@@ -827,7 +835,7 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
             </button>
             <button
               onClick={() =>
-                quoteAll(selectedTokenA, selectedTokenB, amountIn, receiver)
+                quoteAll(selectedTokenA, selectedTokenB, amountIn, selfAddress)
               }
               disabled={loading || amountIn === '0' || !amountIn}
               className={`w-full h-14 flex justify-center items-center rounded-xl mt-4 ${
@@ -836,7 +844,7 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
                   : 'bg-blue-600 hover:bg-blue-700 text-white'
               } roboto text-base font-bold border border-blue-600`}
             >
-              {loading ? 'Processing...' : 'Process Trade'}
+              {loading ? 'Processing...' : 'Estimate Trade'}
             </button>
           </div>
         )}
@@ -851,7 +859,7 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
         )}
       </div> */}
 
-      {/* <div aria-label='Modal'>
+      <div aria-label='Modal'>
         {isAmountVisible && (
           <Amount
             onClose={() => setAmountVisible(false)}
@@ -860,11 +868,12 @@ const Emp = ({ setPadding, quoteAll, loading, selectedRoute }) => {
             tokenA={selectedTokenA}
             tokenB={selectedTokenB}
             singleToken={singleToken}
+            selectedRoute={selectedRoute}
             refresh={quoteRefresh}
             confirm={confirmSwap}
           />
         )}
-      </div> */}
+      </div>
       {/* <div aria-label='Modal1'>
         {isTokenVisible && (
           <Token

@@ -30,7 +30,7 @@ const ProvidersList = ({
         </span>
       </div>
       <div className='p-4'>
-        {true ? (
+        {loading ? (
           <LoadingSpinner SpinnerImage={SpinnerImage} />
         ) : routes.length > 0 ? (
           <div className='max-h-[535px] overflow-y-auto flex flex-col gap-4'>

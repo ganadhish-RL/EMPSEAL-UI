@@ -10,7 +10,8 @@ const Amount = ({
   amountIn,
   amountOut,
   tokenA,
-  singleToken,
+  // singleToken,
+  selectedRoute,
   tokenB,
   refresh,
   confirm,
@@ -115,7 +116,7 @@ const Amount = ({
                 You Pay
               </div>
               <div className="text-white text-2xl font-bold roboto leading-9 flex gap-3 items-center">
-                {formatNumber(amountIn)}
+                {formatNumber(amountIn)} {tokenA.symbol}
                 <img src={tokenA.image} alt="Three" className="w-4 h-4" />
               </div>
             </div>
@@ -124,22 +125,23 @@ const Amount = ({
                 You Receive
               </div>
               <div className="text-white text-2xl font-bold roboto leading-9 flex gap-3 items-center">
-                {formatNumber(amountOut)}
+                {formatNumber(amountOut)} {tokenB.symbol}
                 <img src={tokenB.image} alt="S" className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-6 text-gray-40 text-white text-sm font-normal robotoleading-normal">
               Output is estimated. You will receive at least{" "}
-              {formatNumber(amountOut)} {tokenB.ticker} or the transaction will
+              {parseFloat(selectedRoute?.estimate?.destinationTokenMinAmount).toFixed(6)} {tokenB.symbol} or the transaction will
               revert
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-6">
               <div className="text-gray-400 text-sm font-normal roboto leading-normal">
-                Price
+               Price in $
               </div>
               <div className="flex gap-2 items-center">
                 <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                  1 {tokenA.ticker} ={" "}
+                  {selectedRoute?.estimate?.destinationUsdAmount}{"$"}
+                  {/* 1 {tokenA.ticker} ={" "}
                   {singleToken &&
                   singleToken.amounts &&
                   singleToken.amounts[singleToken.amounts.length - 1]
@@ -149,8 +151,8 @@ const Amount = ({
                           parseInt(tokenB.decimal)
                         )
                       ).toFixed(6)
-                    : "0"}{" "}
-                  {tokenB.ticker}
+                    : "0"}{" "} */}
+                  {/* {tokenB.symbol} */}
                 </div>
                 {/* <div className="cursor-pointer" onClick={() => refresh()}>
                   <img src={Refresh} alt="Refresh" />
@@ -165,7 +167,7 @@ const Amount = ({
                 <img src={Info} alt="Info" />
               </div>
               <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                {formatNumber(amountOut)} {tokenB.ticker}
+                {parseFloat(selectedRoute?.estimate?.destinationTokenMinAmount).toFixed(6)} {tokenB.symbol}
               </div>
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-2">
@@ -176,7 +178,18 @@ const Amount = ({
                 <img src={Info} alt="Info" />
               </div>
               <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                {((amountOut / 1000) * 0.01).toFixed(2)} %
+                {selectedRoute?.estimate?.priceImpact} %
+              </div>
+            </div>
+            <div className="flex justify-between gap-3 items-center w-full mt-2">
+              <div className="flex gap-2 items-center">
+                <div className="text-gray-400 text-sm font-normal roboto leading-normal">
+                  Slippage
+                </div>
+                <img src={Info} alt="Info" />
+              </div>
+              <div className="text-right text-white text-sm font-normal roboto leading-normal">
+                {selectedRoute?.estimate?.slippage} %
               </div>
             </div>
             <button
