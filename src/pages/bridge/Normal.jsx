@@ -9,11 +9,14 @@ const Normal = () => {
   const [quoteData, setQuoteData] = useState(null);
   const [selectedRoute, setSelectedRoute] = useState(null);
 
+  const integratorAddress = "0x02E6B1C1E78A7C71798262ef34386182C553bA8C";
+
   const quoteAll = async (
     selectedTokenA,
     selectedTokenB,
     amountIn,
-    receiver
+    receiver,
+    address
   ) => {
     setLoading(true);
     try {
@@ -34,6 +37,8 @@ const Normal = () => {
             srcTokenBlockchain:
               selectedTokenA?.blockchainNetwork?.toUpperCase(),
             receiver: receiver,
+            integratorAddress: integratorAddress,
+            fromAddress: address,
           }),
         }
       );
@@ -65,6 +70,7 @@ const Normal = () => {
               quoteAll={quoteAll}
               loading={loading}
               selectedRoute={selectedRoute}
+              quoteData={quoteData}
               setQuoteData={setQuoteData}
             />
           </div>

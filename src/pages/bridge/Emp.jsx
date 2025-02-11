@@ -9,11 +9,10 @@ import { Link } from 'react-router-dom';
 import Amount from './Amount';
 import TokensChains from './TokensChains';
 import { formatEther } from 'viem';
-import { useAccount, useReadContract, useWatchBlocks, useBalance } from 'wagmi';
+import { useAccount, useSwitchChain, useReadContract, useWatchBlocks, useBalance } from 'wagmi';
 import { RouterABI } from './routerAbi';
 import { formatUnits } from 'viem';
 import Tokens from '../tokenList.json';
-import { swapTokens } from '../../utils/contractCalls';
 import { useStore } from '../../redux/store/routeStore';
 import Transcation from './Transcation';
 import { Copy, Check } from 'lucide-react';
@@ -23,6 +22,7 @@ const Emp = ({
   quoteAll,
   loading,
   selectedRoute,
+  quoteData,
   setQuoteData,
 }) => {
   const [isAmountVisible, setAmountVisible] = useState(false);
@@ -58,21 +58,36 @@ const Emp = ({
   const handleCloseSuccessModal = () => {
     setSwapStatus('IDLE'); // Reset status when closing modal
   };
+  const { switchChain } = useSwitchChain();
+  const { isConnected } = useAccount();
+
+  console.log("selected Token A: ", selectedTokenA);
 
   useEffect(() => {
     async function getTokens() {
       try {
         const response = await fetch(
-          `https://api-v2.rubic.exchange/api/tokens/?network=PULSECHAIN&pageSize=100`
+          `https://api-v2.rubic.exchange/api/tokens/?network=PULSECHAIN&pageSize=10`
         );
         const data = await response.json();
         if (data?.results) {
           setSelectedTokenA(data.results[0]);
-          setSelectedTokenB(data.results[1]);
+          
         }
       } catch (error) {
         console.error('Error fetching tokens:', error);
-      }
+      };
+      try {
+        const response = await fetch(
+          `https://api-v2.rubic.exchange/api/tokens/?network=ETH&pageSize=10`
+        );
+        const data = await response.json();
+        if (data?.results) {
+          setSelectedTokenB(data.results[0]);
+        }
+      } catch (error) {
+        console.error('Error fetching tokens:', error);
+      };
     }
 
     getTokens();
@@ -87,7 +102,7 @@ const Emp = ({
   }, [address, datas]);
 
   const formattedBalance = balanceAddress
-    ? `${parseFloat(balanceAddress).toFixed(2)}`
+    ? `${parseFloat(balanceAddress).toFixed(6)}`
     : '0.00';
 
   function setRoute(path) {
@@ -110,7 +125,7 @@ const Emp = ({
 
   // Format the chain balance
   const formattedChainBalance = tokenBalance
-    ? parseFloat(tokenBalance.formatted).toFixed(2) // Format to 6 decimal places
+    ? parseFloat(tokenBalance.formatted).toFixed(6) // Format to 6 decimal places
     : '0.000000';
 
   const { data: tokenBBalance } = useBalance({
@@ -121,7 +136,7 @@ const Emp = ({
 
   // Format the chain balance
   const formattedChainBalanceTokenB = tokenBBalance
-    ? parseFloat(tokenBBalance.formatted).toFixed(2) // Format to 6 decimal places
+    ? parseFloat(tokenBBalance.formatted).toFixed(6) // Format to 6 decimal places
     : '0.000000';
 
   const handlePercentageChange = (e) => {
@@ -172,6 +187,55 @@ const Emp = ({
     setTokenVisible(false);
   };
 
+  const getProvider = async () => {
+    const provider = window.phantom?.solana || window.solana;
+  
+    if (provider) {
+      return provider;
+    } else {
+      // console.log("❌ Solana provider not found. Please install Phantom Wallet: https://phantom.app/");
+      window.open("https://phantom.app/", "_blank");
+      return null;
+    }
+  };
+
+  const handleChainSelect = async (chain) => {
+    if (isSelectingTokenA) {
+      console.log('Selected Chain:', chain);
+
+      if (chain.name === "SOLANA") {
+        const provider = await getProvider();
+        if (!provider) {
+          console.error("❌ Phantom provider not found.");
+          return;
+        }
+
+        try {
+          // console.log(`🔄 Connecting to Solana with Phantom...`);
+          const response = await provider.connect({ onlyIfTrusted: false }); // Forces the pop-up
+
+          // console.log("✅ Connected to Phantom:", response.publicKey.toString());
+          return response.publicKey;
+        } catch (error) {
+          console.error("❌ Failed to connect to Phantom:", error);
+          return;
+        }
+      }
+
+      if (!isConnected) {
+        console.error("❌ Wallet not connected!");
+        return;
+      }
+
+      try {
+        // console.log(`🔄 Switching to ${chain.name} (ID: ${chain.chainId})...`);
+        switchChain({ chainId: chain.chainId });
+      } catch (error) {
+        console.error(`❌ Failed to switch to ${chain.name}:`, error);
+      }
+    }
+  };
+
   const convertToBigInt = (amount, decimals) => {
     // Add input validation
     if (!amount || isNaN(amount) || !decimals || isNaN(decimals)) {
@@ -193,111 +257,111 @@ const Emp = ({
     }
   };
 
-  const {
-    data,
-    isLoading: quoteLoading,
-    refetch: quoteRefresh,
-    error,
-  } = useReadContract({
-    abi: RouterABI,
-    address: '0x0Cf6D948Cf09ac83a6bf40C7AD7b44657A9F2A52',
-    functionName: 'findBestPath',
-    args: [
-      // Add validation for amountIn and selectedTokenA
-      amountIn && selectedTokenA && !isNaN(parseFloat(amountIn))
-        ? convertToBigInt(
-            parseFloat(amountIn),
-            parseInt(selectedTokenA.decimal) || 18 // Provide default decimal if missing
-          )
-        : BigInt(0),
-      selectedTokenA?.address === EMPTY_ADDRESS
-        ? WETH_ADDRESS
-        : selectedTokenA?.address || EMPTY_ADDRESS,
-      selectedTokenB?.address === EMPTY_ADDRESS
-        ? WETH_ADDRESS
-        : selectedTokenB?.address || EMPTY_ADDRESS,
-      BigInt('3'),
-    ],
-  });
+  // const {
+  //   data,
+  //   isLoading: quoteLoading,
+  //   refetch: quoteRefresh,
+  //   error,
+  // } = useReadContract({
+  //   abi: RouterABI,
+  //   address: '',
+  //   functionName: 'findBestPath',
+  //   args: [
+  //     // Add validation for amountIn and selectedTokenA
+  //     amountIn && selectedTokenA && !isNaN(parseFloat(amountIn))
+  //       ? convertToBigInt(
+  //         parseFloat(amountIn),
+  //         parseInt(selectedTokenA.decimal) || 18 // Provide default decimal if missing
+  //       )
+  //       : BigInt(0),
+  //     selectedTokenA?.address === EMPTY_ADDRESS
+  //       ? WETH_ADDRESS
+  //       : selectedTokenA?.address || EMPTY_ADDRESS,
+  //     selectedTokenB?.address === EMPTY_ADDRESS
+  //       ? WETH_ADDRESS
+  //       : selectedTokenB?.address || EMPTY_ADDRESS,
+  //     BigInt('3'),
+  //   ],
+  // });
 
-  const { data: singleToken, refetch: singleTokenRefresh } = useReadContract({
-    abi: RouterABI,
-    address: '0x0Cf6D948Cf09ac83a6bf40C7AD7b44657A9F2A52',
-    functionName: 'findBestPath',
-    args: [
-      selectedTokenA?.decimal
-        ? convertToBigInt(1, parseInt(selectedTokenA.decimal))
-        : BigInt(0),
-      selectedTokenA?.address === EMPTY_ADDRESS
-        ? WETH_ADDRESS
-        : selectedTokenA?.address || EMPTY_ADDRESS,
-      selectedTokenB?.address === EMPTY_ADDRESS
-        ? WETH_ADDRESS
-        : selectedTokenB?.address || EMPTY_ADDRESS,
-      BigInt('3'),
-    ],
-  });
+  // const { data: singleToken, refetch: singleTokenRefresh } = useReadContract({
+  //   abi: RouterABI,
+  //   address: '0x0Cf6D948Cf09ac83a6bf40C7AD7b44657A9F2A52',
+  //   functionName: 'findBestPath',
+  //   args: [
+  //     selectedTokenA?.decimal
+  //       ? convertToBigInt(1, parseInt(selectedTokenA.decimal))
+  //       : BigInt(0),
+  //     selectedTokenA?.address === EMPTY_ADDRESS
+  //       ? WETH_ADDRESS
+  //       : selectedTokenA?.address || EMPTY_ADDRESS,
+  //     selectedTokenB?.address === EMPTY_ADDRESS
+  //       ? WETH_ADDRESS
+  //       : selectedTokenB?.address || EMPTY_ADDRESS,
+  //     BigInt('3'),
+  //   ],
+  // });
 
-  useWatchBlocks({
-    onBlock(block) {
-      singleTokenRefresh();
-      quoteRefresh();
-    },
-  });
+  // useWatchBlocks({
+  //   onBlock(block) {
+  //     singleTokenRefresh();
+  //     quoteRefresh();
+  //   },
+  // });
 
-  const { data: feeData } = useReadContract({
-    abi: RouterABI,
-    address: '0x0Cf6D948Cf09ac83a6bf40C7AD7b44657A9F2A52',
-    functionName: 'findBestPath',
-    args: [
-      amountIn && selectedTokenA && parseFloat(amountIn)
-        ? convertToBigInt(parseFloat(amountIn) * 0.0028, 18)
-        : BigInt(0),
-      selectedTokenA?.address,
-      selectedTokenB?.address,
-      BigInt('3'),
-    ],
-  });
+  // const { data: feeData } = useReadContract({
+  //   abi: RouterABI,
+  //   address: '0x0Cf6D948Cf09ac83a6bf40C7AD7b44657A9F2A52',
+  //   functionName: 'findBestPath',
+  //   args: [
+  //     amountIn && selectedTokenA && parseFloat(amountIn)
+  //       ? convertToBigInt(parseFloat(amountIn) * 0.0028, 18)
+  //       : BigInt(0),
+  //     selectedTokenA?.address,
+  //     selectedTokenB?.address,
+  //     BigInt('3'),
+  //   ],
+  // });
 
-  useEffect(() => {
-    const fetchConversionRateTokenA = async () => {
-      try {
-        // Determine which address to use for the API call
-        const addressToFetch =
-          selectedTokenA.address === EMPTY_ADDRESS
-            ? WETH_ADDRESS.toLowerCase()
-            : selectedTokenA.address.toLowerCase();
+  // useEffect(() => {
+  //   const fetchConversionRateTokenA = async () => {
+  //     try {
+  //       // Determine which address to use for the API call
+  //       const addressToFetch =
+  //         selectedTokenA.address === EMPTY_ADDRESS
+  //           ? WETH_ADDRESS.toLowerCase()
+  //           : selectedTokenA.address.toLowerCase();
 
-        const response = await fetch(
-          `https://api.geckoterminal.com/api/v2/simple/networks/pulsechain/token_price/${addressToFetch}`
-        );
+  //       const response = await fetch(
+  //         `https://api.geckoterminal.com/api/v2/simple/networks/pulsechain/token_price/${addressToFetch}`
+  //       );
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! Status: ${response.status}`);
+  //       }
 
-        const data = await response.json();
+  //       const data = await response.json();
 
-        // Validate and extract token prices
-        const tokenPrices = data?.data?.attributes?.token_prices;
-        if (!tokenPrices) {
-          throw new Error('Token prices not found');
-        }
+  //       // Validate and extract token prices
+  //       const tokenPrices = data?.data?.attributes?.token_prices;
+  //       if (!tokenPrices) {
+  //         throw new Error('Token prices not found');
+  //       }
 
-        // Use the correct address to look up the price
-        const tokenPrice =
-          selectedTokenA.address === EMPTY_ADDRESS
-            ? tokenPrices[WETH_ADDRESS.toLowerCase()]
-            : tokenPrices[addressToFetch];
+  //       // Use the correct address to look up the price
+  //       const tokenPrice =
+  //         selectedTokenA.address === EMPTY_ADDRESS
+  //           ? tokenPrices[WETH_ADDRESS.toLowerCase()]
+  //           : tokenPrices[addressToFetch];
 
-        setConversionRate(tokenPrice);
-      } catch (error) {
-        console.error('Error fetching token price:', error.message);
-      }
-    };
+  //       setConversionRate(tokenPrice);
+  //     } catch (error) {
+  //       console.error('Error fetching token price:', error.message);
+  //     }
+  //   };
 
-    fetchConversionRateTokenA();
-  }, [selectedTokenA.address]);
+  //   fetchConversionRateTokenA();
+  // }, [selectedTokenA.address]);
 
   // useEffect(() => {
   //   const fetchConversionRateTokenB = async () => {
@@ -338,146 +402,148 @@ const Emp = ({
   //   fetchConversionRateTokenB();
   // }, [selectedTokenB.address]);
 
-  useEffect(() => {
-    if (!data || !data.amounts || data.amounts.length === 0) {
-      handleEmptyData();
-      return;
-    }
+  // console.log("data debug: ", data);
 
-    if (!selectedTokenB) {
-      setAmountOut('0');
-      setTradeInfo(undefined);
-      return;
-    }
+  // useEffect(() => {
+  //   if (!data || !data.amounts || data.amounts.length === 0) {
+  //     handleEmptyData();
+  //     return;
+  //   }
 
-    // handleValidData();
-  }, [data, selectedTokenA, selectedTokenB, amountIn]);
+  //   if (!selectedTokenB) {
+  //     setAmountOut('0');
+  //     setTradeInfo(undefined);
+  //     return;
+  //   }
+
+  //   // handleValidData();
+  // }, [data, selectedTokenA, selectedTokenB, amountIn]);
 
   // Helper Functions
-  const handleEmptyData = () => {
-    setAmountOut('0');
-    setTradeInfo(undefined);
-    setRoute([selectedTokenA?.address, selectedTokenB?.address]);
-  };
+  // const handleEmptyData = () => {
+  //   setAmountOut('0');
+  //   setTradeInfo(undefined);
+  //   setRoute([selectedTokenA?.address, selectedTokenB?.address]);
+  // };
 
-  const handleValidData = () => {
-    const isDirectRoute =
-      (selectedTokenA?.address === EMPTY_ADDRESS &&
-        selectedTokenB?.address === WETH_ADDRESS) ||
-      (selectedTokenA?.address === WETH_ADDRESS &&
-        selectedTokenB?.address === EMPTY_ADDRESS);
+  // const handleValidData = () => {
+  //   const isDirectRoute =
+  //     (selectedTokenA?.address === EMPTY_ADDRESS &&
+  //       selectedTokenB?.address === WETH_ADDRESS) ||
+  //     (selectedTokenA?.address === WETH_ADDRESS &&
+  //       selectedTokenB?.address === EMPTY_ADDRESS);
 
-    if (isDirectRoute) {
-      setDirectRoute();
-    } else {
-      // setCalculatedRoute();
-    }
-  };
+  //   if (isDirectRoute) {
+  //     setDirectRoute();
+  //   } else {
+  //     // setCalculatedRoute();
+  //   }
+  // };
 
-  const setDirectRoute = () => {
-    setRoute([selectedTokenA?.address, selectedTokenB?.address]);
-    setAdapter([]);
-    // setAmountOut(amountIn);
-  };
+  // const setDirectRoute = () => {
+  //   setRoute([selectedTokenA?.address, selectedTokenB?.address]);
+  //   setAdapter([]);
+  //   // setAmountOut(amountIn);
+  // };
 
-  const setCalculatedRoute = () => {
-    const amountOutValue = formatUnits(
-      data.amounts[data.amounts.length - 1],
-      parseInt(selectedTokenB.decimal)
-    );
-    const amountOutToTrimmed = (amountOutValue * 975) / 1000;
-    // setAmountOut(amountOutToTrimmed);
-    setAmountOut(amountOutValue);
+  // const setCalculatedRoute = () => {
+  //   const amountOutValue = formatUnits(
+  //     data.amounts[data.amounts.length - 1],
+  //     parseInt(selectedTokenB.decimal)
+  //   );
+  //   const amountOutToTrimmed = (amountOutValue * 975) / 1000;
+  //   // setAmountOut(amountOutToTrimmed);
+  //   setAmountOut(amountOutValue);
 
-    const trade = {
-      amountIn: data.amounts[0],
-      amountOut:
-        (data.amounts[data.amounts.length - 1] * BigInt(98)) / BigInt(100),
-      // data.amounts[data.amounts.length - 1],
-      amounts: data.amounts,
-      path: data.path,
-      pathTokens: data.path.map(
-        (pathAddress) =>
-          Tokens.find((token) => token.address === pathAddress) || Tokens[0]
-      ),
-      adapters: data.adapters,
-    };
-    setRoute(data.path);
-    setAdapter(data.adapters);
-    setTradeInfo(trade);
-    setIsSlippageApplied(false);
-  };
+  //   const trade = {
+  //     amountIn: data.amounts[0],
+  //     amountOut:
+  //       (data.amounts[data.amounts.length - 1] * BigInt(98)) / BigInt(100),
+  //     // data.amounts[data.amounts.length - 1],
+  //     amounts: data.amounts,
+  //     path: data.path,
+  //     pathTokens: data.path.map(
+  //       (pathAddress) =>
+  //         Tokens.find((token) => token.address === pathAddress) || Tokens[0]
+  //     ),
+  //     adapters: data.adapters,
+  //   };
+  //   setRoute(data.path);
+  //   setAdapter(data.adapters);
+  //   setTradeInfo(trade);
+  //   setIsSlippageApplied(false);
+  // };
 
   useEffect(() => {
     setTimeout(() => {
-      quoteRefresh();
       setPath([selectedTokenA.address, selectedTokenB.address]);
     }, 9000);
     setQuoteData(null);
-  }, [amountIn, selectedTokenA, selectedTokenB]);
+    setAmountOut(null);
+  }, [amountIn, selectedTokenA, selectedTokenB, selfAddress]);
 
-  useEffect(() => {
-    if (conversionRate && !isNaN(conversionRate)) {
-      const valueInUSD = (
-        parseFloat(amountIn || 0) * parseFloat(conversionRate)
-      ).toFixed(6);
-      setUsdValue(valueInUSD);
-    } else {
-      console.error('Missing or invalid conversion rate:', conversionRate);
-    }
-  }, [amountIn, conversionRate]);
+  // useEffect(() => {
+  //   if (conversionRate && !isNaN(conversionRate)) {
+  //     const valueInUSD = (
+  //       parseFloat(amountIn || 0) * parseFloat(conversionRate)
+  //     ).toFixed(6);
+  //     setUsdValue(valueInUSD);
+  //   } else {
+  //     console.error('Missing or invalid conversion rate:', conversionRate);
+  //   }
+  // }, [amountIn, conversionRate]);
 
-  useEffect(() => {
-    if (conversionRateTokenB && !isNaN(conversionRateTokenB)) {
-      const valueInUSD = (
-        parseFloat(amountOut || 0) * parseFloat(conversionRateTokenB)
-      ).toFixed(6);
-      setUsdValueTokenB(valueInUSD);
-    } else {
-      console.error(
-        'Missing or invalid conversion rate:',
-        conversionRateTokenB
-      );
-    }
-  }, [amountOut, conversionRateTokenB]);
+  // useEffect(() => {
+  //   if (conversionRateTokenB && !isNaN(conversionRateTokenB)) {
+  //     const valueInUSD = (
+  //       parseFloat(amountOut || 0) * parseFloat(conversionRateTokenB)
+  //     ).toFixed(6);
+  //     setUsdValueTokenB(valueInUSD);
+  //   } else {
+  //     console.error(
+  //       'Missing or invalid conversion rate:',
+  //       conversionRateTokenB
+  //     );
+  //   }
+  // }, [amountOut, conversionRateTokenB]);
 
-  const confirmSwap = async () => {
-    if (selectedTokenA.address == selectedTokenB.address) {
-      return null;
-    }
-    await swapTokens(
-      (_swapStatus) => {
-        setSwapStatus(_swapStatus);
-      },
-      (hash) => {
-        setSwapHash(hash);
-      },
-      selectedTokenA?.address,
-      selectedTokenB?.address,
-      address,
-      tradeInfo
-    )
-      .then(() => {
-        setSwapSuccess(true); // Set success on transaction completion
-        setAmountVisible(false);
-      })
-      .catch((error) => {
-        console.error('Swap failed', error);
-        setSwapSuccess(false);
-      });
-  };
-  const getRateDisplay = () => {
-    if (!singleToken?.amounts?.[singleToken.amounts.length - 1]) return '0';
+  // const confirmSwap = async () => {
+  //   if (selectedTokenA.address == selectedTokenB.address) {
+  //     return null;
+  //   }
+  //   await swapTokens(
+  //     (_swapStatus) => {
+  //       setSwapStatus(_swapStatus);
+  //     },
+  //     (hash) => {
+  //       setSwapHash(hash);
+  //     },
+  //     selectedTokenA?.address,
+  //     selectedTokenB?.address,
+  //     address,
+  //     tradeInfo
+  //   )
+  //     .then(() => {
+  //       setSwapSuccess(true); // Set success on transaction completion
+  //       setAmountVisible(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Swap failed', error);
+  //       setSwapSuccess(false);
+  //     });
+  // };
+  // const getRateDisplay = () => {
+  //   if (!singleToken?.amounts?.[singleToken.amounts.length - 1]) return '0';
 
-    const rate = parseFloat(
-      formatUnits(
-        singleToken.amounts[singleToken.amounts.length - 1],
-        parseInt(selectedTokenB.decimal)
-      )
-    );
+  //   const rate = parseFloat(
+  //     formatUnits(
+  //       singleToken.amounts[singleToken.amounts.length - 1],
+  //       parseInt(selectedTokenB.decimal)
+  //     )
+  //   );
 
-    return isRateReversed ? (1 / rate).toFixed(6) : rate.toFixed(6);
-  };
+  //   return isRateReversed ? (1 / rate).toFixed(6) : rate.toFixed(6);
+  // };
 
   useEffect(() => {
     setSelectedPercentage('');
@@ -515,11 +581,13 @@ const Emp = ({
   };
 
   const getButtonText = () => {
-    return isInsufficientBalance()
-      ? 'Insufficient Balance'
-      : quoteLoading
-      ? 'Loading...'
-      : 'Swap';
+    if (isInsufficientBalance()) {
+      return 'Insufficient Balance';
+    }
+    if (!amountOut || amountOut === '0') {
+      return 'Select the provider';
+    }
+    return 'Swap';
   };
 
   // Function to format the number with commas
@@ -548,8 +616,8 @@ const Emp = ({
     setSelfAddress(address); // Set the wallet address to the input field
   };
 
-  const minToReceive = amountOut * 0.0024;
-  const minToReceiveAfterFee = amountOut - minToReceive;
+  // const minToReceive = amountOut * 0.0024;
+  // const minToReceiveAfterFee = amountOut - minToReceive;
   // const receiver = '0xCa397C293789F97d77c6bc665DaF7aaAF3336BE3';
 
   // const quoteAll = async () => {
@@ -598,6 +666,7 @@ const Emp = ({
           <TokensChains
             onClose={() => setTokenVisible(false)}
             onSelect={handleTokenSelect}
+            onChainSelect={handleChainSelect}
           />
         ) : (
           <div>
@@ -607,9 +676,8 @@ const Emp = ({
                   setOrder(false);
                   setPadding('lg:h-[295px] h-full');
                 }}
-                className={`${
-                  order ? 'border-[#3b3c4e]' : 'border-[#FF9900]'
-                } cursor-pointer md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
+                className={`${order ? 'border-[#3b3c4e]' : 'border-[#FF9900]'
+                  } cursor-pointer md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
               >
                 Cross Chain Swap
               </div>
@@ -619,11 +687,10 @@ const Emp = ({
                   // setOrder(true);
                   // setPadding("md:pb-[160px] pb-10");
                 }}
-                className={`${
-                  order
+                className={`${order
                     ? 'border-[#FF9900]'
                     : 'border-[#3b3c4e] opacity-50 cursor-not-allowed'
-                }  md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
+                  }  md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
               >
                 Native Bridge
               </div>
@@ -640,11 +707,10 @@ const Emp = ({
                   <button
                     key={value}
                     className={`w-full flex justify-center items-center rounded-xl text-sm font-normal  roboto px-4
-          ${
-            selectedPercentage === value
-              ? 'bg-[#FF9900] text-black'
-              : 'bg-[rgba(59,59,59,1)] text-white hover:bg-[#FF9900] hover:text-black'
-          }`}
+          ${selectedPercentage === value
+                        ? 'bg-[#FF9900] text-black'
+                        : 'bg-[rgba(59,59,59,1)] text-white hover:bg-[#FF9900] hover:text-black'
+                      }`}
                     onClick={() => handlePercentageChange(value)}
                     disabled={isLoading}
                   >
@@ -714,13 +780,12 @@ const Emp = ({
                   {isLoading
                     ? 'Loading..'
                     : selectedTokenA.address === EMPTY_ADDRESS
-                    ? `${formatNumber(formattedBalance)}`
-                    : `${
-                        tokenBalance
-                          ? formatNumber(
-                              parseFloat(tokenBalance.formatted).toFixed(2)
-                            )
-                          : '0.00'
+                      ? `${formatNumber(formattedBalance)}`
+                      : `${tokenBalance
+                        ? formatNumber(
+                          parseFloat(tokenBalance.formatted).toFixed(6)
+                        )
+                        : '0.00'
                       }`}
                 </span>
               </div>
@@ -800,13 +865,12 @@ const Emp = ({
                   {isLoading
                     ? 'Loading..'
                     : selectedTokenA.address === EMPTY_ADDRESS
-                    ? `${formatNumber(formattedChainBalanceTokenB)}`
-                    : `${
-                        tokenBBalance
-                          ? formatNumber(
-                              parseFloat(tokenBBalance.formatted).toFixed(2)
-                            )
-                          : '0.00'
+                      ? `${formatNumber(formattedChainBalanceTokenB)}`
+                      : `${tokenBBalance
+                        ? formatNumber(
+                          parseFloat(tokenBBalance.formatted).toFixed(2)
+                        )
+                        : '0.00'
                       }`}
                 </span>
               </div>
@@ -823,41 +887,38 @@ const Emp = ({
                 />
               </div>
               <button
-                className={` flex justify-center items-center rounded-xl px-2 ${
-                  isInsufficientBalance()
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-transparent hover:text-black hover:bg-[#FF9900]'
-                } roboto text-[#FF9900] text-sm font-bold border border-[#FF9900]`}
+                className={` flex justify-center items-center rounded-xl px-2 ${isInsufficientBalance()
+                    ? 'bg-gray-500 cursor-not-allowed'
+                    : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
+                  } roboto text-black text-base font-bold border border-[#FF9900]`}
                 onClick={handleSelfButtonClick}
               >
                 Self
               </button>
             </div>
             <button
-              onClick={() => setAmountVisible(true)}
-              disabled={isInsufficientBalance()}
-              className={`w-full h-14 flex justify-center items-center rounded-xl ${
-                isInsufficientBalance()
-                  ? 'bg-gray-500 cursor-not-allowed'
-                  : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
-              } roboto text-black text-base font-bold border border-[#FF9900]`}
-            >
-              {getButtonText()}
-            </button>
-            <button
               onClick={() =>
-                quoteAll(selectedTokenA, selectedTokenB, amountIn, selfAddress)
+                quoteAll(selectedTokenA, selectedTokenB, amountIn, selfAddress, address)
               }
               disabled={
                 loading || amountIn === '0' || !amountIn || !selfAddress
               }
-              className={`w-full h-14 flex justify-center items-center rounded-xl mt-4 ${
-                loading || amountIn === '0' || !amountIn || !selfAddress
+              className={`w-full h-14 flex justify-center items-center rounded-xl  ${loading || amountIn === '0' || !amountIn || !selfAddress
                   ? 'bg-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white'
-              } roboto text-base font-bold border border-blue-600`}
+                  : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
+                } roboto text-black text-base font-bold border border-blue-600`}
             >
               {loading ? 'Processing...' : 'Estimate Trade'}
+            </button>
+            <button
+              onClick={() => setAmountVisible(true)}
+              disabled={isInsufficientBalance()}
+              className={`w-full h-14 flex justify-center items-center rounded-xl mt-4 ${isInsufficientBalance() || !amountOut || amountOut === '0'
+                  ? 'bg-gray-500 cursor-not-allowed'
+                  : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
+                } roboto text-black text-base font-bold border border-[#FF9900]`}
+            >
+              {getButtonText()}
             </button>
           </div>
         )}
@@ -877,13 +938,11 @@ const Emp = ({
           <Amount
             onClose={() => setAmountVisible(false)}
             amountIn={amountIn}
-            amountOut={parseFloat(amountOut).toFixed(6)}
             tokenA={selectedTokenA}
             tokenB={selectedTokenB}
-            singleToken={singleToken}
+            fromAddress={address}
             selectedRoute={selectedRoute}
-            refresh={quoteRefresh}
-            confirm={confirmSwap}
+            quoteData={quoteData}
           />
         )}
       </div>

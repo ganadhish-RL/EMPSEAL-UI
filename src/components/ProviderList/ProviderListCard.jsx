@@ -13,6 +13,7 @@ const ProvidersListCard = ({
   timeDuration,
   protocolFee,
   providerFee,
+  percentFee,
   onSelect,
   isSelected,
 }) => {
@@ -60,7 +61,10 @@ const ProvidersListCard = ({
                   <strong>Protocol Fee:</strong> {protocolFee}
                 </p>
                 <p>
-                  <strong>Provided Fee:</strong> {providerFee}
+                  <strong>Provider Fee:</strong> {providerFee}
+                </p>
+                <p>
+                  <strong>Percent Fee:</strong> {percentFee}%
                 </p>
               </div>
             )}

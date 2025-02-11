@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ChainsList from '../chainsList.json';
 
-const TokensChains = ({ onClose, onSelect }) => {
+const TokensChains = ({ onClose, onSelect, onChainSelect }) => {
   const [tokenSearchQuery, setTokenSearchQuery] = useState('');
   const [chainSearchQuery, setChainSearchQuery] = useState('');
   const [selectedChain, setSelectedChain] = useState(null);
   const [selectedToken, setSelectedToken] = useState(null);
   const [fetchedTokens, setFetchedTokens] = useState([]);
-
   const modalRef = useRef(null);
 
-  const ChainList = ChainsList.filter((token) =>
-    token.name.toLowerCase().includes(chainSearchQuery.toLowerCase())
+  const ChainList = ChainsList.filter((chain) =>
+    chain.name.toLowerCase().includes(chainSearchQuery.toLowerCase())
   );
 
   const fetchedToken = fetchedTokens.filter(
@@ -33,14 +32,7 @@ const TokensChains = ({ onClose, onSelect }) => {
     };
   }, [onClose]);
 
-  const handleFeaturedTokenClick = (token) => {
-    setTimeout(() => {
-      onSelect(token);
-    }, 100);
-    onClose();
-  };
-
-  const handleChainClick = (chain) => {
+  const handleChainClick = async (chain) => {
     setSelectedChain(chain);
   };
 
@@ -132,6 +124,7 @@ const TokensChains = ({ onClose, onSelect }) => {
                     }`}
                     onClick={() => {
                       handleChainClick(chain.name);
+                      onChainSelect(chain);
                       setSelectedChain(chain.name);
                     }}
                   >

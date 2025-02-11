@@ -50,6 +50,7 @@ const ProvidersList = ({
                   )}
                   protocolFee={route.fees.gasTokenFees.protocol.fixedUsdAmount}
                   providerFee={route.fees.gasTokenFees.provider?.fixedUsdAmount}
+                  percentFee={route.fees.percentFees.percent}
                   fees={(
                     parseFloat(
                       route.fees.gasTokenFees.protocol.fixedUsdAmount

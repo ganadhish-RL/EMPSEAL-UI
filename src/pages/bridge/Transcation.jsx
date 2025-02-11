@@ -4,7 +4,7 @@ import { swapTokens } from "../../utils/contractCalls";
 import { Link } from "react-router-dom";
 import Logo from '../../assets/images/swap-emp.png';
 
-const Transcation = ({ onClose, transactionHash }) => {
+const Transcation = ({ onClose, destinationTx }) => {
   return (
     <>
       <div className="bg-black bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full my-auto fixed top-0 px-4 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
@@ -34,13 +34,11 @@ const Transcation = ({ onClose, transactionHash }) => {
               Transaction Submitted
             </div>
             <div className="rounded-xl px-4 py-4 bg-[#2C2D3A] flex gap-4 items-center mt-6 justify-center">
-              <Link target="_blank" to={`https://otter.pulsechain.com/tx/${transactionHash}`}>
               <div className="text-white text-base font-bold roboto text-center leading-normal">
-                
-                View on Otterscan
+                <p>On: {destinationTx.destinationNetworkTitle}</p>
+                <p>ChainId: {destinationTx.destinationNetworkChainId}</p>
+                <p>TxHash: {destinationTx.destinationTxHash}</p>
               </div>
-              </Link>
-
             </div>
           </div>
         </div>

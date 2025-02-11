@@ -5,20 +5,28 @@ import Refresh from "../../assets/images/refresh.svg";
 import Info from "../../assets/images/info.svg";
 import { formatUnits } from "viem";
 import Transcation from "./Transcation";
+import {readContract, waitForTransactionReceipt, writeContract, sendTransaction} from "@wagmi/core";
+import { erc20Abi } from "viem";
+import { WPLS as TOKEN_ABI } from "../../utils/abis/wplsABI";
+import { config } from "../../Wagmi/config";
+import { toast } from "react-toastify";
 const Amount = ({
   onClose,
   amountIn,
   amountOut,
   tokenA,
-  // singleToken,
   selectedRoute,
+  quoteData,
+  fromAddress,
   tokenB,
-  refresh,
   confirm,
   disabled = false,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isConfirm, setConfirm] = useState(false);
+  const [swapDetails, setSwapDetails] = useState(null);
+  const [transactionHash, setTransactionHash] = useState("");
+  const [destinationTx, setDestinationTx] = useState({});
   const modalRef = useRef(null);
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -33,19 +41,185 @@ const Amount = ({
     };
   }, [onClose]);
 
+  const tokenDecimals = selectedRoute?.tokens.from.decimals;
+  const tokenAmount = parseFloat(quoteData?.quote.srcTokenAmount);
+
+  const scaledAmount = BigInt(Math.floor(tokenAmount * Math.pow(10, tokenDecimals)));
+  
+  console.log("Final swap details:", swapDetails);
+  const approveToken = async (tokenAddress, approvalAddress, amount) => {
+
+    try {
+      // Check if the token is the native token
+      const isNativeToken = tokenAddress === "0x0000000000000000000000000000000000000000";
+  
+      if (isNativeToken) {
+        // Native tokens don't need approval
+        await swapTokens();
+        return {
+          success: true,
+          data: swapDetails,
+        };
+      }
+      // await executeSwap(swapDetails, swapDetails.quote.fromAddress);
+  
+      // If not a native token, proceed
+      let result = await writeContract(config, {
+        abi: erc20Abi,
+        address: tokenAddress,
+        functionName: "approve",
+        args: [approvalAddress, amount],
+      });
+      await waitForTransaction(result);
+      
+      // await executeSwap(swapDetails, swapDetails.quote.fromAddress);
+      return {
+        success: true,
+        data: result,
+      };
+      
+    } catch (error) {
+      toast.error("Token approval failed!!")
+      throw error;
+    }
+  };
+
+  const waitForTransaction = async (hash) => {
+    console.log("hash in tx confirmation", hash);
+    try {
+      const transactionReceipt = await waitForTransactionReceipt(config, {
+        confirmations: 2,
+        hash,
+      });
+      console.log("transaction receipt", transactionReceipt);
+      if (transactionReceipt.status === "success") {
+        return {
+          success: true,
+          data: transactionReceipt,
+        };
+      }
+      throw transactionReceipt.status;
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  console.log("Swap api params", quoteData.quote.dstTokenAddress, quoteData.quote.dstTokenBlockchain, quoteData.quote.referrer, quoteData.quote.srcTokenAddress, quoteData.quote.srcTokenAmount, quoteData.quote.srcTokenBlockchain , quoteData.quote.fromAddress, quoteData.quote.receiver, quoteData.quote.integratorAddress, selectedRoute.id, selectedRoute.estimate.slippage );
+
+  const swapTokens = async () => {
+    try {
+      const response = await fetch('https://api-v2.rubic.exchange/api/routes/swap',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            dstTokenAddress: quoteData.quote.dstTokenAddress, 
+            dstTokenBlockchain: quoteData.quote.dstTokenBlockchain, 
+            referrer: quoteData.quote.referrer, 
+            srcTokenAddress: quoteData.quote.srcTokenAddress, 
+            srcTokenAmount: quoteData.quote.srcTokenAmount, 
+            srcTokenBlockchain: quoteData.quote.srcTokenBlockchain , 
+            fromAddress: quoteData.quote.fromAddress, 
+            receiver: quoteData.quote.receiver, 
+            integratorAddress: quoteData.quote.integratorAddress, 
+            id: selectedRoute.id, 
+            slippage: selectedRoute.estimate.slippage,
+          }),
+        }
+      );
+      if(!response.ok){
+        console.error(`HTTP error! Status: ${response.status}`);
+        return;
+      }
+      const data = await response.json();
+      setSwapDetails(data);
+      return data;
+      
+    } catch (error) {
+      console.error("Error calling API:", error);
+    }
+  }
+
+  const executeSwap = async (transactionDetails, walletDetails) => {
+    console.log("Tx details in execute swap: ", transactionDetails, walletDetails);
+    try {
+      const txHash = await sendTransaction(config, {
+        account: walletDetails, // wallet account address
+        to: transactionDetails?.transaction?.to,
+        data: transactionDetails?.transaction?.data,
+        value: transactionDetails?.transaction?.value,
+      });
+  
+      setTransactionHash(txHash);
+      console.log("Transaction executed: ", txHash);
+      const status = await getTransactionStatus(txHash);
+      
+      if (status) {
+        return { success: true, txHash };
+      } else {
+        return { success: false, message: "Transaction failed." };
+      }
+    } catch (error) {
+      console.error("Error executing swap:", error);
+      return {success: false, message: error.message};
+    }
+  };
+
+  const getTransactionStatus = async (hash) => {
+    console.log("get tx status", hash);
+    const response = await fetch(`https://api-v2.rubic.exchange/api/info/status?srcTxHash=${hash}`);
+    const data = await response.json();
+    const {status, destinationTxHash} = data;
+    if(data.status === "NOT_FOUND"){
+      toast.success("Transaction indexing in progress");
+    }else if(data.status === "SUCCESS"){
+      setDestinationTx(data);
+      toast.success("Transaction on the destination chain was successful");
+    }
+    return status;
+  }
+
   const handleClick = async () => {
     if (disabled || isLoading) return;
-
+  
     setIsLoading(true);
     try {
-      await confirm();
+      // Approve token
+      const approvalResult = await approveToken(
+        selectedRoute?.tokens.from.address,
+        selectedRoute?.transaction.approvalAddress,
+        scaledAmount
+      );
+      console.log("approval Result: ", approvalResult);
+
+      if(approvalResult && approvalResult.success){
+        toast.success("Token Approved!");
+      }
+      // Fetch swap data
+      const swapData = await swapTokens();
+      console.log("Swap data: ", swapData);
+      
+      if (approvalResult && approvalResult.success) {
+        const swapResult = await executeSwap(swapData, swapData?.quote?.fromAddress);
+        console.log("Swap result: ", swapResult);  // Debugging
+    
+        if (swapResult.success) {
+            toast.success("Transaction successful 🎉");
+            setConfirm(true);
+        } else {
+            throw new Error("API returned an error: " + (swapResult.message || "Unknown error"));
+        }
+    }
     } catch (error) {
+      toast.error("Transaction failed ⚠️");
       console.error("Confirmation failed:", error);
     } finally {
       setIsLoading(false);
     }
   };
-
+  
   const formatNumber = (value) => {
     if (!value) return ""; // Handle empty input
 
@@ -125,7 +299,7 @@ const Amount = ({
                 You Receive
               </div>
               <div className="text-white text-2xl font-bold roboto leading-9 flex gap-3 items-center">
-                {formatNumber(amountOut)} {tokenB.symbol}
+                {formatNumber(parseFloat(selectedRoute?.estimate?.destinationTokenAmount).toFixed(6))} {tokenB.symbol}
                 <img src={tokenB.image} alt="S" className="w-4 h-4" />
               </div>
             </div>
@@ -206,7 +380,7 @@ const Amount = ({
                 </div>
               ) : (
                 <div className="text-white text-base font-bold roboto text-center leading-normal">
-                  Confirm
+                  Proceed
                 </div>
               )}
             </button>
@@ -214,7 +388,7 @@ const Amount = ({
         </div>
       </div>
       <div aria-label="Modal">
-        {isConfirm && <Transcation onClose={() => setConfirm(false)} />}
+        {isConfirm && <Transcation onClose={() => setConfirm(false)} destinationTx={destinationTx}/>}
       </div>
     </>
   );
