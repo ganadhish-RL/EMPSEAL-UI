@@ -8,8 +8,9 @@ const Normal = () => {
   const [loading, setLoading] = useState(false);
   const [quoteData, setQuoteData] = useState(null);
   const [selectedRoute, setSelectedRoute] = useState(null);
+  const [activeTab, setActiveTab] = useState('cross'); // 'cross' | 'native'
 
-  const integratorAddress = "0x02E6B1C1E78A7C71798262ef34386182C553bA8C";
+  const integratorAddress = '0x02E6B1C1E78A7C71798262ef34386182C553bA8C';
 
   const quoteAll = async (
     selectedTokenA,
@@ -60,33 +61,60 @@ const Normal = () => {
   return (
     <>
       <div className='bg-[#121214] py-3 relative'>
+        <div className='md:max-w-[1100px] mx-auto w-full flex md:justify-between justify-center gap-3 items-center md:flex-nowrap flex-wrap my-6 px-3'>
+          <div
+            onClick={() => setActiveTab('cross')}
+            className={`${
+              activeTab === 'cross' ? 'border-[#FF9900]' : 'border-[#3b3c4e]'
+            } cursor-pointer md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
+          >
+            Cross Chain Swap
+          </div>
+
+          <div
+            onClick={() => setActiveTab('native')}
+            className={`${
+              activeTab === 'native' ? 'border-[#FF9900]' : 'border-[#3b3c4e] '
+            }  cursor-pointer md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
+          >
+            Native Bridge
+          </div>
+        </div>
         <div className='md:max-w-[1100px] mx-auto w-full px-4 flex justify-center xl:gap-4 gap-4 items-start 2xl:pt-10 py-2 md:flex-nowrap flex-wrap'>
           <div className='md:max-w-[620px] w-full'>
             <div className='md:hidden block'>
-              <Wallet />
+              {activeTab === 'cross' ? <Wallet /> : <div></div>}
             </div>
-            <Emp
-              setPadding={setPadding}
-              quoteAll={quoteAll}
-              loading={loading}
-              selectedRoute={selectedRoute}
-              quoteData={quoteData}
-              setQuoteData={setQuoteData}
-            />
+            {activeTab === 'cross' ? (
+              <Emp
+                setPadding={setPadding}
+                quoteAll={quoteAll}
+                loading={loading}
+                selectedRoute={selectedRoute}
+                quoteData={quoteData}
+                setQuoteData={setQuoteData}
+              />
+            ) : (
+              <div></div>
+            )}
           </div>
           <div className='md:max-w-[474px] w-full'>
             <div className='md:block hidden'>
-              <Wallet />
+              {activeTab === 'cross' ? <Wallet /> : <div></div>}
             </div>
 
             <div className='mt-3'>
-              <ProvidersList
-                padding={padding}
-                quoteData={quoteData}
-                loading={loading}
-                setSelectedRoute={setSelectedRoute}
-                selectedRoute={selectedRoute}
-              />
+              {activeTab === 'cross' ? (
+                <ProvidersList
+                  padding={padding}
+                  quoteData={quoteData}
+                  loading={loading}
+                  setSelectedRoute={setSelectedRoute}
+                  selectedRoute={selectedRoute}
+                />
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         </div>
