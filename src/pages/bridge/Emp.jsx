@@ -9,7 +9,13 @@ import { Link } from 'react-router-dom';
 import Amount from './Amount';
 import TokensChains from './TokensChains';
 import { formatEther } from 'viem';
-import { useAccount, useSwitchChain, useReadContract, useWatchBlocks, useBalance } from 'wagmi';
+import {
+  useAccount,
+  useSwitchChain,
+  useReadContract,
+  useWatchBlocks,
+  useBalance,
+} from 'wagmi';
 import { RouterABI } from './routerAbi';
 import { formatUnits } from 'viem';
 import Tokens from '../tokenList.json';
@@ -53,6 +59,8 @@ const Emp = ({
   const [conversionRate, setConversionRate] = useState(null);
   const [conversionRateTokenB, setConversionRateTokenB] = useState(null);
   const [selfAddress, setSelfAddress] = useState('');
+  const [selectedChainA, setSelectedChainA] = useState([]);
+  const [selectedChainB, setSelectedChainB] = useState([]);
   // const [loading, setLoading] = useState(false);
 
   const handleCloseSuccessModal = () => {
@@ -61,7 +69,7 @@ const Emp = ({
   const { switchChain } = useSwitchChain();
   const { isConnected } = useAccount();
 
-  console.log("selected Token A: ", selectedTokenA);
+  console.log('selected Token A: ', selectedTokenA);
 
   useEffect(() => {
     async function getTokens() {
@@ -72,11 +80,10 @@ const Emp = ({
         const data = await response.json();
         if (data?.results) {
           setSelectedTokenA(data.results[0]);
-          
         }
       } catch (error) {
         console.error('Error fetching tokens:', error);
-      };
+      }
       try {
         const response = await fetch(
           `https://api-v2.rubic.exchange/api/tokens/?network=ETH&pageSize=10`
@@ -87,7 +94,7 @@ const Emp = ({
         }
       } catch (error) {
         console.error('Error fetching tokens:', error);
-      };
+      }
     }
 
     getTokens();
@@ -189,46 +196,75 @@ const Emp = ({
 
   const getProvider = async () => {
     const provider = window.phantom?.solana || window.solana;
-  
+
     if (provider) {
       return provider;
     } else {
       // console.log("❌ Solana provider not found. Please install Phantom Wallet: https://phantom.app/");
-      window.open("https://phantom.app/", "_blank");
+      window.open('https://phantom.app/', '_blank');
       return null;
     }
   };
 
   const handleChainSelect = async (chain) => {
     if (isSelectingTokenA) {
-      console.log('Selected Chain:', chain);
+      console.log('Selected Chain A:', chain);
+      setSelectedChainA(chain); // Set Chain A when Token A is selected
 
-      if (chain.name === "SOLANA") {
+      if (chain.name === 'SOLANA') {
         const provider = await getProvider();
         if (!provider) {
-          console.error("❌ Phantom provider not found.");
+          console.error('❌ Phantom provider not found.');
           return;
         }
 
         try {
-          // console.log(`🔄 Connecting to Solana with Phantom...`);
+          // Connecting to Solana with Phantom
           const response = await provider.connect({ onlyIfTrusted: false }); // Forces the pop-up
-
-          // console.log("✅ Connected to Phantom:", response.publicKey.toString());
           return response.publicKey;
         } catch (error) {
-          console.error("❌ Failed to connect to Phantom:", error);
-          return;
+          console.error('❌ Failed to connect to Phantom:', error);
         }
       }
 
       if (!isConnected) {
-        console.error("❌ Wallet not connected!");
+        console.error('❌ Wallet not connected!');
         return;
       }
 
       try {
-        // console.log(`🔄 Switching to ${chain.name} (ID: ${chain.chainId})...`);
+        // Switching to the selected chain
+        switchChain({ chainId: chain.chainId });
+      } catch (error) {
+        console.error(`❌ Failed to switch to ${chain.name}:`, error);
+      }
+    } else {
+      console.log('Selected Chain B:', chain);
+      setSelectedChainB(chain); // Set Chain B when Token B is selected
+
+      if (chain.name === 'SOLANA') {
+        const provider = await getProvider();
+        if (!provider) {
+          console.error('❌ Phantom provider not found.');
+          return;
+        }
+
+        try {
+          // Connecting to Solana with Phantom
+          const response = await provider.connect({ onlyIfTrusted: false }); // Forces the pop-up
+          return response.publicKey;
+        } catch (error) {
+          console.error('❌ Failed to connect to Phantom:', error);
+        }
+      }
+
+      if (!isConnected) {
+        console.error('❌ Wallet not connected!');
+        return;
+      }
+
+      try {
+        // Switching to the selected chain
         switchChain({ chainId: chain.chainId });
       } catch (error) {
         console.error(`❌ Failed to switch to ${chain.name}:`, error);
@@ -671,13 +707,14 @@ const Emp = ({
         ) : (
           <div>
             <div className='flex md:justify-between justify-center gap-3 items-center md:flex-nowrap flex-wrap my-6 lg:px-1 px-0'>
-              <div
+              {/* <div
                 onClick={() => {
                   setOrder(false);
                   setPadding('lg:h-[295px] h-full');
                 }}
-                className={`${order ? 'border-[#3b3c4e]' : 'border-[#FF9900]'
-                  } cursor-pointer md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
+                className={`${
+                  order ? 'border-[#3b3c4e]' : 'border-[#FF9900]'
+                } cursor-pointer md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
               >
                 Cross Chain Swap
               </div>
@@ -687,13 +724,14 @@ const Emp = ({
                   // setOrder(true);
                   // setPadding("md:pb-[160px] pb-10");
                 }}
-                className={`${order
+                className={`${
+                  order
                     ? 'border-[#FF9900]'
                     : 'border-[#3b3c4e] opacity-50 cursor-not-allowed'
-                  }  md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
+                }  md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
               >
                 Native Bridge
-              </div>
+              </div> */}
             </div>
             <div className='flex justify-between gap-3 items-center mt-10'>
               <div className='text-center'>
@@ -707,10 +745,11 @@ const Emp = ({
                   <button
                     key={value}
                     className={`w-full flex justify-center items-center rounded-xl text-sm font-normal  roboto px-4
-          ${selectedPercentage === value
-                        ? 'bg-[#FF9900] text-black'
-                        : 'bg-[rgba(59,59,59,1)] text-white hover:bg-[#FF9900] hover:text-black'
-                      }`}
+          ${
+            selectedPercentage === value
+              ? 'bg-[#FF9900] text-black'
+              : 'bg-[rgba(59,59,59,1)] text-white hover:bg-[#FF9900] hover:text-black'
+          }`}
                     onClick={() => handlePercentageChange(value)}
                     disabled={isLoading}
                   >
@@ -730,13 +769,38 @@ const Emp = ({
                 }}
                 className='flex justify-between gap-4 items-center cursor-pointer bg-[#191919] px-3 py-2 rounded-lg'
               >
-                <div className='flex gap-2 items-center'>
-                  <img
-                    className='w-8 h-6'
-                    src={selectedTokenA.image}
-                    alt={selectedTokenA.name}
-                  />
+                <div
+                  className={`relative flex gap-2 items-center ${
+                    selectedChainA.image ? 'pe-3' : ''
+                  }`}
+                >
+                  {/* Chain Image */}
+                  {selectedChainA.image && (
+                    <div className='absolute top-0 left-0'>
+                      <img
+                        className='w-10 h-8' // Chain image slightly bigger
+                        src={selectedChainA.image}
+                        alt={selectedChainA.name}
+                      />
+                    </div>
+                  )}
+
+                  {/* Token Image */}
+                  {selectedTokenA.image && (
+                    <div
+                      className={`relative ${
+                        selectedChainA.image ? 'left-5' : ''
+                      }`}
+                    >
+                      <img
+                        className='w-9 h-7' // Token image smaller
+                        src={selectedTokenA.image}
+                        alt={selectedTokenA.name}
+                      />
+                    </div>
+                  )}
                 </div>
+
                 <svg
                   className='pointer-events-none'
                   width={11}
@@ -780,12 +844,13 @@ const Emp = ({
                   {isLoading
                     ? 'Loading..'
                     : selectedTokenA.address === EMPTY_ADDRESS
-                      ? `${formatNumber(formattedBalance)}`
-                      : `${tokenBalance
-                        ? formatNumber(
-                          parseFloat(tokenBalance.formatted).toFixed(6)
-                        )
-                        : '0.00'
+                    ? `${formatNumber(formattedBalance)}`
+                    : `${
+                        tokenBalance
+                          ? formatNumber(
+                              parseFloat(tokenBalance.formatted).toFixed(6)
+                            )
+                          : '0.00'
                       }`}
                 </span>
               </div>
@@ -816,12 +881,36 @@ const Emp = ({
                 }}
                 className='flex justify-between gap-4 items-center cursor-pointer bg-[#191919] px-3 py-2 rounded-lg'
               >
-                <div className='flex gap-2 items-center'>
-                  <img
-                    className='w-8 h-6'
-                    src={selectedTokenB.image}
-                    alt={selectedTokenB.name}
-                  />
+                <div
+                  className={`relative flex gap-2 items-center ${
+                    selectedChainB.image ? 'pe-3' : ''
+                  }`}
+                >
+                  {/* Chain Image */}
+                  {selectedChainB.image && (
+                    <div className='absolute top-0 left-0'>
+                      <img
+                        className='w-10 h-8' // Chain image slightly bigger
+                        src={selectedChainB.image}
+                        alt={selectedChainB.name}
+                      />
+                    </div>
+                  )}
+
+                  {/* Token Image */}
+                  {selectedTokenB.image && (
+                    <div
+                      className={`relative ${
+                        selectedChainB.image ? 'left-5' : ''
+                      }`}
+                    >
+                      <img
+                        className='w-9 h-7' // Token image smaller
+                        src={selectedTokenB.image}
+                        alt={selectedTokenB.name}
+                      />
+                    </div>
+                  )}
                 </div>
                 <svg
                   className='pointer-events-none'
@@ -865,12 +954,13 @@ const Emp = ({
                   {isLoading
                     ? 'Loading..'
                     : selectedTokenA.address === EMPTY_ADDRESS
-                      ? `${formatNumber(formattedChainBalanceTokenB)}`
-                      : `${tokenBBalance
-                        ? formatNumber(
-                          parseFloat(tokenBBalance.formatted).toFixed(2)
-                        )
-                        : '0.00'
+                    ? `${formatNumber(formattedChainBalanceTokenB)}`
+                    : `${
+                        tokenBBalance
+                          ? formatNumber(
+                              parseFloat(tokenBBalance.formatted).toFixed(2)
+                            )
+                          : '0.00'
                       }`}
                 </span>
               </div>
@@ -887,10 +977,11 @@ const Emp = ({
                 />
               </div>
               <button
-                className={` flex justify-center items-center rounded-xl px-2 ${isInsufficientBalance()
+                className={` flex justify-center items-center rounded-xl px-2 ${
+                  isInsufficientBalance()
                     ? 'bg-gray-500 cursor-not-allowed'
                     : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
-                  } roboto text-black text-base font-bold border border-[#FF9900]`}
+                } roboto text-black text-base font-bold border border-[#FF9900]`}
                 onClick={handleSelfButtonClick}
               >
                 Self
@@ -898,25 +989,33 @@ const Emp = ({
             </div>
             <button
               onClick={() =>
-                quoteAll(selectedTokenA, selectedTokenB, amountIn, selfAddress, address)
+                quoteAll(
+                  selectedTokenA,
+                  selectedTokenB,
+                  amountIn,
+                  selfAddress,
+                  address
+                )
               }
               disabled={
                 loading || amountIn === '0' || !amountIn || !selfAddress
               }
-              className={`w-full h-14 flex justify-center items-center rounded-xl  ${loading || amountIn === '0' || !amountIn || !selfAddress
+              className={`w-full h-14 flex justify-center items-center rounded-xl  ${
+                loading || amountIn === '0' || !amountIn || !selfAddress
                   ? 'bg-gray-500 cursor-not-allowed'
                   : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
-                } roboto text-black text-base font-bold border border-blue-600`}
+              } roboto text-black text-base font-bold border border-blue-600`}
             >
               {loading ? 'Processing...' : 'Estimate Trade'}
             </button>
             <button
               onClick={() => setAmountVisible(true)}
               disabled={isInsufficientBalance()}
-              className={`w-full h-14 flex justify-center items-center rounded-xl mt-4 ${isInsufficientBalance() || !amountOut || amountOut === '0'
+              className={`w-full h-14 flex justify-center items-center rounded-xl mt-4 ${
+                isInsufficientBalance() || !amountOut || amountOut === '0'
                   ? 'bg-gray-500 cursor-not-allowed'
                   : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
-                } roboto text-black text-base font-bold border border-[#FF9900]`}
+              } roboto text-black text-base font-bold border border-[#FF9900]`}
             >
               {getButtonText()}
             </button>

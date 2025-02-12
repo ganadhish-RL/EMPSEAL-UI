@@ -51,7 +51,6 @@ const Normal = () => {
 
       const data = await response.json();
       setQuoteData(data); // Store response data
-      console.log('API Response:', data);
     } catch (error) {
       console.error('Error calling API:', error);
     } finally {
@@ -75,7 +74,7 @@ const Normal = () => {
             onClick={() => setActiveTab('native')}
             className={`${
               activeTab === 'native' ? 'border-[#FF9900]' : 'border-[#3b3c4e] '
-            }  cursor-pointer md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
+            }  no-pointer pointer-events-none opacity-50 md:max-w-[200px] w-full h-[28px] flex justify-center items-center rounded-md border text-white text-[15px] font-bold roboto`}
           >
             Native Bridge
           </div>
