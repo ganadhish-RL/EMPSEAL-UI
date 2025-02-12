@@ -160,5 +160,11 @@
     "chainId": 1399811149,
     "name": "SOLANA",
     "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/solana.svg"
+  },
+  {
+    "id": 28,
+    "chainId": 80094,
+    "name": "BERACHAIN",
+    "image": "https://app.rubic.exchange/assets/images/icons/coins/berachain.svg"
   }
 ]

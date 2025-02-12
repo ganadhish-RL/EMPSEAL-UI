@@ -19,7 +19,7 @@ const Wallet = () => {
 
   useEffect(() => {
     if (address && data) {
-      console.log('data.value', data.value);
+      // console.log('data.value', data.value);
       setBalance(formatEther(data.value));
     } else if (!address) {
       setBalance('0.00');
@@ -56,19 +56,13 @@ const Wallet = () => {
   return (
     <div className='w-full border border-white rounded-xl py-4 2xl:px-6 lg:px-5 px-4 bg-black md:flex gap-8'>
       <div className='flex flex-col bg-[#161616] p-5 rounded-lg w-full md:max-w-[202px]'>
-        <div className='flex items-center gap-2 mb-4'>
+        <div className='flex items-center gap-2 mb-4 text-white font-mono text-sm truncate roboto'>
           <img src={Logo} alt='Logo' className='h-8' />
-          {address ? (
-            <Link
-              to='#'
-              target='_blank'
-              className='text-white font-mono text-sm truncate roboto'
-            >
-              {truncateAddress(address)}
-            </Link>
-          ) : (
+          {address ? 
+            truncateAddress(address)
+          : 
             <span className='text-gray-400'>Not Connected</span>
-          )}
+          }
         </div>
         {chainName ? (
           <div className='text-white text-sm font-medium mb-2 flex items-center roboto'>

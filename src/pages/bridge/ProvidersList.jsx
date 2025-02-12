@@ -16,7 +16,7 @@ const ProvidersList = ({
   useEffect(() => {
     if (quoteData?.routes) {
       setRoutes(quoteData.routes);
-      console.log('data', quoteData);
+      // console.log('data', quoteData);
     } else {
       setRoutes([]);
     }

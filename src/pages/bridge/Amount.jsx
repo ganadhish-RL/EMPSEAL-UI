@@ -46,7 +46,6 @@ const Amount = ({
 
   const scaledAmount = BigInt(Math.floor(tokenAmount * Math.pow(10, tokenDecimals)));
   
-  console.log("Final swap details:", swapDetails);
   const approveToken = async (tokenAddress, approvalAddress, amount) => {
 
     try {
@@ -85,13 +84,11 @@ const Amount = ({
   };
 
   const waitForTransaction = async (hash) => {
-    console.log("hash in tx confirmation", hash);
     try {
       const transactionReceipt = await waitForTransactionReceipt(config, {
         confirmations: 2,
         hash,
       });
-      console.log("transaction receipt", transactionReceipt);
       if (transactionReceipt.status === "success") {
         return {
           success: true,
@@ -103,8 +100,6 @@ const Amount = ({
       throw e;
     }
   };
-
-  console.log("Swap api params", quoteData.quote.dstTokenAddress, quoteData.quote.dstTokenBlockchain, quoteData.quote.referrer, quoteData.quote.srcTokenAddress, quoteData.quote.srcTokenAmount, quoteData.quote.srcTokenBlockchain , quoteData.quote.fromAddress, quoteData.quote.receiver, quoteData.quote.integratorAddress, selectedRoute.id, selectedRoute.estimate.slippage );
 
   const swapTokens = async () => {
     try {
@@ -143,7 +138,6 @@ const Amount = ({
   }
 
   const executeSwap = async (transactionDetails, walletDetails) => {
-    console.log("Tx details in execute swap: ", transactionDetails, walletDetails);
     try {
       const txHash = await sendTransaction(config, {
         account: walletDetails, // wallet account address
@@ -153,7 +147,6 @@ const Amount = ({
       });
   
       setTransactionHash(txHash);
-      console.log("Transaction executed: ", txHash);
       const status = await getTransactionStatus(txHash);
       
       if (status) {
@@ -161,6 +154,7 @@ const Amount = ({
       } else {
         return { success: false, message: "Transaction failed." };
       }
+      
     } catch (error) {
       console.error("Error executing swap:", error);
       return {success: false, message: error.message};
@@ -168,14 +162,14 @@ const Amount = ({
   };
 
   const getTransactionStatus = async (hash) => {
-    console.log("get tx status", hash);
     const response = await fetch(`https://api-v2.rubic.exchange/api/info/status?srcTxHash=${hash}`);
     const data = await response.json();
     const {status, destinationTxHash} = data;
     if(data.status === "NOT_FOUND"){
-      toast.success("Transaction indexing in progress");
+      setConfirm(true);
     }else if(data.status === "SUCCESS"){
       setDestinationTx(data);
+      setConfirm(true);
       toast.success("Transaction on the destination chain was successful");
     }
     return status;
@@ -192,22 +186,18 @@ const Amount = ({
         selectedRoute?.transaction.approvalAddress,
         scaledAmount
       );
-      console.log("approval Result: ", approvalResult);
 
       if(approvalResult && approvalResult.success){
         toast.success("Token Approved!");
       }
       // Fetch swap data
       const swapData = await swapTokens();
-      console.log("Swap data: ", swapData);
       
       if (approvalResult && approvalResult.success) {
         const swapResult = await executeSwap(swapData, swapData?.quote?.fromAddress);
-        console.log("Swap result: ", swapResult);  // Debugging
     
         if (swapResult.success) {
             toast.success("Transaction successful 🎉");
-            setConfirm(true);
         } else {
             throw new Error("API returned an error: " + (swapResult.message || "Unknown error"));
         }

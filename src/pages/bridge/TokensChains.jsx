@@ -42,7 +42,7 @@ const TokensChains = ({ onClose, onSelect, onChainSelect }) => {
     async function getTokens() {
       try {
         const response = await fetch(
-          `https://api-v2.rubic.exchange/api/tokens/?network=${selectedChain}&pageSize=300`
+          `https://api-v2.rubic.exchange/api/tokens/?network=${selectedChain}&pageSize=1000`
         );
         const data = await response.json();
         if (data?.results) {
