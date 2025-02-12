@@ -69,7 +69,7 @@ const Emp = ({
   const { switchChain } = useSwitchChain();
   const { isConnected } = useAccount();
 
-  console.log('selected Token A: ', selectedTokenA);
+  // console.log('selected Token A: ', selectedTokenA);
 
   useEffect(() => {
     async function getTokens() {
@@ -184,7 +184,7 @@ const Emp = ({
 
   const handleTokenSelect = (token) => {
     if (isSelectingTokenA) {
-      console.log('selectedTokenA', token);
+      // console.log('selectedTokenA', token);
 
       setSelectedTokenA(token);
     } else {
@@ -208,7 +208,7 @@ const Emp = ({
 
   const handleChainSelect = async (chain) => {
     if (isSelectingTokenA) {
-      console.log('Selected Chain A:', chain);
+      // console.log('Selected Chain A:', chain);
       setSelectedChainA(chain); // Set Chain A when Token A is selected
 
       if (chain.name === 'SOLANA') {
@@ -239,7 +239,7 @@ const Emp = ({
         console.error(`❌ Failed to switch to ${chain.name}:`, error);
       }
     } else {
-      console.log('Selected Chain B:', chain);
+      // console.log('Selected Chain B:', chain);
       setSelectedChainB(chain); // Set Chain B when Token B is selected
 
       if (chain.name === 'SOLANA') {
@@ -587,7 +587,7 @@ const Emp = ({
   }, [selectedTokenA]);
 
   useEffect(() => {
-    console.log('selectedRoute', selectedRoute);
+    // console.log('selectedRoute', selectedRoute);
     if (selectedRoute !== null) {
       setAmountOut(selectedRoute?.estimate?.destinationTokenAmount);
     }
