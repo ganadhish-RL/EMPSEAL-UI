@@ -60,7 +60,7 @@ const Normal = () => {
   return (
     <>
       <div className='bg-[#121214] py-3 relative'>
-        <div className='md:max-w-[1100px] mx-auto w-full flex md:justify-between justify-center gap-3 items-center md:flex-nowrap flex-wrap my-6 px-3'>
+        <div className='md:max-w-[1100px] mx-auto w-full flex justify-center gap-10 items-center md:flex-nowrap flex-wrap my-6 px-3'>
           <div
             onClick={() => setActiveTab('cross')}
             className={`${

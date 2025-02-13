@@ -26,10 +26,13 @@ const ProvidersList = ({
     <div
       className={`border-[2px] border-[#FF9900] rounded-xl bg-black ${padding}`}
     >
-      <div className='w-full provider_gradient p-5'>
-        <span className='text-white text-base font-bold roboto leading-normal'>
-          Providers List
-        </span>
+      <div className='w-full flex justify-center p-5'>
+        {/* <span className='text-white text-base font-bold roboto leading-normal'>
+          Providers
+        </span> */}
+        <p className="w-[100px] h-[35px] flex justify-center items-center rounded-md bg-black roboto text-[#FF9900] text-[12px] font-bold border border-[#FF9900]">
+          Providers
+        </p>
       </div>
       <div className='p-4'>
         {loading ? (

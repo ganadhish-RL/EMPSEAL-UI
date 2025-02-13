@@ -46,7 +46,7 @@ const ProvidersListCard = ({
             </span>
           </div>
         </div>
-        <div className='grid grid-cols-[40%_40%] justify-between bg-[#3B3B3B] text-[#FF9900] p-3'>
+        <div className='grid grid-cols-[40%_40%] justify-between bg-transparent text-[#FF9900] p-3'>
           <div
             className='relative flex items-center'
             onMouseEnter={() => setHovered(true)}
