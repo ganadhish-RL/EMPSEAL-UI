@@ -739,16 +739,16 @@ const Emp = ({
                   From
                 </span>
               </div>
-              <div className='text-zinc-200 text-base font-normal roboto leading-normal flex gap-2'>
+              <div className='text-zinc-200 text-base font-normal roboto  leading-normal flex gap-2'>
                 <span>Bal:</span>
                 {[25, 50, 100].map((value) => (
                   <button
                     key={value}
-                    className={`w-full flex justify-center items-center rounded-xl text-sm font-normal  roboto px-4
+                    className={`w-full border border-[#FF9900] flex justify-center  items-center rounded-xl text-sm font-normal  roboto px-4
           ${
             selectedPercentage === value
-              ? 'bg-[#FF9900] text-black'
-              : 'bg-[rgba(59,59,59,1)] text-white hover:bg-[#FF9900] hover:text-black'
+              ? ' text-black bg-[#FF9900]'
+              : 'bg-transparent text-white hover:bg-[#FF9900] hover:text-black'
           }`}
                     onClick={() => handlePercentageChange(value)}
                     disabled={isLoading}
@@ -977,11 +977,9 @@ const Emp = ({
                 />
               </div>
               <button
-                className={` flex justify-center items-center rounded-xl px-2 ${
-                  isInsufficientBalance()
-                    ? 'bg-gray-500 cursor-not-allowed'
-                    : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
-                } roboto text-black text-base font-bold border border-[#FF9900]`}
+                className={` flex justify-center items-center rounded-xl px-2 
+                   bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent
+                 roboto text-black text-base font-bold border border-[#FF9900]`}
                 onClick={handleSelfButtonClick}
               >
                 Self
@@ -1004,7 +1002,7 @@ const Emp = ({
                 loading || amountIn === '0' || !amountIn || !selfAddress
                   ? 'bg-gray-500 cursor-not-allowed'
                   : 'bg-[#FF9900] hover:text-[#FF9900] hover:bg-transparent'
-              } roboto text-black text-base font-bold border border-blue-600`}
+              } roboto text-black text-base font-bold border border-[#FF9900]`}
             >
               {loading ? 'Processing...' : 'Estimate Trade'}
             </button>

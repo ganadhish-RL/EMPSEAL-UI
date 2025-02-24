@@ -7,6 +7,7 @@ import NFTMarketplace from '../pages/Home/NFTMarketPlace';
 import CollectionDetail from '../components/CollectionDetail';
 import ItemDetail from '../pages/Home/ItemDetail';
 import Bridge from '../pages/bridge/Main';
+import NativeBridge from '../pages/nativeBridge';
 
 function MyRoutes() {
   return (
@@ -31,6 +32,10 @@ function MyRoutes() {
               element={<ItemDetail></ItemDetail>}
             ></Route>
             <Route path='/bridge' element={<Bridge></Bridge>}></Route>
+            <Route
+              path='/native-bridge'
+              element={<NativeBridge></NativeBridge>}
+            ></Route>
           </Routes>
         </div>
         {/* </Base> */}
