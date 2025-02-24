@@ -147,7 +147,6 @@ const Amount = ({
       });
 
       await waitForTransaction(txHash);
-  
       setTransactionHash(txHash);
       const status = await getTransactionStatus(txHash);
       
