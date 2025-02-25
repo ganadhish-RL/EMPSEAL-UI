@@ -263,12 +263,12 @@ const Emp = ({
         return;
       }
 
-      try {
-        // Switching to the selected chain
-        switchChain({ chainId: chain.chainId });
-      } catch (error) {
-        console.error(`❌ Failed to switch to ${chain.name}:`, error);
-      }
+      // try {
+      //   // Switching to the selected chain
+      //   switchChain({ chainId: chain.chainId });
+      // } catch (error) {
+      //   console.error(`❌ Failed to switch to ${chain.name}:`, error);
+      // }
     }
   };
 
