@@ -6,6 +6,9 @@ import { Link } from 'react-router-dom';
 const NativeBridge = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('native'); // 'cross' | 'native'
+  const iframeSrc =
+    import.meta.env.REACT_APP_IFRAME_URL ||
+    'https://native-bridge-omega.vercel.app';
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
@@ -47,7 +50,7 @@ const NativeBridge = () => {
       )}
 
       <iframe
-        src='https://project-empx.vercel.app'
+        src={iframeSrc}
         style={{
           width: '100%',
           height: '100vh',
