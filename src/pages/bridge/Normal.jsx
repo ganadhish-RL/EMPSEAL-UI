@@ -18,14 +18,14 @@ const Normal = () => {
 
   const quoteAll = async (selectedTokenA, selectedTokenB, amountIn, receiver, address) => {
     setLoading(true);
-    console.log("tokens:", selectedTokenA, selectedTokenB);
+    // console.log("tokens:", selectedTokenA.address, selectedTokenB.address);
 
     function getChainId(token){
       const chainInfo = chainsData.find(
         (chain) => chain.name === token.blockchainNetwork
       );
       const chainId = chainInfo ? chainInfo.chainId : "Not Found";
-      console.log("chainId: ", chainId)
+      // console.log("chainId: ", chainId)
       return chainId;
     }
 
@@ -50,7 +50,7 @@ const Normal = () => {
             fromAddress: address,
         };
 
-        console.log("rubicPayload:", rubicPayload);
+        // console.log("rubicPayload:", rubicPayload);
 
         // Rango API request
         const rangoPayload = {
@@ -67,7 +67,7 @@ const Normal = () => {
             affiliatePercent: 0.3,
         };
 
-        console.log("rangoPayload:", rangoPayload);
+        // console.log("rangoPayload:", rangoPayload);
 
         // Symbiosis API request
         const symbiosisPayload = {
@@ -89,7 +89,7 @@ const Normal = () => {
           slippage: 300,
       };
 
-        console.log("symbiosisPayload:", symbiosisPayload);
+        // console.log("symbiosisPayload:", symbiosisPayload);
 
         // API calls
         const results = await Promise.allSettled([
@@ -112,23 +112,22 @@ const Normal = () => {
             }).then(res => res.ok ? res.json() : Promise.reject(`Symbiosis error: ${res.status}`))
         ]);
 
-        // Process results and handle errors
+        // Process results
         const combinedQuotes = {
             rubic: results[0].status === 'fulfilled' ? results[0].value : null,
             rango: results[1].status === 'fulfilled' ? results[1].value : null,
             symbiosis: results[2].status === 'fulfilled' ? results[2].value : null,
         };
 
-        // Log any errors that occurred
+        // Log any errors
         results.forEach((result, index) => {
             if (result.status === 'rejected') {
                 const provider = ['rubic', 'rango', 'symbiosis'][index];
                 console.warn(`${provider} API call failed:`, result.reason);
             }
         });
-
-        console.log("Combined quotes:", combinedQuotes);
-        console.log("quoteData Normal: ", quoteData);
+        // console.log("Combined quotes:", combinedQuotes);
+        // console.log("quoteData Normal: ", quoteData);
         setQuoteData(combinedQuotes);
     } catch (error) {
         console.error('Error calling APIs:', error);

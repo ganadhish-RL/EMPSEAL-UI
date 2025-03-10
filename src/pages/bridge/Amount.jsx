@@ -10,7 +10,6 @@ import { erc20Abi } from "viem";
 import { WPLS as TOKEN_ABI } from "../../utils/abis/wplsABI";
 import { config } from "../../Wagmi/config";
 import { toast } from "react-toastify";
-// import {confirmRouting, createTransaction, checkTransactionStatus} from '../../utils/services/rangoApiServices';
 const Amount = ({
   onClose,
   amountIn,
@@ -31,18 +30,10 @@ const Amount = ({
   const modalRef = useRef(null);
   const rangoApiKey = import.meta.env.VITE_RANGO_API_KEY || "";
   
-  console.log("quoteData", quoteData);
-  console.log("selectedRoute: ", selectedRoute);
-  // console.log("wallet address: ", fromAddress);
-
+  //route detection logic
   const symbiosisRoute = selectedRoute?.type === "evm";
-  // console.log("symbiosisRouteCheck", symbiosisRoute);
-
   const rangoRoute = typeof selectedRoute?.requestId === 'string';
-  // console.log("rangoRouteCheck:", rangoRoute);
-
-  const rubicRoute = selectedRoute?.swapType === "cross-chain";
-  // console.log("rubicRouteCheck: ", rubicRoute);
+  const rubicRoute = selectedRoute?.swapType === "cross-chain" || selectedRoute?.swapType === "on-chain";
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -61,23 +52,40 @@ const Amount = ({
     if (rubicRoute) {
       return selectedRoute?.tokens?.from?.decimals;
     } else if (rangoRoute) {
-      // For Rango, use tokenA's decimals since it's passed as a prop
       return tokenA.decimals;
     } else if (symbiosisRoute) {
       return tokenA.decimals;
     }
-    return 18; // default decimals if none specified
+    return 18; // default
   };
 
   const getScaledAmount = () => {
-    const decimals = getTokenDecimals();
-    if (rubicRoute) {
-      const tokenAmount = parseFloat(quoteData?.rubic.quote.srcTokenAmount);
-      return BigInt(Math.floor(tokenAmount * Math.pow(10, decimals)));
-    } else if (rangoRoute) {
-      return BigInt(Math.floor(parseFloat(amountIn) * Math.pow(10, decimals)));
-    } else {
-      return amountIn;
+    try {
+      const decimals = getTokenDecimals();
+      if (!decimals) return BigInt(0);
+
+      if (rubicRoute) {
+        const tokenAmount = quoteData?.rubic?.quote?.srcTokenAmount;
+        if (!tokenAmount) return BigInt(0);
+        
+        const calculatedAmount = Math.floor(parseFloat(tokenAmount) * Math.pow(10, decimals));
+        return BigInt(calculatedAmount.toString());
+      } else if (rangoRoute) {
+        if (!amountIn) return BigInt(0);
+        
+        const calculatedAmount = Math.floor(parseFloat(amountIn) * Math.pow(10, decimals));
+        return BigInt(calculatedAmount.toString());
+      } else if (symbiosisRoute) {
+        if (!amountIn) return BigInt(0);
+        
+        // Convert decimal to integer
+        const calculatedAmount = Math.floor(parseFloat(amountIn) * Math.pow(10, decimals));
+        return BigInt(calculatedAmount.toString());
+      }
+      return BigInt(0);
+    } catch (error) {
+      console.warn("Error in getScaledAmount:", error);
+      return BigInt(0);
     }
   };
 
@@ -144,7 +152,7 @@ const Amount = ({
       let payload;
 
       if(rubicRoute) {
-        // Existing Rubic implementation
+        // Rubic implementation
         payload = {
           dstTokenAddress: quoteData.rubic.quote.dstTokenAddress, 
             dstTokenBlockchain: quoteData.rubic.quote.dstTokenBlockchain, 
@@ -199,9 +207,8 @@ const Amount = ({
         }
 
         const confirmData = await confirmResponse.json();
-        console.log("Rango route confirmation:", confirmData);
 
-        // Then create the transaction
+        // create the transaction
         const createTxPayload = {
           userSettings: { slippage: selectedRoute?.estimate?.slippage || 1 },
           validations: { balance: true, fee: true, approve: true },
@@ -222,7 +229,7 @@ const Amount = ({
         );
       }
       else if(symbiosisRoute) {
-        // Existing Symbiosis implementation
+        // Symbiosis implementation
         return {
           transaction: quoteData.symbiosis.tx,
           quote: {
@@ -270,6 +277,13 @@ const Amount = ({
     }
   };
 
+  const clearState = () => {
+    setIsLoading(false);
+    setSwapDetails(null);
+    setTransactionHash("");
+    setDestinationTx({});
+  };
+
   const getTransactionStatus = async (hash) => {
     try {
       if (rubicRoute) {
@@ -283,6 +297,7 @@ const Amount = ({
           setDestinationTx(data);
           setConfirm(true);
           toast.success("Transaction on the destination chain was successful");
+          clearState();
         }
         return status;
       } 
@@ -305,15 +320,14 @@ const Amount = ({
         const data = await response.json();
         
         // Handle Rango specific status
-        if (data.status === "SUCCESS") {
+        if (data.status === "success") {
           setDestinationTx(data);
           setConfirm(true);
           toast.success("Rango transaction completed successfully");
-        } else if (data.status === "FAILED") {
+          clearState();
+        } else if (data.status === "failed") {
           toast.error("Rango transaction failed");
           setConfirm(true);
-        } else if (data.status === "RUNNING") {
-          toast.info("Transaction is being processed");
         }
         
         return data.status;
@@ -321,6 +335,7 @@ const Amount = ({
       else if (symbiosisRoute) {
         // Add Symbiosis status check if needed
         setConfirm(true);
+        clearState();
         return "SUCCESS"; // Default response for Symbiosis
       }
     } catch (error) {
@@ -388,27 +403,40 @@ const Amount = ({
         
         if (swapResult.success) {
           if (rangoRoute || rubicRoute) {
-            // Start polling for transaction status
+            // Show initial message
+            toast.info("Transaction is being processed. This may take a few minutes...");
+            
+            let lastToastTime = Date.now();
             const statusCheckInterval = setInterval(async () => {
               try {
                 const status = await getTransactionStatus(swapResult.txHash);
+                const normalizedStatus = status?.toUpperCase();
                 
-                if (status === "SUCCESS") {
+                if (normalizedStatus === "SUCCESS") {
                   clearInterval(statusCheckInterval);
-                } else if (status === "FAILED") {
+                  toast.success("Transaction completed successfully! 🎉");
+                  clearState();
+                } else if (normalizedStatus === "FAILED") {
                   clearInterval(statusCheckInterval);
                   throw new Error("Transaction failed on destination chain");
-                }
-                // For "RUNNING" status, continue polling
+                } else if (normalizedStatus === "RUNNING") {
+                  // Show processing message only once per minute
+                  const currentTime = Date.now();
+                  if (currentTime - lastToastTime >= 60000) { // 60000ms = 1 minute
+                    toast.info("Still processing... Please wait.");
+                    lastToastTime = currentTime;
+                  }
+                } 
               } catch (error) {
                 clearInterval(statusCheckInterval);
                 console.error("Status check failed:", error);
                 toast.error("Failed to check transaction status");
               }
-            }, 5000); // Check every 5 seconds
+            }, 10000); // Check every 10 seconds
           } else {
             // For Symbiosis or other providers
             toast.success("Transaction successful 🎉");
+            clearState();
           }
         } else {
           throw new Error("API returned an error: " + (swapResult.message || "Unknown error"));
@@ -434,35 +462,41 @@ const Amount = ({
       ? `${formattedInteger}.${decimalPart.replace(/\D/g, "")}` // Remove non-numeric from decimal
       : formattedInteger;
   };
-
-  // First, let's create helper functions to get the correct values based on route type
+  
   const getDisplayValues = () => {
-    if (rubicRoute) {
+    
+    if (rubicRoute && selectedRoute?.estimate) {
       return {
-        outputAmount: parseFloat(selectedRoute?.estimate?.destinationTokenAmount).toFixed(6),
-        minReceived: parseFloat(selectedRoute?.estimate?.destinationTokenMinAmount).toFixed(6),
-        priceImpact: selectedRoute?.estimate?.priceImpact,
-        slippage: selectedRoute?.estimate?.slippage,
-        usdAmount: selectedRoute?.estimate?.destinationUsdAmount
+        outputAmount: parseFloat(selectedRoute.estimate.destinationTokenAmount || 0).toFixed(6),
+        minReceived: parseFloat(selectedRoute.estimate.destinationTokenMinAmount || 0).toFixed(6),
+        priceImpact: selectedRoute.estimate.priceImpact || "0",
+        slippage: selectedRoute.estimate.slippage || "0",
+        usdAmount: selectedRoute.estimate.destinationUsdAmount || "0"
       };
-    } else if (rangoRoute) {
-      // Get the last swap which contains the final destination values
-      const lastSwap = selectedRoute?.swaps[selectedRoute.swaps.length - 1];
+    } else if (rangoRoute && selectedRoute?.swaps?.length > 0) {
+      const lastSwap = selectedRoute.swaps[selectedRoute.swaps.length - 1];
       return {
-        outputAmount: selectedRoute?.outputAmount, // This is the final amount
-        minReceived: parseFloat(lastSwap?.toAmount).toFixed(6), // Final destination amount
-        priceImpact: selectedRoute?.priceImpactUsdPercent || "0",
-        slippage: lastSwap?.recommendedSlippage?.slippage || "1", // Use recommended slippage if available
-        usdAmount: (parseFloat(selectedRoute?.outputAmount || 0) * 
-                    parseFloat(lastSwap?.to?.usdPrice || 0)).toFixed(2) // Calculate USD value
+        outputAmount: parseFloat(selectedRoute.outputAmount || 0).toFixed(6),
+        minReceived: parseFloat(lastSwap?.toAmount || 0).toFixed(6),
+        priceImpact: selectedRoute.priceImpactUsdPercent || "0",
+        slippage: lastSwap?.recommendedSlippage?.slippage || "1",
+        usdAmount: (parseFloat(selectedRoute.outputAmount || 0) * 
+                    parseFloat(lastSwap?.to?.usdPrice || 0)).toFixed(2)
       };
-    } else if (symbiosisRoute) {
+    } else if (symbiosisRoute && quoteData?.symbiosis) {
+      const symData = quoteData.symbiosis;
+      const tokenOutDecimals = symData?.tokenAmountOut?.decimals || 18;
+      const tokenOutAmount = symData?.tokenAmountOut?.amount || "0";
+      const tokenOutMinAmount = symData?.tokenAmountOutMin?.amount || "0";
+      
       return {
-        outputAmount: formatUnits(quoteData?.symbiosis?.tokenAmountOut?.amount || "0", quoteData?.symbiosis?.tokenAmountOut?.decimals || 18),
-        minReceived: formatUnits(quoteData?.symbiosis?.tokenAmountOutMin?.amount || "0", quoteData?.symbiosis?.tokenAmountOutMin?.decimals || 18),
-        priceImpact: quoteData?.symbiosis?.priceImpact || "0",
-        slippage: "0.5", // Default slippage for Symbiosis
-        usdAmount: quoteData?.symbiosis?.amountInUsd?.amount || "0"
+        outputAmount: parseFloat(formatUnits(tokenOutAmount, tokenOutDecimals)).toFixed(6),
+        minReceived: parseFloat(formatUnits(tokenOutMinAmount, tokenOutDecimals)).toFixed(6),
+        priceImpact: symData.priceImpact || "0",
+        slippage: "0.5",
+        usdAmount: symData.amountInUsd?.amount 
+          ? parseFloat(formatUnits(symData.amountInUsd.amount, symData.amountInUsd.decimals || 18)).toFixed(2)
+          : "0"
       };
     }
     return {
@@ -473,7 +507,7 @@ const Amount = ({
       usdAmount: "0"
     };
   };
-
+  
   const {
     outputAmount,
     minReceived,
@@ -481,7 +515,6 @@ const Amount = ({
     slippage,
     usdAmount
   } = getDisplayValues();
-
   return (
     <>
       <div className="bg-black bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full my-auto fixed top-0 px-4 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
