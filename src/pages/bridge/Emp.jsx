@@ -70,7 +70,7 @@ const Emp = ({
   const { isConnected } = useAccount();
 
   // console.log('selected Token A: ', selectedTokenA);
-  console.log('selectedRoute: ', selectedRoute);
+  // console.log('selectedRoute: ', selectedRoute);
 
   useEffect(() => {
     async function getTokens() {
@@ -262,13 +262,6 @@ const Emp = ({
       if (!isConnected) {
         console.error('❌ Wallet not connected!');
         return;
-      }
-
-      try {
-        // Switching to the selected chain
-        switchChain({ chainId: chain.chainId });
-      } catch (error) {
-        console.error(`❌ Failed to switch to ${chain.name}:`, error);
       }
     }
   };
@@ -593,7 +586,7 @@ const Emp = ({
   const rangoRoute = typeof selectedRoute?.requestId === 'string';
   // console.log("rangoRouteCheck:", rangoRoute);
 
-  const rubicRoute = selectedRoute?.swapType === "cross-chain";
+  const rubicRoute = selectedRoute?.swapType === "cross-chain" || "on-chain";
   // console.log("rubicRouteCheck: ", rubicRoute);
 
   const formatTokenAmount = (amount, decimals) => {

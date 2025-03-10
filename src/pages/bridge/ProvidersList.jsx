@@ -22,11 +22,11 @@ const ProvidersList = ({
       setRangoRoutes(quoteData.rango?.results || []);
       setSymbiosisRoutes(quoteData.symbiosis || null);
       
-      console.log("rubicQuoteData", quoteData.rubic?.routes || 'No Rubic routes available');
-      console.log("rangoRoutesData:", quoteData.rango?.results || 'No Rango routes available');
-      console.log("rangoRoutesData:", quoteData.rango || 'No Rango data available');
-      console.log("symbiosisRoutesData:", quoteData.symbiosis || 'No Symbiosis data available');
-      console.log("symbiosisRoutesData:", quoteData.symbiosis?.estimatedTime || 'No Symbiosis time estimate available');
+      // console.log("rubicQuoteData", quoteData.rubic?.routes || 'No Rubic routes available');
+      // console.log("rangoRoutesData:", quoteData.rango?.results || 'No Rango routes available');
+      // console.log("rangoRoutesData:", quoteData.rango || 'No Rango data available');
+      // console.log("symbiosisRoutesData:", quoteData.symbiosis || 'No Symbiosis data available');
+      // console.log("symbiosisRoutesData:", quoteData.symbiosis?.estimatedTime || 'No Symbiosis time estimate available');
     } else {
       setRubicRoutes([]);
       setRangoRoutes([]);
@@ -120,7 +120,7 @@ const ProvidersList = ({
                   tokenAmount={parseFloat(route.estimate.destinationTokenAmount).toFixed(6)}
                   tokenSymbol={route.tokens.to.symbol}
                   tokenRouter={route.providerType}
-                  tokenAmountUsd={route.estimate.destinationUsdAmount.toFixed(2)}
+                  tokenAmountUsd={parseFloat(route.estimate.destinationUsdAmount).toFixed(2)}
                   protocolFee={route.fees.gasTokenFees.protocol.fixedUsdAmount}
                   providerFee={route.fees.gasTokenFees.provider?.fixedUsdAmount}
                   percentFee={route.fees.percentFees.percent}
@@ -143,12 +143,6 @@ const ProvidersList = ({
               {rangoRoutes.map((route, index) => {
                 const lastSwap = route.swaps[route.swaps.length - 1];
                 
-                console.log('Debug values:', {
-                  outputAmount: route.outputAmount,
-                  lastSwapToAmount: lastSwap.toAmount,
-                  decimals: lastSwap.to.decimals
-                });
-
                 const totalTime = route.swaps.reduce((total, swap) => 
                   total + (swap.estimatedTimeInSeconds || 0), 0);
                 
