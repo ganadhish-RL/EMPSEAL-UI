@@ -70,6 +70,7 @@ const Emp = ({
   const { isConnected } = useAccount();
 
   // console.log('selected Token A: ', selectedTokenA);
+  console.log('selectedRoute: ', selectedRoute);
 
   useEffect(() => {
     async function getTokens() {
@@ -586,10 +587,41 @@ const Emp = ({
     setAmountIn('');
   }, [selectedTokenA]);
 
+  const symbiosisRoute = selectedRoute?.type === "evm";
+  // console.log("symbiosisRouteCheck", symbiosisRoute);
+
+  const rangoRoute = typeof selectedRoute?.requestId === 'string';
+  // console.log("rangoRouteCheck:", rangoRoute);
+
+  const rubicRoute = selectedRoute?.swapType === "cross-chain";
+  // console.log("rubicRouteCheck: ", rubicRoute);
+
+  const formatTokenAmount = (amount, decimals) => {
+    return (parseFloat(amount) / 10 ** decimals).toFixed(6);
+  };
+
+  // useEffect(() => {
+  //   // console.log('selectedRoute', selectedRoute);
+  //   if (selectedRoute !== null) {
+  //     setAmountOut(selectedRoute?.estimate?.destinationTokenAmount);
+  //   }
+  // }, [selectedRoute]);
+
   useEffect(() => {
-    // console.log('selectedRoute', selectedRoute);
-    if (selectedRoute !== null) {
-      setAmountOut(selectedRoute?.estimate?.destinationTokenAmount);
+    if (selectedRoute) {
+      let amountOutValue;
+  
+      if (symbiosisRoute) {
+        // Symbiosis route
+        amountOutValue = formatTokenAmount(selectedRoute?.tokenAmountOut?.amount, selectedRoute?.tokenAmountOut?.decimals);
+      } else if (rangoRoute) {
+        // Rango route
+        amountOutValue = selectedRoute?.outputAmount;
+      } else if (rubicRoute) {
+        // Rubic route
+        amountOutValue = selectedRoute?.estimate?.destinationTokenAmount;
+      }
+      setAmountOut(amountOutValue);
     }
   }, [selectedRoute]);
 

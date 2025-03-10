@@ -10,6 +10,7 @@ import { erc20Abi } from "viem";
 import { WPLS as TOKEN_ABI } from "../../utils/abis/wplsABI";
 import { config } from "../../Wagmi/config";
 import { toast } from "react-toastify";
+// import {confirmRouting, createTransaction, checkTransactionStatus} from '../../utils/services/rangoApiServices';
 const Amount = ({
   onClose,
   amountIn,
@@ -28,6 +29,21 @@ const Amount = ({
   const [transactionHash, setTransactionHash] = useState("");
   const [destinationTx, setDestinationTx] = useState({});
   const modalRef = useRef(null);
+  const rangoApiKey = import.meta.env.VITE_RANGO_API_KEY || "";
+  
+  console.log("quoteData", quoteData);
+  console.log("selectedRoute: ", selectedRoute);
+  // console.log("wallet address: ", fromAddress);
+
+  const symbiosisRoute = selectedRoute?.type === "evm";
+  // console.log("symbiosisRouteCheck", symbiosisRoute);
+
+  const rangoRoute = typeof selectedRoute?.requestId === 'string';
+  // console.log("rangoRouteCheck:", rangoRoute);
+
+  const rubicRoute = selectedRoute?.swapType === "cross-chain";
+  // console.log("rubicRouteCheck: ", rubicRoute);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -41,10 +57,31 @@ const Amount = ({
     };
   }, [onClose]);
 
-  const tokenDecimals = selectedRoute?.tokens.from.decimals;
-  const tokenAmount = parseFloat(quoteData?.quote.srcTokenAmount);
+  const getTokenDecimals = () => {
+    if (rubicRoute) {
+      return selectedRoute?.tokens?.from?.decimals;
+    } else if (rangoRoute) {
+      // For Rango, use tokenA's decimals since it's passed as a prop
+      return tokenA.decimals;
+    } else if (symbiosisRoute) {
+      return tokenA.decimals;
+    }
+    return 18; // default decimals if none specified
+  };
 
-  const scaledAmount = BigInt(Math.floor(tokenAmount * Math.pow(10, tokenDecimals)));
+  const getScaledAmount = () => {
+    const decimals = getTokenDecimals();
+    if (rubicRoute) {
+      const tokenAmount = parseFloat(quoteData?.rubic.quote.srcTokenAmount);
+      return BigInt(Math.floor(tokenAmount * Math.pow(10, decimals)));
+    } else if (rangoRoute) {
+      return BigInt(Math.floor(parseFloat(amountIn) * Math.pow(10, decimals)));
+    } else {
+      return amountIn;
+    }
+  };
+
+  const scaledAmount = getScaledAmount();
   
   const approveToken = async (tokenAddress, approvalAddress, amount) => {
 
@@ -103,39 +140,110 @@ const Amount = ({
 
   const swapTokens = async () => {
     try {
-      const response = await fetch('https://api-v2.rubic.exchange/api/routes/swap',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            dstTokenAddress: quoteData.quote.dstTokenAddress, 
-            dstTokenBlockchain: quoteData.quote.dstTokenBlockchain, 
-            referrer: quoteData.quote.referrer, 
-            srcTokenAddress: quoteData.quote.srcTokenAddress, 
-            srcTokenAmount: quoteData.quote.srcTokenAmount, 
-            srcTokenBlockchain: quoteData.quote.srcTokenBlockchain , 
-            fromAddress: quoteData.quote.fromAddress, 
-            receiver: quoteData.quote.receiver, 
-            integratorAddress: quoteData.quote.integratorAddress, 
+      let response;
+      let payload;
+
+      if(rubicRoute) {
+        // Existing Rubic implementation
+        payload = {
+          dstTokenAddress: quoteData.rubic.quote.dstTokenAddress, 
+            dstTokenBlockchain: quoteData.rubic.quote.dstTokenBlockchain, 
+            referrer: quoteData.rubic.quote.referrer, 
+            srcTokenAddress: quoteData.rubic.quote.srcTokenAddress, 
+            srcTokenAmount: quoteData.rubic.quote.srcTokenAmount, 
+            srcTokenBlockchain: quoteData.rubic.quote.srcTokenBlockchain , 
+            fromAddress: quoteData.rubic.quote.fromAddress, 
+            receiver: quoteData.rubic.quote.receiver, 
+            integratorAddress: quoteData.rubic.quote.integratorAddress, 
             id: selectedRoute.id, 
             slippage: selectedRoute.estimate.slippage,
-          }),
+        } 
+        response = await fetch('https://api-v2.rubic.exchange/api/routes/swap',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+      } else if(typeof selectedRoute?.requestId === "string"){
+        // Get source and destination chains from the selectedRoute
+        const fromChain = selectedRoute.swaps[0].from.blockchain;
+        const toChain = selectedRoute.swaps[selectedRoute.swaps.length - 1].to.blockchain;
+        
+        // Create selectedWallets object with the user's address for both chains
+        const selectedWallets = {
+          [fromChain]: fromAddress,
+          [toChain]: fromAddress
+        };
+
+        // rango payload with updated data
+        payload = {
+          requestId: selectedRoute.requestId,
+          destination: fromAddress,
+          checkPrerequisites: false,
+          selectedWallets: selectedWallets  // Add the selectedWallets object
+        };
+         
+        const confirmResponse = await fetch(
+          `https://api.rango.exchange/routing/confirm?apiKey=${rangoApiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }
+        );
+
+        if (!confirmResponse.ok) {
+          throw new Error('Rango route confirmation failed');
         }
-      );
-      if(!response.ok){
-        console.error(`HTTP error! Status: ${response.status}`);
-        return;
+
+        const confirmData = await confirmResponse.json();
+        console.log("Rango route confirmation:", confirmData);
+
+        // Then create the transaction
+        const createTxPayload = {
+          userSettings: { slippage: selectedRoute?.estimate?.slippage || 1 },
+          validations: { balance: true, fee: true, approve: true },
+          step: 1,
+          requestId: selectedRoute.requestId
+        };
+
+        response = await fetch(
+          `https://api.rango.exchange/tx/create?apiKey=${rangoApiKey}`,
+          {
+            method: 'POST',
+            headers: {
+              accept: '*/*',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(createTxPayload)
+          }
+        );
       }
+      else if(symbiosisRoute) {
+        // Existing Symbiosis implementation
+        return {
+          transaction: quoteData.symbiosis.tx,
+          quote: {
+            fromAddress: fromAddress
+          }
+        };
+      }
+
+      if(!response?.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
       const data = await response.json();
       setSwapDetails(data);
       return data;
-      
     } catch (error) {
       console.error("Error calling API:", error);
+      toast.error("Failed to prepare swap transaction");
+      throw error;
     }
-  }
+  };
 
   const executeSwap = async (transactionDetails, walletDetails) => {
     try {
@@ -163,46 +271,149 @@ const Amount = ({
   };
 
   const getTransactionStatus = async (hash) => {
-    const response = await fetch(`https://api-v2.rubic.exchange/api/info/status?srcTxHash=${hash}`);
-    const data = await response.json();
-    const {status, destinationTxHash} = data;
-    if(data.status === "NOT_FOUND"){
-      setConfirm(true);
-    }else if(data.status === "SUCCESS"){
-      setDestinationTx(data);
-      setConfirm(true);
-      toast.success("Transaction on the destination chain was successful");
+    try {
+      if (rubicRoute) {
+        const response = await fetch(`https://api-v2.rubic.exchange/api/info/status?srcTxHash=${hash}`);
+        const data = await response.json();
+        const { status, destinationTxHash } = data;
+        
+        if (data.status === "NOT_FOUND") {
+          setConfirm(true);
+        } else if (data.status === "SUCCESS") {
+          setDestinationTx(data);
+          setConfirm(true);
+          toast.success("Transaction on the destination chain was successful");
+        }
+        return status;
+      } 
+      else if (rangoRoute) {
+        const response = await fetch(
+          `https://api.rango.exchange/tx/check-status?apiKey=${rangoApiKey}`,
+          {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+              requestId: selectedRoute.requestId,
+              txId: hash,
+              step: 1
+            })
+          }
+        );
+
+        const data = await response.json();
+        
+        // Handle Rango specific status
+        if (data.status === "SUCCESS") {
+          setDestinationTx(data);
+          setConfirm(true);
+          toast.success("Rango transaction completed successfully");
+        } else if (data.status === "FAILED") {
+          toast.error("Rango transaction failed");
+          setConfirm(true);
+        } else if (data.status === "RUNNING") {
+          toast.info("Transaction is being processed");
+        }
+        
+        return data.status;
+      }
+      else if (symbiosisRoute) {
+        // Add Symbiosis status check if needed
+        setConfirm(true);
+        return "SUCCESS"; // Default response for Symbiosis
+      }
+    } catch (error) {
+      console.error("Error checking transaction status:", error);
+      toast.error("Failed to check transaction status");
+      return "FAILED";
     }
-    return status;
-  }
+  };
 
   const handleClick = async () => {
     if (disabled || isLoading) return;
   
     setIsLoading(true);
     try {
-      // Approve token
-      const approvalResult = await approveToken(
-        selectedRoute?.tokens.from.address,
-        selectedRoute?.transaction.approvalAddress,
-        scaledAmount
-      );
+      let approvalResult = null;
+      let swapData = null;
 
-      if(approvalResult && approvalResult.success){
-        toast.success("Token Approved!");
-      }
-      // Fetch swap data
-      const swapData = await swapTokens();
-      
-      if (approvalResult && approvalResult.success) {
-        const swapResult = await executeSwap(swapData, swapData?.quote?.fromAddress);
-    
-        if (swapResult.success) {
-            toast.success("Transaction successful 🎉");
+      if (rubicRoute) {
+        approvalResult = await approveToken(
+          selectedRoute?.tokens?.from?.address,
+          selectedRoute?.transaction?.approvalAddress,
+          scaledAmount
+        );
+      } else if (symbiosisRoute) {
+        approvalResult = await approveToken(
+          tokenA.address,
+          quoteData.symbiosis.approveTo,
+          amountIn
+        );
+      } else if (rangoRoute) {
+        // First get the swap data which includes approval info
+        swapData = await swapTokens();
+        
+        if (swapData?.approve) {
+          approvalResult = await approveToken(
+            swapData.approve.token,
+            swapData.approve.spender,
+            swapData.approve.amount
+          );
         } else {
-            throw new Error("API returned an error: " + (swapResult.message || "Unknown error"));
+          approvalResult = { success: true };
         }
-    }
+      }
+
+      if(approvalResult && approvalResult.success) {
+        toast.success("Token Approved!");
+        
+        if (!swapData) {
+          swapData = await swapTokens();
+        }
+
+        let swapResult;
+        if (rangoRoute) {
+          swapResult = await executeSwap({
+            transaction: {
+              to: swapData.transaction.to,
+              data: swapData.transaction.data,
+              value: swapData.transaction.value,
+              from: fromAddress
+            }
+          }, fromAddress);
+        } else {
+          swapResult = await executeSwap(swapData, swapData?.quote?.fromAddress);
+        }
+        
+        if (swapResult.success) {
+          if (rangoRoute || rubicRoute) {
+            // Start polling for transaction status
+            const statusCheckInterval = setInterval(async () => {
+              try {
+                const status = await getTransactionStatus(swapResult.txHash);
+                
+                if (status === "SUCCESS") {
+                  clearInterval(statusCheckInterval);
+                } else if (status === "FAILED") {
+                  clearInterval(statusCheckInterval);
+                  throw new Error("Transaction failed on destination chain");
+                }
+                // For "RUNNING" status, continue polling
+              } catch (error) {
+                clearInterval(statusCheckInterval);
+                console.error("Status check failed:", error);
+                toast.error("Failed to check transaction status");
+              }
+            }, 5000); // Check every 5 seconds
+          } else {
+            // For Symbiosis or other providers
+            toast.success("Transaction successful 🎉");
+          }
+        } else {
+          throw new Error("API returned an error: " + (swapResult.message || "Unknown error"));
+        }
+      }
     } catch (error) {
       toast.error("Transaction failed ⚠️");
       console.error("Confirmation failed:", error);
@@ -223,6 +434,53 @@ const Amount = ({
       ? `${formattedInteger}.${decimalPart.replace(/\D/g, "")}` // Remove non-numeric from decimal
       : formattedInteger;
   };
+
+  // First, let's create helper functions to get the correct values based on route type
+  const getDisplayValues = () => {
+    if (rubicRoute) {
+      return {
+        outputAmount: parseFloat(selectedRoute?.estimate?.destinationTokenAmount).toFixed(6),
+        minReceived: parseFloat(selectedRoute?.estimate?.destinationTokenMinAmount).toFixed(6),
+        priceImpact: selectedRoute?.estimate?.priceImpact,
+        slippage: selectedRoute?.estimate?.slippage,
+        usdAmount: selectedRoute?.estimate?.destinationUsdAmount
+      };
+    } else if (rangoRoute) {
+      // Get the last swap which contains the final destination values
+      const lastSwap = selectedRoute?.swaps[selectedRoute.swaps.length - 1];
+      return {
+        outputAmount: selectedRoute?.outputAmount, // This is the final amount
+        minReceived: parseFloat(lastSwap?.toAmount).toFixed(6), // Final destination amount
+        priceImpact: selectedRoute?.priceImpactUsdPercent || "0",
+        slippage: lastSwap?.recommendedSlippage?.slippage || "1", // Use recommended slippage if available
+        usdAmount: (parseFloat(selectedRoute?.outputAmount || 0) * 
+                    parseFloat(lastSwap?.to?.usdPrice || 0)).toFixed(2) // Calculate USD value
+      };
+    } else if (symbiosisRoute) {
+      return {
+        outputAmount: formatUnits(quoteData?.symbiosis?.tokenAmountOut?.amount || "0", quoteData?.symbiosis?.tokenAmountOut?.decimals || 18),
+        minReceived: formatUnits(quoteData?.symbiosis?.tokenAmountOutMin?.amount || "0", quoteData?.symbiosis?.tokenAmountOutMin?.decimals || 18),
+        priceImpact: quoteData?.symbiosis?.priceImpact || "0",
+        slippage: "0.5", // Default slippage for Symbiosis
+        usdAmount: quoteData?.symbiosis?.amountInUsd?.amount || "0"
+      };
+    }
+    return {
+      outputAmount: "0",
+      minReceived: "0",
+      priceImpact: "0",
+      slippage: "0",
+      usdAmount: "0"
+    };
+  };
+
+  const {
+    outputAmount,
+    minReceived,
+    priceImpact,
+    slippage,
+    usdAmount
+  } = getDisplayValues();
 
   return (
     <>
@@ -282,7 +540,7 @@ const Amount = ({
               </div>
               <div className="text-white text-2xl font-bold roboto leading-9 flex gap-3 items-center">
                 {formatNumber(amountIn)} {tokenA.symbol}
-                <img src={tokenA.image} alt="Three" className="w-4 h-4" />
+                <img src={tokenA.image} alt="Token A" className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-6">
@@ -290,13 +548,13 @@ const Amount = ({
                 You Receive
               </div>
               <div className="text-white text-2xl font-bold roboto leading-9 flex gap-3 items-center">
-                {formatNumber(parseFloat(selectedRoute?.estimate?.destinationTokenAmount).toFixed(6))} {tokenB.symbol}
-                <img src={tokenB.image} alt="S" className="w-4 h-4" />
+                {formatNumber(outputAmount)} {tokenB.symbol}
+                <img src={tokenB.image} alt="Token B" className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-6 text-gray-40 text-white text-sm font-normal robotoleading-normal">
               Output is estimated. You will receive at least{" "}
-              {parseFloat(selectedRoute?.estimate?.destinationTokenMinAmount).toFixed(6)} {tokenB.symbol} or the transaction will
+              {formatNumber(minReceived)} {tokenB.symbol} or the transaction will
               revert
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-6">
@@ -305,23 +563,8 @@ const Amount = ({
               </div>
               <div className="flex gap-2 items-center">
                 <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                  {selectedRoute?.estimate?.destinationUsdAmount}{"$"}
-                  {/* 1 {tokenA.ticker} ={" "}
-                  {singleToken &&
-                  singleToken.amounts &&
-                  singleToken.amounts[singleToken.amounts.length - 1]
-                    ? parseFloat(
-                        formatUnits(
-                          singleToken.amounts[singleToken.amounts.length - 1],
-                          parseInt(tokenB.decimal)
-                        )
-                      ).toFixed(6)
-                    : "0"}{" "} */}
-                  {/* {tokenB.symbol} */}
+                  {usdAmount}{"$"}
                 </div>
-                {/* <div className="cursor-pointer" onClick={() => refresh()}>
-                  <img src={Refresh} alt="Refresh" />
-                </div> */}
               </div>
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-2">
@@ -332,7 +575,7 @@ const Amount = ({
                 <img src={Info} alt="Info" />
               </div>
               <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                {parseFloat(selectedRoute?.estimate?.destinationTokenMinAmount).toFixed(6)} {tokenB.symbol}
+                {formatNumber(minReceived)} {tokenB.symbol}
               </div>
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-2">
@@ -343,7 +586,7 @@ const Amount = ({
                 <img src={Info} alt="Info" />
               </div>
               <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                {selectedRoute?.estimate?.priceImpact} %
+                {priceImpact} %
               </div>
             </div>
             <div className="flex justify-between gap-3 items-center w-full mt-2">
@@ -354,7 +597,7 @@ const Amount = ({
                 <img src={Info} alt="Info" />
               </div>
               <div className="text-right text-white text-sm font-normal roboto leading-normal">
-                {selectedRoute?.estimate?.slippage} %
+                {slippage} %
               </div>
             </div>
             <button
