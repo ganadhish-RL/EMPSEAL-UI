@@ -18,6 +18,7 @@ const Amount = ({
   selectedRoute,
   quoteData,
   fromAddress,
+  toAddress,
   tokenB,
   confirm,
   disabled = false,
@@ -34,6 +35,11 @@ const Amount = ({
   const symbiosisRoute = selectedRoute?.type === "evm";
   const rangoRoute = typeof selectedRoute?.requestId === 'string';
   const rubicRoute = selectedRoute?.swapType === "cross-chain" || selectedRoute?.swapType === "on-chain";
+
+  console.log("selected Rango route:", selectedRoute);
+  console.log("selected Rango address:", fromAddress);
+  console.log("selected Rango to address:", toAddress);
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -182,13 +188,13 @@ const Amount = ({
         // Create selectedWallets object with the user's address for both chains
         const selectedWallets = {
           [fromChain]: fromAddress,
-          [toChain]: fromAddress
+          [toChain]: toAddress
         };
 
         // rango payload with updated data
         payload = {
           requestId: selectedRoute.requestId,
-          destination: fromAddress,
+          destination: toAddress,
           checkPrerequisites: false,
           selectedWallets: selectedWallets  // Add the selectedWallets object
         };
@@ -368,6 +374,7 @@ const Amount = ({
       } else if (rangoRoute) {
         // First get the swap data which includes approval info
         swapData = await swapTokens();
+        console.log("rango swap data: ", swapData);
         
         if (swapData?.approve) {
           approvalResult = await approveToken(

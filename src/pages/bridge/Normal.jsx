@@ -70,6 +70,7 @@ const Normal = () => {
         // console.log("rangoPayload:", rangoPayload);
 
         // Symbiosis API request
+        /*
         const symbiosisPayload = {
           tokenAmountIn: {
               amount: amountBigInt.toString(),
@@ -87,7 +88,8 @@ const Normal = () => {
           to: receiver,
           from: address,
           slippage: 300,
-      };
+        };
+        */
 
         // console.log("symbiosisPayload:", symbiosisPayload);
 
@@ -105,18 +107,20 @@ const Normal = () => {
                 body: JSON.stringify(rangoPayload),
             }).then(res => res.ok ? res.json() : Promise.reject(`Rango error: ${res.status}`)),
 
+            /*
             fetch('https://api.symbiosis.finance/crosschain/v1/swap', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(symbiosisPayload),
             }).then(res => res.ok ? res.json() : Promise.reject(`Symbiosis error: ${res.status}`))
+            */
         ]);
 
         // Process results
         const combinedQuotes = {
             rubic: results[0].status === 'fulfilled' ? results[0].value : null,
             rango: results[1].status === 'fulfilled' ? results[1].value : null,
-            symbiosis: results[2].status === 'fulfilled' ? results[2].value : null,
+            // symbiosis: results[2].status === 'fulfilled' ? results[2].value : null,
         };
 
         // Log any errors
