@@ -886,8 +886,12 @@ const Emp = ({
               onClick={() => {
                 const _tokenA = selectedTokenA;
                 const _tokenB = selectedTokenB;
+                const _chainA = selectedChainA;
+                const _chainB = selectedChainB;
                 setSelectedTokenA(_tokenB);
                 setSelectedTokenB(_tokenA);
+                setSelectedChainA(_chainB);
+                setSelectedChainB(_chainA);
               }}
             >
               <img src={UpDownAr} alt='Ar' className='mx-auto mt-6' />
