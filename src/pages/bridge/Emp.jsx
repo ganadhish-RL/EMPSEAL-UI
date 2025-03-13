@@ -994,7 +994,7 @@ const Emp = ({
               <div className=' border border-[#3b3c4e] p-3 rounded-2xl  '>
                 <input
                   type='text'
-                  placeholder='Add Address'
+                  placeholder='To Address'
                   value={selfAddress}
                   // value={address} // Bind the input field to the state
                   onChange={(e) => setSelfAddress(e.target.value)} // Allow the user to change the value manually
@@ -1065,6 +1065,7 @@ const Emp = ({
             fromAddress={address}
             selectedRoute={selectedRoute}
             quoteData={quoteData}
+            toAddress={selfAddress}
           />
         )}
       </div>

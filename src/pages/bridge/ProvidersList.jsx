@@ -13,14 +13,14 @@ const ProvidersList = ({
   const path = useStore((state) => state.path);
   const [rubicRoutes, setRubicRoutes] = useState([]);
   const [rangoRoutes, setRangoRoutes] = useState([]);
-  const [symbiosisRoutes, setSymbiosisRoutes] = useState(null);
+  // const [symbiosisRoutes, setSymbiosisRoutes] = useState(null);
   const [selectedProvider, setSelectedProvider] = useState("rubic");
 
   useEffect(() => {
     if (quoteData) {
       setRubicRoutes(quoteData.rubic?.routes || []);
       setRangoRoutes(quoteData.rango?.results || []);
-      setSymbiosisRoutes(quoteData.symbiosis || null);
+      // setSymbiosisRoutes(quoteData.symbiosis || null);
       
       // console.log("rubicQuoteData", quoteData.rubic?.routes || 'No Rubic routes available');
       // console.log("rangoRoutesData:", quoteData.rango?.results || 'No Rango routes available');
@@ -30,7 +30,7 @@ const ProvidersList = ({
     } else {
       setRubicRoutes([]);
       setRangoRoutes([]);
-      setSymbiosisRoutes(null);
+      // setSymbiosisRoutes(null);
     }
   }, [quoteData]);
 
@@ -48,14 +48,14 @@ const ProvidersList = ({
     const available = {
       rubic: rubicRoutes?.length > 0,
       rango: rangoRoutes?.length > 0,
-      symbiosis: !!symbiosisRoutes
+      // symbiosis: !!symbiosisRoutes
     };
     
     if (!available.rubic && !available.rango && !available.symbiosis) {
       return {
         rubic: false,
         rango: false,
-        symbiosis: false,
+        // symbiosis: false,
         allUnavailable: true
       };
     }
@@ -92,7 +92,7 @@ const ProvidersList = ({
         >
           Rango
         </button>
-        <button
+       {/*  <button
           className={`w-[100px] h-[35px] flex justify-center items-center rounded-md bg-black roboto text-[12px] font-bold border
             ${selectedProvider === "symbiosis" ? "border-[#FF9900] text-[#FF9900]" : "border-[#3b3c4e] text-white"}
             ${!getProviderAvailability().symbiosis ? "opacity-50 cursor-not-allowed" : "hover:border-[#FF9900] hover:text-[#FF9900]"}`}
@@ -100,7 +100,7 @@ const ProvidersList = ({
           disabled={!getProviderAvailability().symbiosis}
         >
           Symbiosis
-        </button>
+        </button> */}
       </div>
 
       <div className="p-4">
@@ -175,7 +175,7 @@ const ProvidersList = ({
             <p className="text-gray-400 text-center">No providers available.</p>
           )
         ) : (
-          symbiosisRoutes ? (
+          /* symbiosisRoutes ? (
             <div className="max-h-[535px] overflow-y-auto flex flex-col gap-4">
               <ProvidersListCard
                 key="symbiosis"
@@ -197,7 +197,8 @@ const ProvidersList = ({
             </div>
           ) : (
             <p className="text-gray-400 text-center">No providers available.</p>
-          )
+          ) */
+          <p className="text-gray-400 text-center">No providers available.</p>
         )}
       </div>
     </div>
