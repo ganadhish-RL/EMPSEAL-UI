@@ -69,7 +69,8 @@ const Emp = ({
   const { switchChain } = useSwitchChain();
   const { isConnected } = useAccount();
 
-  console.log('selected Token A: ', selectedTokenA);
+  // console.log('selected Token A: ', selectedTokenA);
+  // console.log('selectedRoute: ', selectedRoute);
 
   useEffect(() => {
     async function getTokens() {
@@ -184,7 +185,7 @@ const Emp = ({
 
   const handleTokenSelect = (token) => {
     if (isSelectingTokenA) {
-      console.log('selectedTokenA', token);
+      // console.log('selectedTokenA', token);
 
       setSelectedTokenA(token);
     } else {
@@ -208,7 +209,7 @@ const Emp = ({
 
   const handleChainSelect = async (chain) => {
     if (isSelectingTokenA) {
-      console.log('Selected Chain A:', chain);
+      // console.log('Selected Chain A:', chain);
       setSelectedChainA(chain); // Set Chain A when Token A is selected
 
       if (chain.name === 'SOLANA') {
@@ -239,7 +240,7 @@ const Emp = ({
         console.error(`❌ Failed to switch to ${chain.name}:`, error);
       }
     } else {
-      console.log('Selected Chain B:', chain);
+      // console.log('Selected Chain B:', chain);
       setSelectedChainB(chain); // Set Chain B when Token B is selected
 
       if (chain.name === 'SOLANA') {
@@ -579,10 +580,41 @@ const Emp = ({
     setAmountIn('');
   }, [selectedTokenA]);
 
+  const symbiosisRoute = selectedRoute?.type === "evm";
+  // console.log("symbiosisRouteCheck", symbiosisRoute);
+
+  const rangoRoute = typeof selectedRoute?.requestId === 'string';
+  // console.log("rangoRouteCheck:", rangoRoute);
+
+  const rubicRoute = selectedRoute?.swapType === "cross-chain" || "on-chain";
+  // console.log("rubicRouteCheck: ", rubicRoute);
+
+  const formatTokenAmount = (amount, decimals) => {
+    return (parseFloat(amount) / 10 ** decimals).toFixed(6);
+  };
+
+  // useEffect(() => {
+  //   // console.log('selectedRoute', selectedRoute);
+  //   if (selectedRoute !== null) {
+  //     setAmountOut(selectedRoute?.estimate?.destinationTokenAmount);
+  //   }
+  // }, [selectedRoute]);
+
   useEffect(() => {
-    console.log('selectedRoute', selectedRoute);
-    if (selectedRoute !== null) {
-      setAmountOut(selectedRoute?.estimate?.destinationTokenAmount);
+    if (selectedRoute) {
+      let amountOutValue;
+  
+      if (symbiosisRoute) {
+        // Symbiosis route
+        amountOutValue = formatTokenAmount(selectedRoute?.tokenAmountOut?.amount, selectedRoute?.tokenAmountOut?.decimals);
+      } else if (rangoRoute) {
+        // Rango route
+        amountOutValue = selectedRoute?.outputAmount;
+      } else if (rubicRoute) {
+        // Rubic route
+        amountOutValue = selectedRoute?.estimate?.destinationTokenAmount;
+      }
+      setAmountOut(amountOutValue);
     }
   }, [selectedRoute]);
 
@@ -966,7 +998,7 @@ const Emp = ({
               <div className=' border border-[#3b3c4e] p-3 rounded-2xl  '>
                 <input
                   type='text'
-                  placeholder='Add Address'
+                  placeholder='To Address'
                   value={selfAddress}
                   // value={address} // Bind the input field to the state
                   onChange={(e) => setSelfAddress(e.target.value)} // Allow the user to change the value manually
@@ -1037,6 +1069,7 @@ const Emp = ({
             fromAddress={address}
             selectedRoute={selectedRoute}
             quoteData={quoteData}
+            toAddress={selfAddress}
           />
         )}
       </div>

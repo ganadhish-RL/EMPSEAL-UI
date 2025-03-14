@@ -157,7 +157,7 @@
   },
   {
     "id": 27,
-    "chainId": 1399811149,
+    "chainId": 5426,
     "name": "SOLANA",
     "image": "https://raw.githubusercontent.com/Cryptorubic/rubic-app/refs/heads/master/src/assets/images/icons/coins/solana.svg"
   },
@@ -166,5 +166,180 @@
     "chainId": 80094,
     "name": "BERACHAIN",
     "image": "https://app.rubic.exchange/assets/images/icons/coins/berachain.svg"
+  },
+  {
+    "id":"chainId",
+    "chainId": 85918,
+    "name": "TON",
+    "explorer": "https://tonviewer.com",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/11419.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 3652501241,
+    "name": "Bitcoin",
+    "explorer": "https://mempool.space",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 40,
+    "name": "Telos",
+    "explorer": "https://teloscan.io",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/4660.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 2222,
+    "name": "KAVA EVM",
+    "explorer": "https://explorer.kava.io",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/4846.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 324,
+    "name": "ZkSync Era",
+    "explorer": "https://era.zksync.network",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/24091.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 42170,
+    "name": "Arbitrum Nova",
+    "explorer": "https://nova.arbiscan.io",
+    "image": "https://l2beat.com/icons/nova.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 728126428,
+    "name": "Tron",
+    "explorer": "https://tronscan.org",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/1958.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 169,
+    "name": "Manta",
+    "explorer": "https://pacific-explorer.manta.network",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/13631.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 1088,
+    "name": "Metis",
+    "explorer": "https://explorer.metis.io",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/9640.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 5165,
+    "name": "Bahamut",
+    "explorer": "https://www.ftnscan.com",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/22615.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 34443,
+    "name": "Mode",
+    "explorer": "https://explorer.mode.network",
+    "image": "https://assets-global.website-files.com/64c906a6ed3c4d809558853b/64d0b081f0331ac3c64c5e4d_flav.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 30,
+    "name": "Rootstock",
+    "explorer": "https://rootstock.blockscout.com",
+    "image": "https://rootstock.blockscout.com/assets/favicon/favicon.ico"
+  },
+  {
+    "id":"chainId",
+    "chainId": 4200,
+    "name": "Merlin",
+    "explorer": "https://scan.merlinchain.io",
+    "image": "https://assets.coingecko.com/asset_platforms/images/188/small/merlin-chain.jpeg?1708522313"
+  },
+  {
+    "id":"chainId",
+    "chainId": 810180,
+    "name": "ZkLink",
+    "explorer": "https://explorer.zklink.io",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/13039.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 1116,
+    "name": "CORE",
+    "explorer": "https://scan.coredao.org",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/23254.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 167000,
+    "name": "Taiko",
+    "explorer": "https://taikoscan.io",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/31525.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 252,
+    "name": "Fraxtal",
+    "explorer": "https://fraxscan.com",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/6952.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 1625,
+    "name": "Gravity",
+    "explorer": "https://explorer.gravity.xyz",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/32120.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 223,
+    "name": "B² Network",
+    "explorer": "https://explorer.bsquared.network",
+    "image": "https://coin-images.coingecko.com/asset_platforms/images/239/small/bsquared-network.jpeg?1713432732"
+  },
+  {
+    "id":"chainId",
+    "chainId": 388,
+    "name": "Cronos zkEVM",
+    "explorer": "https://explorer.zkevm.cronos.org",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/33873.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 2818,
+    "name": "Morph",
+    "explorer": "https://explorer.morphl2.io",
+    "image": "https://coin-images.coingecko.com/asset_platforms/images/22185/small/morph.jpg?1729659940"
+  },
+  {
+    "id":"chainId",
+    "chainId": 2345,
+    "name": "Goat",
+    "explorer": "https://explorer.goat.network",
+    "image": "https://cdn.prod.website-files.com/6669a2e2b7f624149423b9be/6669b090137434ab4c6d11a2_favicoin%20goat.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 146,
+    "name": "Sonic",
+    "explorer": "https://sonicscan.org",
+    "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/32684.png"
+  },
+  {
+    "id":"chainId",
+    "chainId": 2741,
+    "name": "Abstract",
+    "explorer": "https://abscan.org",
+    "image": "https://s3.coinmarketcap.com/dexer/token/d51628b923d63af38ff8900885c6399b.jpg"
+  },
+  {
+    "id":"chainId",
+    "chainId": 130,
+    "name": "Unichain",
+    "explorer": "https://uniscan.xyz",
+    "image": "https://uniscan.xyz/assets/generic/html/favicon.ico?v=25.1.4.0"
   }
 ]
