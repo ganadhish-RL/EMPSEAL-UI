@@ -29,16 +29,16 @@ const Amount = ({
   const [transactionHash, setTransactionHash] = useState("");
   const [destinationTx, setDestinationTx] = useState({});
   const modalRef = useRef(null);
-  const rangoApiKey = import.meta.env.VITE_RANGO_API_KEY || "";
+  const rangoApiKey = import.meta.env.VITE_RANGO_API_KEY || import.meta.env.RANGO_API_KEY || "";
   
   //route detection logic
   const symbiosisRoute = selectedRoute?.type === "evm";
   const rangoRoute = typeof selectedRoute?.requestId === 'string';
   const rubicRoute = selectedRoute?.swapType === "cross-chain" || selectedRoute?.swapType === "on-chain";
 
-  console.log("selected Rango route:", selectedRoute);
-  console.log("selected Rango address:", fromAddress);
-  console.log("selected Rango to address:", toAddress);
+  // console.log("selected Rango route:", selectedRoute);
+  // console.log("selected Rango address:", fromAddress);
+  // console.log("selected Rango to address:", toAddress);
 
 
   useEffect(() => {
@@ -374,7 +374,7 @@ const Amount = ({
       } else if (rangoRoute) {
         // First get the swap data which includes approval info
         swapData = await swapTokens();
-        console.log("rango swap data: ", swapData);
+        // console.log("rango swap data: ", swapData);
         
         if (swapData?.approve) {
           approvalResult = await approveToken(

@@ -12,8 +12,8 @@ const Normal = () => {
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [activeTab, setActiveTab] = useState('cross'); // 'cross' | 'native'
 
-  const rangoApiKey = import.meta.env.VITE_RANGO_API_KEY || "";
-  const rangoAffiKey = import.meta.env.VITE_RANGO_AFFI_KEY || "";
+  const rangoApiKey = import.meta.env.VITE_RANGO_API_KEY || import.meta.env.RANGO_API_KEY || "";
+  const rangoAffiKey = import.meta.env.VITE_RANGO_AFFI_KEY || import.meta.env.RANGO_AFFI_KEY || "";
   const integratorAddress = '0x02E6B1C1E78A7C71798262ef34386182C553bA8C';
 
   const quoteAll = async (selectedTokenA, selectedTokenB, amountIn, receiver, address) => {
