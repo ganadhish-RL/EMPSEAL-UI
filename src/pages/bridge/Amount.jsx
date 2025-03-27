@@ -199,14 +199,11 @@ const Amount = ({
           selectedWallets: selectedWallets  // Add the selectedWallets object
         };
          
-        const confirmResponse = await fetch(
-          `https://api.rango.exchange/routing/confirm?apiKey=${rangoApiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          }
-        );
+        const confirmResponse = await fetch("/api/rango", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'confirm', payload })
+        });
 
         if (!confirmResponse.ok) {
           throw new Error('Rango route confirmation failed');
@@ -222,17 +219,14 @@ const Amount = ({
           requestId: selectedRoute.requestId
         };
 
-        response = await fetch(
-          `https://api.rango.exchange/tx/create?apiKey=${rangoApiKey}`,
-          {
-            method: 'POST',
-            headers: {
-              accept: '*/*',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(createTxPayload)
-          }
-        );
+        response = await fetch("/api/rango", {
+          method: 'POST',
+          headers: {
+            accept: '*/*',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ action: 'createTx', payload: createTxPayload })
+        });
       }
       else if(symbiosisRoute) {
         // Symbiosis implementation
@@ -308,20 +302,20 @@ const Amount = ({
         return status;
       } 
       else if (rangoRoute) {
-        const response = await fetch(
-          `https://api.rango.exchange/tx/check-status?apiKey=${rangoApiKey}`,
-          {
-            method: 'POST',
-            headers: {
-              'content-type': 'application/json'
-            },
-            body: JSON.stringify({
+        const response = await fetch("/api/rango", {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'checkStatus',
+            payload: {
               requestId: selectedRoute.requestId,
               txId: hash,
               step: 1
-            })
-          }
-        );
+            }
+          })
+        });
 
         const data = await response.json();
         

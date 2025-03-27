@@ -101,7 +101,7 @@ const Normal = () => {
                 body: JSON.stringify(rubicPayload),
             }).then(res => res.ok ? res.json() : Promise.reject(`Rubic error: ${res.status}`)),
 
-            fetch(`https://api.rango.exchange/routing/bests?apiKey=${rangoApiKey}`, {
+            fetch("/api/rango", {
                 method: 'POST',
                 headers: { 'Accept': '*/*', 'Content-Type': 'application/json' },
                 body: JSON.stringify(rangoPayload),
